@@ -1,0 +1,38 @@
+services:
+
+  postgres:
+    image: postgis/postgis:17-3.5
+    container_name: khabro-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: khabro
+      POSTGRES_USER: khabro
+      POSTGRES_PASSWORD: khabro_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - khabro_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U khabro -d khabro"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    container_name: khabro-redis
+    restart: unless-stopped
+    ports:
+      - "6300:6379"
+    volumes:
+      - khabro_redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  khabro_postgres_data:
+  khabro_redis_data:
