@@ -109,6 +109,11 @@ class AuthService {
     return UserModel.fromJson(data['user'] as Map<String, dynamic>);
   }
 
+  /// Log out by deleting the stored access token.
+  Future<void> logout() async {
+    await _tokenStorage.deleteAccessToken();
+  }
+
   /// Extract a human-readable error message from a JSON error response.
   String _extractErrorMessage(String body, String fallback) {
     try {

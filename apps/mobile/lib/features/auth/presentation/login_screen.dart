@@ -2,11 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../data/auth_service.dart';
 import '../data/auth_exception.dart';
+import '../data/auth_service.dart';
+import '../data/models/user_model.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({
+    super.key,
+    this.authService,
+    this.onAuthenticated,
+  });
+
+  final AuthService? authService;
+  final ValueChanged<UserModel>? onAuthenticated;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,10 +24,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController =
       TextEditingController(text: '9999999999');
 
-  final AuthService _authService = AuthService();
+  late final AuthService _authService;
 
   bool loading = false;
   String message = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = widget.authService ?? AuthService();
+  }
 
   // ------------------------------------------------------------
   // REGISTER TEST USER
@@ -36,6 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
         phoneController.text.trim(),
         'Test User',
       );
+
+      if (widget.onAuthenticated != null) {
+        widget.onAuthenticated!(response.user);
+        return;
+      }
 
       setState(() {
         message =
@@ -54,9 +73,11 @@ class _LoginScreenState extends State<LoginScreen> {
         message = 'Connection error. Is the backend running?';
       });
     } finally {
-      setState(() {
-        loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
@@ -71,7 +92,12 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await _authService.devLogin(phoneController.text.trim());
+      final response = await _authService.devLogin(phoneController.text.trim());
+
+      if (widget.onAuthenticated != null) {
+        widget.onAuthenticated!(response.user);
+        return;
+      }
 
       setState(() {
         message = 'JWT Login Successful!\n\nChecking /auth/me...';
@@ -87,9 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
         message = 'Connection error. Is the backend running?';
       });
     } finally {
-      setState(() {
-        loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
@@ -100,6 +128,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _fetchMe() async {
     try {
       final user = await _authService.getMe();
+
+      if (widget.onAuthenticated != null) {
+        widget.onAuthenticated!(user);
+        return;
+      }
 
       setState(() {
         message =

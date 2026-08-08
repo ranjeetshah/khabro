@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'features/auth/presentation/login_screen.dart';
+import 'core/storage/token_storage.dart';
+import 'features/auth/data/auth_service.dart';
+import 'features/auth/presentation/auth_gate.dart';
 
 void main() {
   runApp(const KhabroApp());
 }
 
 class KhabroApp extends StatelessWidget {
-  const KhabroApp({super.key});
+  const KhabroApp({
+    super.key,
+    this.authService,
+    this.tokenStorage,
+  });
+
+  final AuthService? authService;
+  final TokenStorage? tokenStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +29,10 @@ class KhabroApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: AuthGate(
+        authService: authService,
+        tokenStorage: tokenStorage,
+      ),
     );
   }
 }
