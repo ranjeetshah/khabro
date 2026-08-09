@@ -83,7 +83,7 @@ model Post {
   locality Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
 
   @@index([authorId, createdAt])
-  @@index([localityId])
+  @@index([localityId, deletedAt, createdAt, id])
 }
 
 enum GeographicAreaType {

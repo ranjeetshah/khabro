@@ -8,6 +8,8 @@ import '../../users/data/users_service.dart';
 import '../../users/presentation/profile_screen.dart';
 import '../../posts/data/post_model.dart';
 import '../../posts/data/posts_service.dart';
+import '../../feed/data/feed_service.dart';
+import '../../feed/presentation/feed_screen.dart';
 import '../data/auth_exception.dart';
 import '../data/models/user_model.dart';
 
@@ -22,6 +24,7 @@ class HomeScreen extends StatelessWidget {
     this.locationUpdateService,
     this.localityService,
     this.postsService,
+    this.feedService,
   });
 
   final UserModel user;
@@ -31,6 +34,7 @@ class HomeScreen extends StatelessWidget {
   final LocationUpdateService? locationUpdateService;
   final LocalityService? localityService;
   final PostsService? postsService;
+  final FeedService? feedService;
 
   Future<void> _updateLocation(BuildContext context) async {
     try {
@@ -142,6 +146,20 @@ class HomeScreen extends StatelessWidget {
                 _LocalitySection(localityService: localityService),
                 const SizedBox(height: 24),
                 _PostsSection(postsService: postsService),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => FeedScreen(feedService: feedService),
+                      ),
+                    ),
+                    icon: const Icon(Icons.view_list_outlined),
+                    label: const Text('OPEN LOCAL FEED'),
+                  ),
+                ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,

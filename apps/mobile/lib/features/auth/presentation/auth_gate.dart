@@ -9,6 +9,7 @@ import '../data/auth_service.dart';
 import '../data/models/user_model.dart';
 import '../../users/data/users_service.dart';
 import '../../posts/data/posts_service.dart';
+import '../../feed/data/feed_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
@@ -149,6 +150,7 @@ class _AuthGateState extends State<AuthGate> {
         ),
         localityService: LocalityService(tokenStorage: _tokenStorage),
         postsService: PostsService(tokenStorage: _tokenStorage),
+        feedService: FeedService(tokenStorage: _tokenStorage),
       );
     }
 
