@@ -1,4 +1,39 @@
-import { Locality, LocalityResolver } from './locality-resolver';
+import type { GeographicArea, Locality, LocalityResolver } from './locality-resolver';
+
+const INDIA: GeographicArea = {
+  id: 'development-country-india',
+  name: 'India',
+  type: 'COUNTRY',
+  parent: null,
+};
+
+const DELHI_STATE: GeographicArea = {
+  id: 'development-state-delhi',
+  name: 'Delhi',
+  type: 'STATE',
+  parent: INDIA,
+};
+
+const DELHI_CITY: GeographicArea = {
+  id: 'development-city-delhi',
+  name: 'Delhi',
+  type: 'CITY',
+  parent: DELHI_STATE,
+};
+
+const MAHARASHTRA: GeographicArea = {
+  id: 'development-state-maharashtra',
+  name: 'Maharashtra',
+  type: 'STATE',
+  parent: INDIA,
+};
+
+const MUMBAI: GeographicArea = {
+  id: 'development-city-mumbai',
+  name: 'Mumbai',
+  type: 'CITY',
+  parent: MAHARASHTRA,
+};
 
 /**
  * Development-only deterministic fixture resolver.
@@ -15,6 +50,8 @@ export class DevelopmentLocalityResolver implements LocalityResolver {
       return {
         id: 'development-locality-a',
         name: 'Test Locality A',
+        type: 'LOCALITY',
+        parent: DELHI_CITY,
         city: 'Delhi',
         state: 'Delhi',
         country: 'India',
@@ -30,6 +67,8 @@ export class DevelopmentLocalityResolver implements LocalityResolver {
       return {
         id: 'development-locality-b',
         name: 'Test Locality B',
+        type: 'LOCALITY',
+        parent: MUMBAI,
         city: 'Mumbai',
         state: 'Maharashtra',
         country: 'India',

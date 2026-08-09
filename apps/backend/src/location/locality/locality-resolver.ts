@@ -1,6 +1,13 @@
-export interface Locality {
+export type GeographicAreaType = 'COUNTRY' | 'STATE' | 'CITY' | 'LOCALITY';
+
+export interface GeographicArea {
   id: string;
   name: string;
+  type: GeographicAreaType;
+  parent: GeographicArea | null;
+}
+
+export interface Locality extends GeographicArea {
   city: string;
   state: string;
   country: string;

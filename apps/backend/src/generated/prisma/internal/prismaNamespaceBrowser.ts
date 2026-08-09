@@ -104,6 +104,8 @@ export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[k
 export const LocalityScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  type: 'type',
+  parentId: 'parentId',
   city: 'city',
   state: 'state',
   country: 'country',

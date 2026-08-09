@@ -208,6 +208,23 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
+export type EnumGeographicAreaTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.GeographicAreaType | Prisma.EnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel> | $Enums.GeographicAreaType
+}
+
+export type EnumGeographicAreaTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GeographicAreaType | Prisma.EnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGeographicAreaTypeWithAggregatesFilter<$PrismaModel> | $Enums.GeographicAreaType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -402,6 +419,23 @@ export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumGeographicAreaTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.GeographicAreaType | Prisma.EnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel> | $Enums.GeographicAreaType
+}
+
+export type NestedEnumGeographicAreaTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GeographicAreaType | Prisma.EnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GeographicAreaType[] | Prisma.ListEnumGeographicAreaTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGeographicAreaTypeWithAggregatesFilter<$PrismaModel> | $Enums.GeographicAreaType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGeographicAreaTypeFilter<$PrismaModel>
 }
 
 

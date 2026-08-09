@@ -98,6 +98,13 @@ describe('LocationController', () => {
     const locality = {
       id: 'development-locality-a',
       name: 'Test Locality A',
+      type: 'LOCALITY',
+      parent: {
+        id: 'development-city-delhi',
+        name: 'Delhi',
+        type: 'CITY',
+        parent: null,
+      },
       city: 'Delhi',
       state: 'Delhi',
       country: 'India',
@@ -110,7 +117,16 @@ describe('LocationController', () => {
     } as any);
 
     expect(mockLocationService.findMyLocality).toHaveBeenCalledWith('user-123');
-    expect(result).toEqual({ locality });
+    expect(result).toEqual({
+      locality: {
+        id: locality.id,
+        name: locality.name,
+        city: locality.city,
+        state: locality.state,
+        country: locality.country,
+      },
+    });
+    expect(JSON.stringify(result)).not.toContain('parent');
     expect(JSON.stringify(result)).not.toContain('latitude');
     expect(JSON.stringify(result)).not.toContain('longitude');
   });

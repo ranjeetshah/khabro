@@ -42,15 +42,32 @@ model UserLocation {
 }
 
 model Locality {
-  id        String   @id @default(uuid())
+  id        String             @id @default(uuid())
   name      String
+  type      GeographicAreaType @default(LOCALITY)
+  parentId  String?
+
+  // Retained as the compatibility projection used by GET /location/me/locality.
+  // Hierarchy ownership is represented by parentId and the self relation.
   city      String
   state     String
   country   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 
-  @@unique([name, city, state, country])
+  parent   Locality?  @relation("LocalityHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children Locality[] @relation("LocalityHierarchy")
+
+  @@unique([name, type, parentId])
+  @@index([type])
+  @@index([parentId])
+}
+
+enum GeographicAreaType {
+  COUNTRY
+  STATE
+  CITY
+  LOCALITY
 }
 
 enum UserStatus {

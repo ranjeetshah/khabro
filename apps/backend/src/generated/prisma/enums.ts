@@ -9,6 +9,16 @@
 * 🟢 You can import this file directly.
 */
 
+export const GeographicAreaType = {
+  COUNTRY: 'COUNTRY',
+  STATE: 'STATE',
+  CITY: 'CITY',
+  LOCALITY: 'LOCALITY'
+} as const
+
+export type GeographicAreaType = (typeof GeographicAreaType)[keyof typeof GeographicAreaType]
+
+
 export const UserStatus = {
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',

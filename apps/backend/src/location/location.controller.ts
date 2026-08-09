@@ -10,6 +10,7 @@ import {
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import type { Locality } from './locality/locality-resolver';
 import { LocationService } from './location.service';
 
 @Controller('location')
@@ -48,8 +49,17 @@ export class LocationController {
       throw new UnauthorizedException();
     }
 
+    const locality = await this.locationService.findMyLocality(userId);
+    return { locality: locality ? this.toPublicLocality(locality) : null };
+  }
+
+  private toPublicLocality(locality: Locality) {
     return {
-      locality: await this.locationService.findMyLocality(userId),
+      id: locality.id,
+      name: locality.name,
+      city: locality.city,
+      state: locality.state,
+      country: locality.country,
     };
   }
 }

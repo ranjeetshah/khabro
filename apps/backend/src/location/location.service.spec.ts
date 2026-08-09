@@ -135,6 +135,13 @@ describe('LocationService', () => {
       const locality = {
         id: 'development-locality-a',
         name: 'Test Locality A',
+        type: 'LOCALITY' as const,
+        parent: {
+          id: 'development-city-delhi',
+          name: 'Delhi',
+          type: 'CITY' as const,
+          parent: null,
+        },
         city: 'Delhi',
         state: 'Delhi',
         country: 'India',
