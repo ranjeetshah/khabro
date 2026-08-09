@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../users/data/users_service.dart';
+import '../../users/presentation/profile_screen.dart';
 import '../data/models/user_model.dart';
 
 /// Temporary authenticated screen displaying user information and logout functionality.
@@ -8,10 +10,27 @@ class HomeScreen extends StatelessWidget {
     super.key,
     required this.user,
     required this.onLogout,
+    this.onUserUpdated,
+    this.usersService,
   });
 
   final UserModel user;
   final VoidCallback onLogout;
+  final ValueChanged<UserModel>? onUserUpdated;
+  final UsersService? usersService;
+
+  Future<void> _openProfile(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ProfileScreen(
+          user: user,
+          usersService: usersService,
+          onUserUpdated: onUserUpdated,
+          onSessionExpired: onLogout,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +49,7 @@ class HomeScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 420,
-            ),
+            constraints: const BoxConstraints(maxWidth: 420),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -44,10 +61,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 const Text(
                   'Logged in',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 Card(
@@ -83,6 +97,16 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 50,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _openProfile(context),
+                    icon: const Icon(Icons.person_outline),
+                    label: const Text('PROFILE'),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
                   child: ElevatedButton.icon(
                     onPressed: onLogout,
                     icon: const Icon(Icons.logout),
@@ -104,19 +128,10 @@ class HomeScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          ),
-        ),
+        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
         Text(
           value,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ],
     );

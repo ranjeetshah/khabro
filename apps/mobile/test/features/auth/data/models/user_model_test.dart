@@ -35,6 +35,21 @@ void main() {
       expect(user.name, isNull);
     });
 
+    test('fromJson parses createdAt and updatedAt', () {
+      final user = UserModel.fromJson({
+        'id': 'user-789',
+        'phone': '+919876543210',
+        'name': 'Dated User',
+        'trustScore': 3,
+        'status': 'ACTIVE',
+        'createdAt': '2026-08-08T10:20:30.000Z',
+        'updatedAt': '2026-08-09T11:21:31.000Z',
+      });
+
+      expect(user.createdAt, DateTime.parse('2026-08-08T10:20:30.000Z'));
+      expect(user.updatedAt, DateTime.parse('2026-08-09T11:21:31.000Z'));
+    });
+
     test('toJson produces correct map', () {
       const user = UserModel(
         id: 'user-123',

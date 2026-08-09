@@ -39,4 +39,22 @@ class ApiClient {
       body: body != null ? jsonEncode(body) : null,
     );
   }
+
+  /// PATCH request with JSON [body]. Sets Content-Type automatically.
+  Future<http.Response> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) {
+    final mergedHeaders = {
+      'Content-Type': 'application/json',
+      ...?headers,
+    };
+
+    return _httpClient.patch(
+      Uri.parse('$baseUrl$path'),
+      headers: mergedHeaders,
+      body: body != null ? jsonEncode(body) : null,
+    );
+  }
 }

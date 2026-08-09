@@ -32,9 +32,7 @@ class FakeTokenStorage extends TokenStorage {
 }
 
 /// Helper to build an ApiClient backed by a mock HTTP handler.
-ApiClient buildMockApiClient(
-  http_testing.MockClientHandler handler,
-) {
+ApiClient buildMockApiClient(http_testing.MockClientHandler handler) {
   return ApiClient(httpClient: http_testing.MockClient(handler));
 }
 
@@ -146,6 +144,25 @@ void main() {
       expect(await tokenStorage.getAccessToken(), 'mock.jwt.token');
     });
 
+    test('201 with a valid access token succeeds', () async {
+      final tokenStorage = FakeTokenStorage();
+      final authService = AuthService(
+        apiClient: buildMockApiClient((request) async {
+          return http.Response(
+            jsonEncode(_validAuthResponseJson),
+            201,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+        tokenStorage: tokenStorage,
+      );
+
+      final result = await authService.devLogin('+919876543210');
+
+      expect(result.accessToken, 'mock.jwt.token');
+      expect(await tokenStorage.getAccessToken(), 'mock.jwt.token');
+    });
+
     test('unknown user — throws AuthException with 404', () async {
       final apiClient = buildMockApiClient((request) async {
         return http.Response(
@@ -164,6 +181,44 @@ void main() {
         () => authService.devLogin('+919876543210'),
         throwsA(
           isA<AuthException>().having((e) => e.statusCode, 'statusCode', 404),
+        ),
+      );
+    });
+
+    test('unauthorized response throws AuthException with 401', () async {
+      final authService = AuthService(
+        apiClient: buildMockApiClient((request) async {
+          return http.Response(jsonEncode({'message': 'Unauthorized'}), 401);
+        }),
+        tokenStorage: FakeTokenStorage(),
+      );
+
+      expect(
+        () => authService.devLogin('+919876543210'),
+        throwsA(
+          isA<AuthException>().having((e) => e.statusCode, 'statusCode', 401),
+        ),
+      );
+    });
+
+    test('successful response without an access token fails', () async {
+      final authService = AuthService(
+        apiClient: buildMockApiClient((request) async {
+          return http.Response(jsonEncode({'user': _validUserJson}), 200);
+        }),
+        tokenStorage: FakeTokenStorage(),
+      );
+
+      expect(
+        () => authService.devLogin('+919876543210'),
+        throwsA(
+          isA<AuthException>()
+              .having((e) => e.statusCode, 'statusCode', 200)
+              .having(
+                (e) => e.message,
+                'message',
+                'Authentication response was invalid',
+              ),
         ),
       );
     });

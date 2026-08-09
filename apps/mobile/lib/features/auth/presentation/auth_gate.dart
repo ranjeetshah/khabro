@@ -4,17 +4,14 @@ import '../../../core/storage/token_storage.dart';
 import '../data/auth_exception.dart';
 import '../data/auth_service.dart';
 import '../data/models/user_model.dart';
+import '../../users/data/users_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
 /// Manages authentication session state on app startup and handles transitions
 /// between LoginScreen and HomeScreen based on stored token validity.
 class AuthGate extends StatefulWidget {
-  const AuthGate({
-    super.key,
-    this.authService,
-    this.tokenStorage,
-  });
+  const AuthGate({super.key, this.authService, this.tokenStorage});
 
   final AuthService? authService;
   final TokenStorage? tokenStorage;
@@ -101,11 +98,7 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_errorMessage != null) {
@@ -117,11 +110,7 @@ class _AuthGateState extends State<AuthGate> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                  size: 64,
-                ),
+                const Icon(Icons.error_outline, color: Colors.red, size: 64),
                 const SizedBox(height: 16),
                 Text(
                   _errorMessage!,
@@ -149,6 +138,8 @@ class _AuthGateState extends State<AuthGate> {
       return HomeScreen(
         user: _user!,
         onLogout: _logout,
+        usersService: UsersService(tokenStorage: _tokenStorage),
+        onUserUpdated: _onAuthenticated,
       );
     }
 

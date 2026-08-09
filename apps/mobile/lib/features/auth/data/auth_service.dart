@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
 import 'auth_exception.dart';
@@ -9,8 +11,8 @@ import 'models/user_model.dart';
 /// Service for authentication operations against the Khabro backend.
 class AuthService {
   AuthService({ApiClient? apiClient, TokenStorage? tokenStorage})
-      : _apiClient = apiClient ?? ApiClient(),
-        _tokenStorage = tokenStorage ?? TokenStorage();
+    : _apiClient = apiClient ?? ApiClient(),
+      _tokenStorage = tokenStorage ?? TokenStorage();
 
   final ApiClient _apiClient;
   final TokenStorage _tokenStorage;
@@ -36,9 +38,7 @@ class AuthService {
       );
     }
 
-    final authResponse = AuthResponse.fromJson(
-      jsonDecode(response.body) as Map<String, dynamic>,
-    );
+    final authResponse = _parseSuccessfulAuthResponse(response);
 
     await _tokenStorage.saveAccessToken(authResponse.accessToken);
 
@@ -59,16 +59,14 @@ class AuthService {
       );
     }
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 && response.statusCode != 201) {
       throw AuthException(
         _extractErrorMessage(response.body, 'Login failed'),
         statusCode: response.statusCode,
       );
     }
 
-    final authResponse = AuthResponse.fromJson(
-      jsonDecode(response.body) as Map<String, dynamic>,
-    );
+    final authResponse = _parseSuccessfulAuthResponse(response);
 
     await _tokenStorage.saveAccessToken(authResponse.accessToken);
 
@@ -121,6 +119,25 @@ class AuthService {
       return (data['message'] as String?) ?? fallback;
     } catch (_) {
       return fallback;
+    }
+  }
+
+  AuthResponse _parseSuccessfulAuthResponse(http.Response response) {
+    try {
+      final authResponse = AuthResponse.fromJson(
+        jsonDecode(response.body) as Map<String, dynamic>,
+      );
+
+      if (authResponse.accessToken.trim().isEmpty) {
+        throw const FormatException('Missing access token');
+      }
+
+      return authResponse;
+    } catch (_) {
+      throw AuthException(
+        'Authentication response was invalid',
+        statusCode: response.statusCode,
+      );
     }
   }
 }
