@@ -1,15 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { PUBLIC_USER_SELECT } from '../users/public-user.select';
-
-const FEED_POST_SELECT = {
-  id: true,
-  authorId: true,
-  content: true,
-  createdAt: true,
-  updatedAt: true,
-  author: { select: PUBLIC_USER_SELECT },
-} as const;
+import { postSelect, toPostResponse } from '../posts/post.select';
 
 type FeedCursor = { createdAt: string; id: string };
 
@@ -44,11 +35,13 @@ export class FeedService {
       },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       take: limit + 1,
-      select: FEED_POST_SELECT,
+      select: postSelect(userId),
     });
 
     const hasNextPage = posts.length > limit;
-    const items = hasNextPage ? posts.slice(0, limit) : posts;
+    const items = (hasNextPage ? posts.slice(0, limit) : posts).map(
+      toPostResponse,
+    );
     const lastItem = items.at(-1);
 
     return {

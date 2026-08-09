@@ -50,7 +50,12 @@ void main() {
   test('getMyPosts parses list', () async {
     final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
       expect(request.url.path, '/posts/me');
-      return http.Response(jsonEncode({'posts': [postJson]}), 200);
+      return http.Response(
+        jsonEncode({
+          'posts': [postJson],
+        }),
+        200,
+      );
     });
     expect((await service.getMyPosts()).single.content, 'Hello Khabro!');
   });
@@ -70,6 +75,40 @@ void main() {
       return http.Response('{}', 200);
     });
     await service.deletePost('post-1');
+  });
+
+  test(
+    'like and unlike use authenticated endpoints and parse metadata',
+    () async {
+      var call = 0;
+      final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+        call++;
+        expect(request.headers['Authorization'], 'Bearer jwt');
+        if (call == 1) {
+          expect(request.method, 'POST');
+          expect(request.url.path, '/posts/post-1/like');
+          return http.Response(
+            '{"like":{"likeCount":1,"likedByMe":true}}',
+            200,
+          );
+        }
+        expect(request.method, 'DELETE');
+        expect(request.url.path, '/posts/post-1/like');
+        return http.Response('{"like":{"likeCount":0,"likedByMe":false}}', 200);
+      });
+      expect((await service.likePost('post-1')).likedByMe, isTrue);
+      expect((await service.unlikePost('post-1')).likeCount, 0);
+    },
+  );
+
+  test('like errors preserve status for safe UI handling', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"message":"Conflict"}', 409);
+    });
+    expect(
+      () => service.likePost('post-1'),
+      throwsA(isA<AuthException>().having((e) => e.statusCode, 'status', 409)),
+    );
   });
 
   test('missing token and 401 are handled', () async {
@@ -93,7 +132,13 @@ void main() {
     });
     expect(
       () => service.getMyPosts(),
-      throwsA(isA<AuthException>().having((e) => e.message, 'message', 'Database unavailable')),
+      throwsA(
+        isA<AuthException>().having(
+          (e) => e.message,
+          'message',
+          'Database unavailable',
+        ),
+      ),
     );
   });
 }

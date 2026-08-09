@@ -89,7 +89,11 @@ describe('PostsService', () => {
 
   it('gets a non-deleted post', async () => {
     database.post.findFirst.mockResolvedValue({ id: 'post-1' });
-    await expect(service.findOne('post-1')).resolves.toEqual({ id: 'post-1' });
+    await expect(service.findOne('post-1')).resolves.toEqual({
+      id: 'post-1',
+      likeCount: 0,
+      likedByMe: false,
+    });
     expect(database.post.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({ where: { id: 'post-1', deletedAt: null } }),
     );

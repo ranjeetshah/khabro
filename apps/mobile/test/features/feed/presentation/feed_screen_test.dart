@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/feed/data/feed_page_model.dart';
@@ -8,6 +10,7 @@ import 'package:mobile/features/location/data/locality_model.dart';
 import 'package:mobile/features/location/data/locality_service.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
+import 'package:mobile/features/posts/data/like_status_model.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
 
@@ -20,7 +23,13 @@ PostModel post(String id, String content) => PostModel(
   updatedAt: DateTime.parse('2026-08-09T08:00:01.000Z'),
 );
 
-PostModel authoredPost(String id, String content, {String? name}) => PostModel(
+PostModel authoredPost(
+  String id,
+  String content, {
+  String? name,
+  int? likeCount,
+  bool? likedByMe,
+}) => PostModel(
   id: id,
   authorId: 'private-author-id',
   localityId: 'private-locality-id',
@@ -28,6 +37,8 @@ PostModel authoredPost(String id, String content, {String? name}) => PostModel(
   createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
   updatedAt: DateTime.parse('2026-08-09T08:00:01.000Z'),
   author: PublicUserModel(id: 'private-author-id', name: name),
+  likeCount: likeCount,
+  likedByMe: likedByMe,
 );
 
 class FakeFeedService extends FeedService {
@@ -91,6 +102,28 @@ class FakeDeletePostsService extends PostsService {
 
   @override
   Future<void> deletePost(String id) async => calls++;
+}
+
+class FakeLikePostsService extends PostsService {
+  FakeLikePostsService({required this.status, this.likeResponse})
+    : super(apiClient: null, tokenStorage: null);
+
+  LikeStatusModel status;
+  final Future<LikeStatusModel>? likeResponse;
+  var likeCalls = 0;
+  var unlikeCalls = 0;
+
+  @override
+  Future<LikeStatusModel> likePost(String id) async {
+    likeCalls++;
+    return likeResponse ?? status;
+  }
+
+  @override
+  Future<LikeStatusModel> unlikePost(String id) async {
+    unlikeCalls++;
+    return status;
+  }
 }
 
 class FakePublicUserService extends PublicUserService {
@@ -281,5 +314,70 @@ void main() {
     expect(feedService.calls, 2);
     expect(find.text('Delete me'), findsNothing);
     expect(find.text('No local posts yet.'), findsOneWidget);
+  });
+
+  testWidgets('like control displays and updates count and state', (
+    tester,
+  ) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [
+          authoredPost(
+            'post-1',
+            'Like me',
+            name: 'Test User',
+            likeCount: 0,
+            likedByMe: false,
+          ),
+        ],
+        nextCursor: null,
+      ),
+    ]);
+    final postsService = FakeLikePostsService(
+      status: const LikeStatusModel(likeCount: 1, likedByMe: true),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(feedService: feedService, postsService: postsService),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('0'), findsOneWidget);
+    expect(find.byTooltip('Like'), findsOneWidget);
+    await tester.tap(find.byTooltip('Like'));
+    await tester.pumpAndSettle();
+    expect(postsService.likeCalls, 1);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.byTooltip('Unlike'), findsOneWidget);
+  });
+
+  testWidgets('rapid like taps do not create duplicate requests', (
+    tester,
+  ) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [
+          authoredPost('post-1', 'Like once', likeCount: 0, likedByMe: false),
+        ],
+        nextCursor: null,
+      ),
+    ]);
+    final response = Completer<LikeStatusModel>();
+    final postsService = FakeLikePostsService(
+      status: const LikeStatusModel(likeCount: 1, likedByMe: true),
+      likeResponse: response.future,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(feedService: feedService, postsService: postsService),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Like'));
+    await tester.tap(find.byTooltip('Like'));
+    expect(postsService.likeCalls, 1);
+    response.complete(const LikeStatusModel(likeCount: 1, likedByMe: true));
+    await tester.pumpAndSettle();
+    expect(postsService.likeCalls, 1);
   });
 }

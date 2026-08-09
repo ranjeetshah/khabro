@@ -4,16 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { PUBLIC_USER_SELECT } from '../users/public-user.select';
-
-const POST_SELECT = {
-  id: true,
-  authorId: true,
-  content: true,
-  createdAt: true,
-  updatedAt: true,
-  author: { select: PUBLIC_USER_SELECT },
-} as const;
+import { postSelect, toPostResponse } from './post.select';
 
 @Injectable()
 export class PostsService {
@@ -25,30 +16,33 @@ export class PostsService {
       select: { localityId: true },
     });
 
-    return this.database.post.create({
+    const post = await this.database.post.create({
       data: {
         authorId,
         localityId: location?.localityId ?? null,
         content: content.trim(),
       },
-      select: POST_SELECT,
+      select: postSelect(authorId),
     });
+    return toPostResponse(post);
   }
 
   async findMine(authorId: string) {
-    return this.database.post.findMany({
+    const posts = await this.database.post.findMany({
       where: { authorId, deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: 50,
-      select: POST_SELECT,
+      select: postSelect(authorId),
     });
+    return posts.map(toPostResponse);
   }
 
-  async findOne(id: string) {
-    return this.database.post.findFirst({
+  async findOne(id: string, userId = '') {
+    const post = await this.database.post.findFirst({
       where: { id, deletedAt: null },
-      select: POST_SELECT,
+      select: postSelect(userId),
     });
+    return post ? toPostResponse(post) : null;
   }
 
   async delete(authorId: string, id: string) {

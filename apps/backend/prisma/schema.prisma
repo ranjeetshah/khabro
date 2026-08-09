@@ -22,6 +22,7 @@ model User {
 
   location     UserLocation?
   posts        Post[]
+  likes        Like[]
 
   @@index([status])
 }
@@ -81,9 +82,24 @@ model Post {
 
   author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   locality Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
+  likes    Like[]
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([userId])
+  @@index([postId, createdAt])
 }
 
 enum GeographicAreaType {

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
+import { LikesService } from './likes.service';
 
 describe('PostsController', () => {
   let controller: PostsController;
@@ -12,12 +13,20 @@ describe('PostsController', () => {
     findOne: jest.fn(),
     delete: jest.fn(),
   };
+  const likesService = {
+    like: jest.fn(),
+    unlike: jest.fn(),
+    getStatus: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostsController],
-      providers: [{ provide: PostsService, useValue: service }],
+      providers: [
+        { provide: PostsService, useValue: service },
+        { provide: LikesService, useValue: likesService },
+      ],
     })
       .overrideGuard(JwtAuthGuard)
       .useValue({ canActivate: () => true })
@@ -42,9 +51,13 @@ describe('PostsController', () => {
 
   it('gets a single post and reports missing posts', async () => {
     service.findOne.mockResolvedValue({ id: 'post-1' });
-    await expect(controller.getOne('post-1')).resolves.toEqual({ post: { id: 'post-1' } });
+    await expect(
+      controller.getOne({ user: { sub: 'user-1' } } as any, 'post-1'),
+    ).resolves.toEqual({ post: { id: 'post-1' } });
     service.findOne.mockResolvedValue(null);
-    await expect(controller.getOne('post-1')).rejects.toThrow(NotFoundException);
+    await expect(
+      controller.getOne({ user: { sub: 'user-1' } } as any, 'post-1'),
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('deletes using JWT sub', async () => {
@@ -62,5 +75,24 @@ describe('PostsController', () => {
     await expect(controller.create({ user: {} } as any, { content: 'Hello' })).rejects.toThrow(UnauthorizedException);
     await expect(controller.getMine({ user: {} } as any)).rejects.toThrow(UnauthorizedException);
     await expect(controller.remove({ user: {} } as any, 'post-1')).rejects.toThrow(UnauthorizedException);
+    await expect(controller.like({ user: {} } as any, 'post-1')).rejects.toThrow(UnauthorizedException);
+    await expect(controller.unlike({ user: {} } as any, 'post-1')).rejects.toThrow(UnauthorizedException);
+    await expect(controller.getLikes({ user: {} } as any, 'post-1')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('uses JWT identity for like endpoints', async () => {
+    likesService.like.mockResolvedValue({ likeCount: 1, likedByMe: true });
+    likesService.unlike.mockResolvedValue({ likeCount: 0, likedByMe: false });
+    likesService.getStatus.mockResolvedValue({ likeCount: 1, likedByMe: true });
+
+    await expect(
+      controller.like({ user: { sub: 'user-1' }, body: { userId: 'attacker' } } as any, 'post-1'),
+    ).resolves.toEqual({ like: { likeCount: 1, likedByMe: true } });
+    await controller.unlike({ user: { sub: 'user-1' } } as any, 'post-1');
+    await controller.getLikes({ user: { sub: 'user-1' } } as any, 'post-1');
+
+    expect(likesService.like).toHaveBeenCalledWith('user-1', 'post-1');
+    expect(likesService.unlike).toHaveBeenCalledWith('user-1', 'post-1');
+    expect(likesService.getStatus).toHaveBeenCalledWith('user-1', 'post-1');
   });
 });

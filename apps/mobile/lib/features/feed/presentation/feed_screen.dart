@@ -41,6 +41,8 @@ class _FeedScreenState extends State<FeedScreen> {
   bool _hasLocality = true;
   bool _isLoading = true;
   bool _isLoadingMore = false;
+  final Set<String> _likeRequests = <String>{};
+  String? _likeError;
 
   FeedService get _service => widget.feedService ?? FeedService();
 
@@ -162,6 +164,47 @@ class _FeedScreenState extends State<FeedScreen> {
     }
   }
 
+  Future<void> _toggleLike(PostModel post) async {
+    if (!_likeRequests.add(post.id)) return;
+    setState(() {
+      _likeError = null;
+    });
+    try {
+      final status = (post.likedByMe ?? false)
+          ? await (widget.postsService ?? PostsService()).unlikePost(post.id)
+          : await (widget.postsService ?? PostsService()).likePost(post.id);
+      if (!mounted) return;
+      setState(() {
+        _items = _items
+            .map(
+              (item) => item.id == post.id
+                  ? item.copyWith(
+                      likeCount: status.likeCount,
+                      likedByMe: status.likedByMe,
+                    )
+                  : item,
+            )
+            .toList();
+        _likeRequests.remove(post.id);
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _likeRequests.remove(post.id);
+        _likeError = error.statusCode == 404
+            ? 'Post not found.'
+            : 'Couldn\'t update like.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _likeRequests.remove(post.id);
+        _likeError = 'Couldn\'t update like.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,6 +229,11 @@ class _FeedScreenState extends State<FeedScreen> {
                     'Your local feed',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  if (_likeError != null)
+                    Text(
+                      _likeError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   if (!_hasLocality) ...[
                     const SizedBox(height: 32),
                     const Text(
@@ -259,6 +307,29 @@ class _FeedScreenState extends State<FeedScreen> {
               Text(
                 post.createdAt.toLocal().toString(),
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: _likeRequests.contains(post.id)
+                        ? null
+                        : () => _toggleLike(post),
+                    icon: _likeRequests.contains(post.id)
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(
+                            post.likedByMe == true
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: post.likedByMe == true ? Colors.red : null,
+                          ),
+                    tooltip: post.likedByMe == true ? 'Unlike' : 'Like',
+                  ),
+                  Text('${post.likeCount ?? 0}'),
+                ],
               ),
             ],
           ),

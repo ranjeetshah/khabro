@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
+import 'package:mobile/features/posts/data/like_status_model.dart';
 import 'package:mobile/features/posts/presentation/post_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -41,12 +42,26 @@ class FakeDeletePostsService extends PostsService {
   final List<Object> errors;
   var calls = 0;
   String? deletedId;
+  var likeCalls = 0;
+  var unlikeCalls = 0;
 
   @override
   Future<void> deletePost(String id) async {
     calls++;
     deletedId = id;
     if (calls <= errors.length) throw errors[calls - 1];
+  }
+
+  @override
+  Future<LikeStatusModel> likePost(String id) async {
+    likeCalls++;
+    return const LikeStatusModel(likeCount: 1, likedByMe: true);
+  }
+
+  @override
+  Future<LikeStatusModel> unlikePost(String id) async {
+    unlikeCalls++;
+    return const LikeStatusModel(likeCount: 0, likedByMe: false);
   }
 }
 
@@ -187,6 +202,28 @@ void main() {
     await tester.tap(find.text('RETRY'));
     await tester.pumpAndSettle();
     expect(find.text('Post not found.'), findsOneWidget);
+    expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets('like and unlike work without leaving post detail', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    expect(find.text('0'), findsOneWidget);
+    await tester.tap(find.byTooltip('Like'));
+    await tester.pumpAndSettle();
+    expect(service.likeCalls, 1);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.byTooltip('Unlike'), findsOneWidget);
+    await tester.tap(find.byTooltip('Unlike'));
+    await tester.pumpAndSettle();
+    expect(service.unlikeCalls, 1);
+    expect(find.text('0'), findsOneWidget);
     expect(find.text('Hello Khabro!'), findsOneWidget);
   });
 

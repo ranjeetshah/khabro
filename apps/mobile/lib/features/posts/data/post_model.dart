@@ -9,6 +9,8 @@ class PostModel {
     required this.createdAt,
     required this.updatedAt,
     this.author,
+    this.likeCount,
+    this.likedByMe,
   });
 
   final String id;
@@ -18,6 +20,8 @@ class PostModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final PublicUserModel? author;
+  final int? likeCount;
+  final bool? likedByMe;
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
@@ -30,19 +34,37 @@ class PostModel {
       author: json['author'] == null
           ? null
           : PublicUserModel.fromJson(json['author'] as Map<String, dynamic>),
+      likeCount: json['likeCount'] as int?,
+      likedByMe: json['likedByMe'] as bool?,
+    );
+  }
+
+  PostModel copyWith({int? likeCount, bool? likedByMe}) {
+    return PostModel(
+      id: id,
+      authorId: authorId,
+      localityId: localityId,
+      content: content,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      author: author,
+      likeCount: likeCount ?? this.likeCount,
+      likedByMe: likedByMe ?? this.likedByMe,
     );
   }
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{
-    'id': id,
-    'authorId': authorId,
-    'localityId': localityId,
-    'content': content,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
+      'id': id,
+      'authorId': authorId,
+      'localityId': localityId,
+      'content': content,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
     if (author != null) json['author'] = author!.toJson();
+    if (likeCount != null) json['likeCount'] = likeCount;
+    if (likedByMe != null) json['likedByMe'] = likedByMe;
     return json;
   }
 }

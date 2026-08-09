@@ -23,12 +23,27 @@ void main() {
     expect(post.localityId, isNull);
   });
 
-  test('parses an optional public author and remains compatible without one', () {
+  test(
+    'parses an optional public author and remains compatible without one',
+    () {
+      final post = PostModel.fromJson({
+        ...postJson,
+        'author': {'id': 'user-1', 'name': 'Test User'},
+      });
+      expect(post.author?.name, 'Test User');
+      expect(PostModel.fromJson(postJson).author, isNull);
+    },
+  );
+
+  test('parses like count and current-user state', () {
     final post = PostModel.fromJson({
       ...postJson,
-      'author': {'id': 'user-1', 'name': 'Test User'},
+      'likeCount': 12,
+      'likedByMe': true,
     });
-    expect(post.author?.name, 'Test User');
-    expect(PostModel.fromJson(postJson).author, isNull);
+    expect(post.likeCount, 12);
+    expect(post.likedByMe, isTrue);
+    expect(post.toJson()['likeCount'], 12);
+    expect(post.toJson()['likedByMe'], isTrue);
   });
 }
