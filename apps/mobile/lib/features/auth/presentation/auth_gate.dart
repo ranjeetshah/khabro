@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/storage/token_storage.dart';
+import '../../location/data/location_service.dart';
+import '../../location/data/location_update_service.dart';
 import '../data/auth_exception.dart';
 import '../data/auth_service.dart';
 import '../data/models/user_model.dart';
@@ -140,6 +142,9 @@ class _AuthGateState extends State<AuthGate> {
         onLogout: _logout,
         usersService: UsersService(tokenStorage: _tokenStorage),
         onUserUpdated: _onAuthenticated,
+        locationUpdateService: LocationUpdateService(
+          locationService: LocationService(tokenStorage: _tokenStorage),
+        ),
       );
     }
 

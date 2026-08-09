@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../location/data/location_acquisition.dart';
+import '../../location/data/location_update_service.dart';
 import '../../users/data/users_service.dart';
 import '../../users/presentation/profile_screen.dart';
+import '../data/auth_exception.dart';
 import '../data/models/user_model.dart';
 
 /// Temporary authenticated screen displaying user information and logout functionality.
@@ -12,12 +15,46 @@ class HomeScreen extends StatelessWidget {
     required this.onLogout,
     this.onUserUpdated,
     this.usersService,
+    this.locationUpdateService,
   });
 
   final UserModel user;
   final VoidCallback onLogout;
   final ValueChanged<UserModel>? onUserUpdated;
   final UsersService? usersService;
+  final LocationUpdateService? locationUpdateService;
+
+  Future<void> _updateLocation(BuildContext context) async {
+    try {
+      await (locationUpdateService ?? LocationUpdateService())
+          .updateCurrentLocation();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location updated successfully')),
+        );
+      }
+    } on LocationAcquisitionException catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.message)));
+      }
+    } on AuthException catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.message)));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not update location. Please try again.'),
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _openProfile(BuildContext context) async {
     await Navigator.of(context).push(
@@ -94,6 +131,16 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _updateLocation(context),
+                    icon: const Icon(Icons.my_location),
+                    label: const Text('UPDATE MY LOCATION'),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   height: 50,

@@ -146,5 +146,29 @@ void main() {
         ),
       );
     });
+
+    test('server error throws an AuthException with status code', () async {
+      final service = serviceFor(FakeTokenStorage('jwt-value'), (
+        request,
+      ) async {
+        return http.Response(
+          jsonEncode({'message': 'Database unavailable'}),
+          500,
+        );
+      });
+
+      expect(
+        () => service.updateMyLocation(
+          latitude: 28.7041,
+          longitude: 77.1025,
+          capturedAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+        ),
+        throwsA(
+          isA<AuthException>()
+              .having((e) => e.statusCode, 'status', 500)
+              .having((e) => e.message, 'message', 'Database unavailable'),
+        ),
+      );
+    });
   });
 }
