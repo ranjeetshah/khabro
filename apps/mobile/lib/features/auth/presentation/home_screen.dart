@@ -6,7 +6,6 @@ import '../../location/data/locality_service.dart';
 import '../../location/data/location_update_service.dart';
 import '../../users/data/users_service.dart';
 import '../../users/presentation/profile_screen.dart';
-import '../../posts/data/post_model.dart';
 import '../../posts/data/posts_service.dart';
 import '../../feed/data/feed_service.dart';
 import '../../feed/presentation/feed_screen.dart';
@@ -144,8 +143,6 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 _LocalitySection(localityService: localityService),
-                const SizedBox(height: 24),
-                _PostsSection(postsService: postsService),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -217,154 +214,6 @@ class HomeScreen extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ],
-    );
-  }
-}
-
-class _PostsSection extends StatefulWidget {
-  const _PostsSection({this.postsService});
-
-  final PostsService? postsService;
-
-  @override
-  State<_PostsSection> createState() => _PostsSectionState();
-}
-
-class _PostsSectionState extends State<_PostsSection> {
-  final _contentController = TextEditingController();
-  List<PostModel> _posts = const [];
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  PostsService get _service => widget.postsService ?? PostsService();
-
-  @override
-  void dispose() {
-    _contentController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadPosts() async {
-    setState(() => _isLoading = true);
-    try {
-      final posts = await _service.getMyPosts();
-      if (!mounted) return;
-      setState(() {
-        _posts = posts;
-        _isLoading = false;
-        _errorMessage = null;
-      });
-    } on AuthException catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = error.message;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Could not load posts. Please try again.';
-      });
-    }
-  }
-
-  Future<void> _createPost() async {
-    final content = _contentController.text.trim();
-    if (content.isEmpty) {
-      setState(() => _errorMessage = 'Post content cannot be empty.');
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final post = await _service.createPost(content);
-      if (!mounted) return;
-      setState(() {
-        _posts = [post, ..._posts];
-        _contentController.clear();
-        _isLoading = false;
-      });
-    } on AuthException catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = error.message;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Could not create post. Please try again.';
-      });
-    }
-  }
-
-  Future<void> _deletePost(PostModel post) async {
-    try {
-      await _service.deletePost(post.id);
-      if (!mounted) return;
-      setState(() => _posts = _posts.where((item) => item.id != post.id).toList());
-    } on AuthException catch (error) {
-      if (!mounted) return;
-      setState(() => _errorMessage = error.message);
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _errorMessage = 'Could not delete post. Please try again.');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Test Posts', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _contentController,
-              maxLength: 5000,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Post text',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _createPost,
-                child: const Text('CREATE TEST POST'),
-              ),
-            ),
-            TextButton(
-              onPressed: _isLoading ? null : _loadPosts,
-              child: const Text('LOAD MY POSTS'),
-            ),
-            if (_errorMessage != null)
-              Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-            if (_posts.isNotEmpty)
-              ..._posts.map(
-                (post) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(post.content),
-                  subtitle: Text(post.localityId == null ? 'No locality' : 'Locality assigned'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    tooltip: 'Delete post',
-                    onPressed: () => _deletePost(post),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
     );
   }
 }

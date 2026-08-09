@@ -96,6 +96,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             autofocus: true,
             maxLines: 8,
             maxLength: _maxLength,
+            buildCounter: (
+              context, {
+              required currentLength,
+              required isFocused,
+              required maxLength,
+            }) => null,
             decoration: const InputDecoration(
               hintText: 'Share something with your area',
               border: OutlineInputBorder(),

@@ -34,6 +34,7 @@ void main() {
     );
 
     expect(find.text('0 / 5000'), findsOneWidget);
+    expect(find.text('0/5000'), findsNothing);
     final postButton = find.ancestor(
       of: find.text('POST'),
       matching: find.byType(ElevatedButton),
@@ -47,6 +48,7 @@ void main() {
     await tester.enterText(find.byType(TextField), '  Hello locally  ');
     await tester.pump();
     expect(find.text('17 / 5000'), findsOneWidget);
+    expect(find.text('17/5000'), findsNothing);
     expect(tester.widget<ElevatedButton>(postButton).onPressed, isNotNull);
   });
 
