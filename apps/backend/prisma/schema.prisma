@@ -20,7 +20,25 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
+  location     UserLocation?
+
   @@index([status])
+}
+
+// Coordinates remain scalar fields for Prisma compatibility. Future spatial
+// queries can use PostGIS SQL/raw queries without coupling this foundation to
+// an unsupported Prisma geography/geometry type.
+model UserLocation {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  latitude       Float
+  longitude      Float
+  accuracyMeters Float?
+  capturedAt     DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum UserStatus {

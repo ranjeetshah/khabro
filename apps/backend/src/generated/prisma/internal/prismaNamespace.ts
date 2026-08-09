@@ -397,7 +397,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  UserLocation: 'UserLocation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user"
+    modelProps: "user" | "userLocation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -491,6 +492,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UserLocation: {
+      payload: Prisma.$UserLocationPayload<ExtArgs>
+      fields: Prisma.UserLocationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserLocationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserLocationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        findFirst: {
+          args: Prisma.UserLocationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserLocationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        findMany: {
+          args: Prisma.UserLocationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>[]
+        }
+        create: {
+          args: Prisma.UserLocationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        createMany: {
+          args: Prisma.UserLocationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserLocationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>[]
+        }
+        delete: {
+          args: Prisma.UserLocationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        update: {
+          args: Prisma.UserLocationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserLocationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserLocationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserLocationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserLocationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLocationPayload>
+        }
+        aggregate: {
+          args: Prisma.UserLocationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserLocation>
+        }
+        groupBy: {
+          args: Prisma.UserLocationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserLocationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserLocationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserLocationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -543,6 +618,20 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const UserLocationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracyMeters: 'accuracyMeters',
+  capturedAt: 'capturedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -796,6 +885,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  userLocation?: Prisma.UserLocationOmit
 }
 
 /* Types for Logging */
