@@ -5,6 +5,8 @@ import '../../location/data/locality_service.dart';
 import '../../posts/data/post_model.dart';
 import '../../posts/data/posts_service.dart';
 import '../../posts/presentation/create_post_screen.dart';
+import '../../posts/presentation/post_detail_screen.dart';
+import '../../users/data/public_user_service.dart';
 import '../data/feed_page_model.dart';
 import '../data/feed_service.dart';
 
@@ -16,6 +18,8 @@ class FeedScreen extends StatefulWidget {
     this.localityService,
     this.onUpdateLocation,
     this.onSessionExpired,
+    this.publicUserService,
+    this.currentUserId,
   });
 
   final FeedService? feedService;
@@ -23,6 +27,8 @@ class FeedScreen extends StatefulWidget {
   final LocalityService? localityService;
   final VoidCallback? onUpdateLocation;
   final VoidCallback? onSessionExpired;
+  final PublicUserService? publicUserService;
+  final String? currentUserId;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -92,7 +98,10 @@ class _FeedScreenState extends State<FeedScreen> {
       if (error.statusCode == 401) widget.onSessionExpired?.call();
       _showError(error.message, loadingMore: true);
     } catch (_) {
-      _showError('Could not load more posts. Please try again.', loadingMore: true);
+      _showError(
+        'Could not load more posts. Please try again.',
+        loadingMore: true,
+      );
     }
   }
 
@@ -103,7 +112,9 @@ class _FeedScreenState extends State<FeedScreen> {
         .where((item) => pageIds.add(item.id))
         .toList();
     final newItems = append
-        ? uniquePageItems.where((item) => !existingIds.contains(item.id)).toList()
+        ? uniquePageItems
+              .where((item) => !existingIds.contains(item.id))
+              .toList()
         : uniquePageItems;
     setState(() {
       _items = append ? [..._items, ...newItems] : newItems;
@@ -132,6 +143,23 @@ class _FeedScreenState extends State<FeedScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _openPost(PostModel post) async {
+    final deleted = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => PostDetailScreen(
+          post: post,
+          postsService: widget.postsService,
+          publicUserService: widget.publicUserService,
+          currentUserId: widget.currentUserId,
+          onSessionExpired: widget.onSessionExpired,
+        ),
+      ),
+    );
+    if (deleted == true && mounted) {
+      await _loadInitial(refreshing: true);
+    }
   }
 
   @override
@@ -171,7 +199,10 @@ class _FeedScreenState extends State<FeedScreen> {
                     ),
                   ] else if (_errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                     const SizedBox(height: 12),
                     OutlinedButton(
                       onPressed: () => _loadInitial(),
@@ -209,25 +240,28 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget _buildPost(PostModel post) {
     return Card(
       margin: const EdgeInsets.only(top: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              post.author?.name?.trim().isNotEmpty == true
-                  ? post.author!.name!.trim()
-                  : 'Khabro User',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(post.content),
-            const SizedBox(height: 8),
-            Text(
-              post.createdAt.toLocal().toString(),
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ],
+      child: InkWell(
+        onTap: () => _openPost(post),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                post.author?.name?.trim().isNotEmpty == true
+                    ? post.author!.name!.trim()
+                    : 'Khabro User',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(post.content),
+              const SizedBox(height: 8),
+              Text(
+                post.createdAt.toLocal().toString(),
+                style: const TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ],
+          ),
         ),
       ),
     );

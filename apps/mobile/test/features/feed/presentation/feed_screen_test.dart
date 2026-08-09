@@ -9,6 +9,7 @@ import 'package:mobile/features/location/data/locality_service.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
+import 'package:mobile/features/users/data/public_user_service.dart';
 
 PostModel post(String id, String content) => PostModel(
   id: id,
@@ -44,7 +45,8 @@ class FakeFeedService extends FeedService {
 }
 
 class FakeLocalityService extends LocalityService {
-  FakeLocalityService(this.locality) : super(apiClient: null, tokenStorage: null);
+  FakeLocalityService(this.locality)
+    : super(apiClient: null, tokenStorage: null);
 
   final LocalityModel? locality;
 
@@ -82,41 +84,78 @@ class FakeCreatePostsService extends PostsService {
   }
 }
 
+class FakeDeletePostsService extends PostsService {
+  FakeDeletePostsService() : super(apiClient: null, tokenStorage: null);
+
+  var calls = 0;
+
+  @override
+  Future<void> deletePost(String id) async => calls++;
+}
+
+class FakePublicUserService extends PublicUserService {
+  FakePublicUserService() : super(apiClient: null, tokenStorage: null);
+
+  @override
+  Future<PublicUserModel> getPublicUser(String id) async =>
+      const PublicUserModel(id: 'author-1', name: 'Test User');
+}
+
 void main() {
-  testWidgets('renders local posts and loads the next page without duplicates', (tester) async {
-    final service = FakeFeedService([
-      FeedPageModel(items: [authoredPost('post-1', 'First local post', name: 'Test User')], nextCursor: 'next'),
-      FeedPageModel(items: [authoredPost('post-1', 'First local post', name: 'Test User'), authoredPost('post-2', 'Second local post', name: null)], nextCursor: null),
-    ]);
-    await tester.pumpWidget(MaterialApp(home: FeedScreen(feedService: service)));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'renders local posts and loads the next page without duplicates',
+    (tester) async {
+      final service = FakeFeedService([
+        FeedPageModel(
+          items: [
+            authoredPost('post-1', 'First local post', name: 'Test User'),
+          ],
+          nextCursor: 'next',
+        ),
+        FeedPageModel(
+          items: [
+            authoredPost('post-1', 'First local post', name: 'Test User'),
+            authoredPost('post-2', 'Second local post', name: null),
+          ],
+          nextCursor: null,
+        ),
+      ]);
+      await tester.pumpWidget(
+        MaterialApp(home: FeedScreen(feedService: service)),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('First local post'), findsOneWidget);
-    expect(find.text('Test User'), findsOneWidget);
-    expect(find.text('private-author-id'), findsNothing);
-    final loadMore = find.text('LOAD MORE');
-    await tester.tap(loadMore);
-    await tester.pumpAndSettle();
+      expect(find.text('First local post'), findsOneWidget);
+      expect(find.text('Test User'), findsOneWidget);
+      expect(find.text('private-author-id'), findsNothing);
+      final loadMore = find.text('LOAD MORE');
+      await tester.tap(loadMore);
+      await tester.pumpAndSettle();
 
-    expect(find.text('First local post'), findsOneWidget);
-    expect(find.text('Second local post'), findsOneWidget);
-    expect(find.text('Khabro User'), findsOneWidget);
-    expect(find.text('private-locality-id'), findsNothing);
-    expect(find.text('LOAD MORE'), findsNothing);
-    expect(service.calls, 2);
-  });
+      expect(find.text('First local post'), findsOneWidget);
+      expect(find.text('Second local post'), findsOneWidget);
+      expect(find.text('Khabro User'), findsOneWidget);
+      expect(find.text('private-locality-id'), findsNothing);
+      expect(find.text('LOAD MORE'), findsNothing);
+      expect(service.calls, 2);
+    },
+  );
 
   testWidgets('renders the empty state', (tester) async {
     final service = FakeFeedService([
       const FeedPageModel(items: [], nextCursor: null),
     ]);
-    await tester.pumpWidget(MaterialApp(home: FeedScreen(feedService: service)));
+    await tester.pumpWidget(
+      MaterialApp(home: FeedScreen(feedService: service)),
+    );
     await tester.pumpAndSettle();
     expect(find.text('No local posts yet.'), findsOneWidget);
     expect(find.text('CREATE POST'), findsOneWidget);
   });
 
-  testWidgets('shows a location state without requesting the feed', (tester) async {
+  testWidgets('shows a location state without requesting the feed', (
+    tester,
+  ) async {
     final service = FakeFeedService([]);
     var updateLocationTapped = false;
     await tester.pumpWidget(
@@ -139,7 +178,9 @@ void main() {
 
   testWidgets('shows an error and retries cleanly', (tester) async {
     final service = RetryingFeedService();
-    await tester.pumpWidget(MaterialApp(home: FeedScreen(feedService: service)));
+    await tester.pumpWidget(
+      MaterialApp(home: FeedScreen(feedService: service)),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Feed unavailable'), findsOneWidget);
@@ -149,7 +190,9 @@ void main() {
     expect(service.calls, 2);
   });
 
-  testWidgets('creating a post refreshes the feed without duplicating items', (tester) async {
+  testWidgets('creating a post refreshes the feed without duplicating items', (
+    tester,
+  ) async {
     final feedService = FakeFeedService([
       const FeedPageModel(items: [], nextCursor: null),
       FeedPageModel(
@@ -160,10 +203,7 @@ void main() {
     final postsService = FakeCreatePostsService();
     await tester.pumpWidget(
       MaterialApp(
-        home: FeedScreen(
-          feedService: feedService,
-          postsService: postsService,
-        ),
+        home: FeedScreen(feedService: feedService, postsService: postsService),
       ),
     );
     await tester.pumpAndSettle();
@@ -177,5 +217,69 @@ void main() {
     expect(postsService.submittedContent, 'Created locally');
     expect(find.text('Created locally'), findsOneWidget);
     expect(feedService.calls, 2);
+  });
+
+  testWidgets('tapping a post opens detail and preserves feed state', (
+    tester,
+  ) async {
+    final service = FakeFeedService([
+      FeedPageModel(
+        items: [authoredPost('post-1', 'First local post', name: 'Test User')],
+        nextCursor: null,
+      ),
+    ]);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(
+          feedService: service,
+          publicUserService: FakePublicUserService(),
+          currentUserId: 'private-author-id',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('First local post'));
+    await tester.pumpAndSettle();
+    expect(find.text('Hello Khabro!'), findsNothing);
+    expect(find.text('First local post'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('First local post'), findsOneWidget);
+    expect(service.calls, 1);
+  });
+
+  testWidgets('successful delete refreshes feed and removes the post', (
+    tester,
+  ) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [authoredPost('post-1', 'Delete me', name: 'Test User')],
+        nextCursor: null,
+      ),
+      const FeedPageModel(items: [], nextCursor: null),
+    ]);
+    final postsService = FakeDeletePostsService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(
+          feedService: feedService,
+          postsService: postsService,
+          currentUserId: 'private-author-id',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete me'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Delete post'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(postsService.calls, 1);
+    expect(feedService.calls, 2);
+    expect(find.text('Delete me'), findsNothing);
+    expect(find.text('No local posts yet.'), findsOneWidget);
   });
 }

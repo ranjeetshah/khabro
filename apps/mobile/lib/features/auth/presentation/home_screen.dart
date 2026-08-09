@@ -154,6 +154,7 @@ class HomeScreen extends StatelessWidget {
                           feedService: feedService,
                           postsService: postsService,
                           localityService: localityService,
+                          currentUserId: user.id,
                           onUpdateLocation: () => _updateLocation(context),
                           onSessionExpired: onLogout,
                         ),
