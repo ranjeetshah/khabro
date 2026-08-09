@@ -43,6 +43,9 @@ class _FeedScreenState extends State<FeedScreen> {
   bool _isLoadingMore = false;
   final Set<String> _likeRequests = <String>{};
   String? _likeError;
+  final Set<String> _witnessRequests = <String>{};
+  String? _witnessError;
+  String? _witnessRetryPostId;
 
   FeedService get _service => widget.feedService ?? FeedService();
 
@@ -205,6 +208,52 @@ class _FeedScreenState extends State<FeedScreen> {
     }
   }
 
+  Future<void> _toggleWitness(PostModel post) async {
+    if (!_witnessRequests.add(post.id)) return;
+    setState(() {
+      _witnessError = null;
+      _witnessRetryPostId = null;
+    });
+    try {
+      final status = (post.witnessedByMe ?? false)
+          ? await (widget.postsService ?? PostsService()).unwitnessPost(
+              post.id,
+            )
+          : await (widget.postsService ?? PostsService()).witnessPost(post.id);
+      if (!mounted) return;
+      setState(() {
+        _items = _items
+            .map(
+              (item) => item.id == post.id
+                  ? item.copyWith(
+                      witnessCount: status.witnessCount,
+                      witnessedByMe: status.witnessedByMe,
+                    )
+                  : item,
+            )
+            .toList();
+        _witnessRequests.remove(post.id);
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _witnessRequests.remove(post.id);
+        _witnessRetryPostId = post.id;
+        _witnessError = error.statusCode == 404
+            ? 'Post not found.'
+            : 'Couldn\'t update witness.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _witnessRequests.remove(post.id);
+        _witnessRetryPostId = post.id;
+        _witnessError = 'Couldn\'t update witness.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -234,6 +283,23 @@ class _FeedScreenState extends State<FeedScreen> {
                       _likeError!,
                       style: const TextStyle(color: Colors.red),
                     ),
+                  if (_witnessError != null) ...[
+                    Text(
+                      _witnessError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    if (_witnessRetryPostId != null)
+                      TextButton(
+                        onPressed: () {
+                          final post = _items.cast<PostModel?>().firstWhere(
+                            (item) => item?.id == _witnessRetryPostId,
+                            orElse: () => null,
+                          );
+                          if (post != null) _toggleWitness(post);
+                        },
+                        child: const Text('RETRY WITNESS'),
+                      ),
+                  ],
                   if (!_hasLocality) ...[
                     const SizedBox(height: 32),
                     const Text(
@@ -329,6 +395,28 @@ class _FeedScreenState extends State<FeedScreen> {
                     tooltip: post.likedByMe == true ? 'Unlike' : 'Like',
                   ),
                   Text('${post.likeCount ?? 0}'),
+                  const SizedBox(width: 12),
+                  TextButton.icon(
+                    onPressed: _witnessRequests.contains(post.id)
+                        ? null
+                        : () => _toggleWitness(post),
+                    icon: _witnessRequests.contains(post.id)
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(
+                            post.witnessedByMe == true
+                                ? Icons.visibility
+                                : Icons.visibility_outlined,
+                          ),
+                    label: Text(
+                      post.witnessedByMe == true
+                          ? 'Witnessed ${post.witnessCount ?? 0}'
+                          : 'Witness ${post.witnessCount ?? 0}',
+                    ),
+                  ),
                 ],
               ),
             ],

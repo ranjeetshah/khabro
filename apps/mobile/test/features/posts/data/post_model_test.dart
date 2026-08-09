@@ -46,4 +46,16 @@ void main() {
     expect(post.toJson()['likeCount'], 12);
     expect(post.toJson()['likedByMe'], isTrue);
   });
+
+  test('parses witness count and current-user state', () {
+    final post = PostModel.fromJson({
+      ...postJson,
+      'witnessCount': 3,
+      'witnessedByMe': true,
+    });
+    expect(post.witnessCount, 3);
+    expect(post.witnessedByMe, isTrue);
+    expect(post.toJson()['witnessCount'], 3);
+    expect(post.toJson()['witnessedByMe'], isTrue);
+  });
 }

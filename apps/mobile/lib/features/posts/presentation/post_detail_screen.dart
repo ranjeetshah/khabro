@@ -5,6 +5,7 @@ import '../../users/data/public_user_service.dart';
 import '../../users/presentation/public_author_profile_screen.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
+import '../data/witness_status_model.dart';
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({
@@ -31,8 +32,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   bool _isLikeUpdating = false;
   int _likeCount = 0;
   bool _likedByMe = false;
+  bool _isWitnessUpdating = false;
+  int _witnessCount = 0;
+  bool _witnessedByMe = false;
   String? _errorMessage;
   String? _likeError;
+  String? _witnessError;
 
   PostsService get _postsService => widget.postsService ?? PostsService();
 
@@ -41,6 +46,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     super.initState();
     _likeCount = widget.post.likeCount ?? 0;
     _likedByMe = widget.post.likedByMe ?? false;
+    _witnessCount = widget.post.witnessCount ?? 0;
+    _witnessedByMe = widget.post.witnessedByMe ?? false;
   }
 
   String get _authorName {
@@ -153,6 +160,40 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     }
   }
 
+  Future<void> _toggleWitness() async {
+    if (_isWitnessUpdating) return;
+    _isWitnessUpdating = true;
+    setState(() {
+      _witnessError = null;
+    });
+    try {
+      final WitnessStatusModel status = _witnessedByMe
+          ? await _postsService.unwitnessPost(widget.post.id)
+          : await _postsService.witnessPost(widget.post.id);
+      if (!mounted) return;
+      setState(() {
+        _witnessCount = status.witnessCount;
+        _witnessedByMe = status.witnessedByMe;
+        _isWitnessUpdating = false;
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _isWitnessUpdating = false;
+        _witnessError = error.statusCode == 404
+            ? 'Post not found.'
+            : 'Couldn\'t update witness.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isWitnessUpdating = false;
+        _witnessError = 'Couldn\'t update witness.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,6 +260,31 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           ),
           if (_likeError != null)
             Text(_likeError!, style: const TextStyle(color: Colors.red)),
+          TextButton.icon(
+            onPressed: _isWitnessUpdating ? null : _toggleWitness,
+            icon: _isWitnessUpdating
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(
+                    _witnessedByMe
+                        ? Icons.visibility
+                        : Icons.visibility_outlined,
+                  ),
+            label: Text(
+              _witnessedByMe ? 'Witnessed' : 'I Witnessed This',
+            ),
+          ),
+          Text('Witnesses: $_witnessCount'),
+          if (_witnessError != null) ...[
+            Text(_witnessError!, style: const TextStyle(color: Colors.red)),
+            OutlinedButton(
+              onPressed: _isWitnessUpdating ? null : _toggleWitness,
+              child: const Text('RETRY WITNESS'),
+            ),
+          ],
           if (_errorMessage != null) ...[
             const SizedBox(height: 20),
             Text(_errorMessage!, style: const TextStyle(color: Colors.red)),

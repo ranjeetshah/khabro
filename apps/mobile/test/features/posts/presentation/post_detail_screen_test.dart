@@ -4,6 +4,7 @@ import 'package:mobile/features/auth/data/auth_exception.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
+import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/posts/presentation/post_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -44,6 +45,8 @@ class FakeDeletePostsService extends PostsService {
   String? deletedId;
   var likeCalls = 0;
   var unlikeCalls = 0;
+  var witnessCalls = 0;
+  var unwitnessCalls = 0;
 
   @override
   Future<void> deletePost(String id) async {
@@ -62,6 +65,18 @@ class FakeDeletePostsService extends PostsService {
   Future<LikeStatusModel> unlikePost(String id) async {
     unlikeCalls++;
     return const LikeStatusModel(likeCount: 0, likedByMe: false);
+  }
+
+  @override
+  Future<WitnessStatusModel> witnessPost(String id) async {
+    witnessCalls++;
+    return const WitnessStatusModel(witnessCount: 1, witnessedByMe: true);
+  }
+
+  @override
+  Future<WitnessStatusModel> unwitnessPost(String id) async {
+    unwitnessCalls++;
+    return const WitnessStatusModel(witnessCount: 0, witnessedByMe: false);
   }
 }
 
@@ -225,6 +240,29 @@ void main() {
     expect(service.unlikeCalls, 1);
     expect(find.text('0'), findsOneWidget);
     expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets('witness action updates state and count', (tester) async {
+    final service = FakeDeletePostsService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(),
+          postsService: service,
+        ),
+      ),
+    );
+    expect(find.text('I Witnessed This'), findsOneWidget);
+    expect(find.text('Witnesses: 0'), findsOneWidget);
+    await tester.tap(find.text('I Witnessed This'));
+    await tester.pumpAndSettle();
+    expect(service.witnessCalls, 1);
+    expect(find.text('Witnessed'), findsOneWidget);
+    expect(find.text('Witnesses: 1'), findsOneWidget);
+    await tester.tap(find.text('Witnessed'));
+    await tester.pumpAndSettle();
+    expect(service.unwitnessCalls, 1);
+    expect(find.text('I Witnessed This'), findsOneWidget);
   });
 
   testWidgets('handles session expiry and network failures safely', (

@@ -11,6 +11,8 @@ class PostModel {
     this.author,
     this.likeCount,
     this.likedByMe,
+    this.witnessCount,
+    this.witnessedByMe,
   });
 
   final String id;
@@ -22,6 +24,8 @@ class PostModel {
   final PublicUserModel? author;
   final int? likeCount;
   final bool? likedByMe;
+  final int? witnessCount;
+  final bool? witnessedByMe;
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
@@ -36,10 +40,17 @@ class PostModel {
           : PublicUserModel.fromJson(json['author'] as Map<String, dynamic>),
       likeCount: json['likeCount'] as int?,
       likedByMe: json['likedByMe'] as bool?,
+      witnessCount: json['witnessCount'] as int?,
+      witnessedByMe: json['witnessedByMe'] as bool?,
     );
   }
 
-  PostModel copyWith({int? likeCount, bool? likedByMe}) {
+  PostModel copyWith({
+    int? likeCount,
+    bool? likedByMe,
+    int? witnessCount,
+    bool? witnessedByMe,
+  }) {
     return PostModel(
       id: id,
       authorId: authorId,
@@ -50,6 +61,8 @@ class PostModel {
       author: author,
       likeCount: likeCount ?? this.likeCount,
       likedByMe: likedByMe ?? this.likedByMe,
+      witnessCount: witnessCount ?? this.witnessCount,
+      witnessedByMe: witnessedByMe ?? this.witnessedByMe,
     );
   }
 
@@ -65,6 +78,8 @@ class PostModel {
     if (author != null) json['author'] = author!.toJson();
     if (likeCount != null) json['likeCount'] = likeCount;
     if (likedByMe != null) json['likedByMe'] = likedByMe;
+    if (witnessCount != null) json['witnessCount'] = witnessCount;
+    if (witnessedByMe != null) json['witnessedByMe'] = witnessedByMe;
     return json;
   }
 }

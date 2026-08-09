@@ -5,6 +5,7 @@ import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
+import 'witness_status_model.dart';
 
 class PostsService {
   PostsService({ApiClient? apiClient, TokenStorage? tokenStorage})
@@ -66,6 +67,26 @@ class PostsService {
     return _parseLikeStatus(response.body);
   }
 
+  Future<WitnessStatusModel> witnessPost(String id) async {
+    return _updateWitness('/posts/$id/witness', 'Failed to witness post');
+  }
+
+  Future<WitnessStatusModel> unwitnessPost(String id) async {
+    final response = await _request(
+      (headers) => _apiClient.delete('/posts/$id/witness', headers: headers),
+    );
+    _checkStatus(response, 'Failed to unwitness post');
+    return _parseWitnessStatus(response.body);
+  }
+
+  Future<WitnessStatusModel> getWitnessStatus(String id) async {
+    final response = await _request(
+      (headers) => _apiClient.get('/posts/$id/witnesses', headers: headers),
+    );
+    _checkStatus(response, 'Failed to fetch witness status');
+    return _parseWitnessStatus(response.body);
+  }
+
   Future<LikeStatusModel> _updateLike(String path, String fallback) async {
     final response = await _request(
       (headers) => _apiClient.post(path, headers: headers),
@@ -77,6 +98,24 @@ class PostsService {
   LikeStatusModel _parseLikeStatus(String body) {
     final data = jsonDecode(body) as Map<String, dynamic>;
     return LikeStatusModel.fromJson(data['like'] as Map<String, dynamic>);
+  }
+
+  Future<WitnessStatusModel> _updateWitness(
+    String path,
+    String fallback,
+  ) async {
+    final response = await _request(
+      (headers) => _apiClient.post(path, headers: headers),
+    );
+    _checkStatus(response, fallback);
+    return _parseWitnessStatus(response.body);
+  }
+
+  WitnessStatusModel _parseWitnessStatus(String body) {
+    final data = jsonDecode(body) as Map<String, dynamic>;
+    return WitnessStatusModel.fromJson(
+      data['witness'] as Map<String, dynamic>,
+    );
   }
 
   Future<dynamic> _request(

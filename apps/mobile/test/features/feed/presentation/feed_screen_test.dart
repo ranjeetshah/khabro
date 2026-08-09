@@ -11,6 +11,7 @@ import 'package:mobile/features/location/data/locality_service.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
+import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
 
@@ -29,6 +30,8 @@ PostModel authoredPost(
   String? name,
   int? likeCount,
   bool? likedByMe,
+  int? witnessCount,
+  bool? witnessedByMe,
 }) => PostModel(
   id: id,
   authorId: 'private-author-id',
@@ -39,6 +42,8 @@ PostModel authoredPost(
   author: PublicUserModel(id: 'private-author-id', name: name),
   likeCount: likeCount,
   likedByMe: likedByMe,
+  witnessCount: witnessCount,
+  witnessedByMe: witnessedByMe,
 );
 
 class FakeFeedService extends FeedService {
@@ -132,6 +137,32 @@ class FakePublicUserService extends PublicUserService {
   @override
   Future<PublicUserModel> getPublicUser(String id) async =>
       const PublicUserModel(id: 'author-1', name: 'Test User');
+}
+
+class FakeWitnessPostsService extends PostsService {
+  FakeWitnessPostsService({required this.status, this.failOnce = false})
+    : super(apiClient: null, tokenStorage: null);
+
+  WitnessStatusModel status;
+  bool failOnce;
+  var witnessCalls = 0;
+  var unwitnessCalls = 0;
+
+  @override
+  Future<WitnessStatusModel> witnessPost(String id) async {
+    witnessCalls++;
+    if (failOnce) {
+      failOnce = false;
+      throw const AuthException('Witness unavailable', statusCode: 500);
+    }
+    return status;
+  }
+
+  @override
+  Future<WitnessStatusModel> unwitnessPost(String id) async {
+    unwitnessCalls++;
+    return status;
+  }
 }
 
 void main() {
@@ -380,4 +411,104 @@ void main() {
     await tester.pumpAndSettle();
     expect(postsService.likeCalls, 1);
   });
+
+  testWidgets('witnesses a post and updates count and state', (tester) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [
+          authoredPost(
+            'post-1',
+            'Witness me',
+            witnessCount: 0,
+            witnessedByMe: false,
+          ),
+        ],
+        nextCursor: null,
+      ),
+    ]);
+    final postsService = FakeWitnessPostsService(
+      status: const WitnessStatusModel(witnessCount: 1, witnessedByMe: true),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(feedService: feedService, postsService: postsService),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Witness 0'), findsOneWidget);
+    await tester.tap(find.text('Witness 0'));
+    await tester.pumpAndSettle();
+    expect(postsService.witnessCalls, 1);
+    expect(find.text('Witnessed 1'), findsOneWidget);
+  });
+
+  testWidgets('rapid witness taps do not create duplicate requests', (
+    tester,
+  ) async {
+    final response = Completer<WitnessStatusModel>();
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [
+          authoredPost('post-1', 'Witness once', witnessCount: 0),
+        ],
+        nextCursor: null,
+      ),
+    ]);
+    final pendingService = _PendingWitnessPostsService(response);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(feedService: feedService, postsService: pendingService),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Witness 0'));
+    await tester.tap(find.text('Witness 0'));
+    expect(pendingService.witnessCalls, 1);
+    response.complete(
+      const WitnessStatusModel(witnessCount: 1, witnessedByMe: true),
+    );
+    await tester.pumpAndSettle();
+    expect(pendingService.witnessCalls, 1);
+  });
+
+  testWidgets('witness errors show safe retry and recover', (tester) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [authoredPost('post-1', 'Retry witness', witnessCount: 0)],
+        nextCursor: null,
+      ),
+    ]);
+    final postsService = FakeWitnessPostsService(
+      status: const WitnessStatusModel(witnessCount: 1, witnessedByMe: true),
+      failOnce: true,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FeedScreen(feedService: feedService, postsService: postsService),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Witness 0'));
+    await tester.pumpAndSettle();
+    expect(find.text("Couldn't update witness."), findsOneWidget);
+    expect(find.text('RETRY WITNESS'), findsOneWidget);
+    await tester.tap(find.text('RETRY WITNESS'));
+    await tester.pumpAndSettle();
+    expect(postsService.witnessCalls, 2);
+    expect(find.text('Witnessed 1'), findsOneWidget);
+  });
+}
+
+class _PendingWitnessPostsService extends PostsService {
+  _PendingWitnessPostsService(this.response)
+    : super(apiClient: null, tokenStorage: null);
+
+  final Completer<WitnessStatusModel> response;
+  var witnessCalls = 0;
+
+  @override
+  Future<WitnessStatusModel> witnessPost(String id) {
+    witnessCalls++;
+    return response.future;
+  }
 }

@@ -111,6 +111,49 @@ void main() {
     );
   });
 
+  test('witness APIs use authenticated endpoints and parse metadata', () async {
+    var call = 0;
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      call++;
+      expect(request.headers['Authorization'], 'Bearer jwt');
+      if (call == 1) {
+        expect(request.method, 'POST');
+        expect(request.url.path, '/posts/post-1/witness');
+        return http.Response(
+          '{"witness":{"witnessCount":1,"witnessedByMe":true}}',
+          201,
+        );
+      }
+      if (call == 2) {
+        expect(request.method, 'DELETE');
+        expect(request.url.path, '/posts/post-1/witness');
+        return http.Response(
+          '{"witness":{"witnessCount":0,"witnessedByMe":false}}',
+          200,
+        );
+      }
+      expect(request.method, 'GET');
+      expect(request.url.path, '/posts/post-1/witnesses');
+      return http.Response(
+        '{"witness":{"witnessCount":2,"witnessedByMe":false}}',
+        200,
+      );
+    });
+    expect((await service.witnessPost('post-1')).witnessedByMe, isTrue);
+    expect((await service.unwitnessPost('post-1')).witnessCount, 0);
+    expect((await service.getWitnessStatus('post-1')).witnessCount, 2);
+  });
+
+  test('witness errors preserve status', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"message":"Not found"}', 404);
+    });
+    expect(
+      () => service.witnessPost('post-1'),
+      throwsA(isA<AuthException>().having((e) => e.statusCode, 'status', 404)),
+    );
+  });
+
   test('missing token and 401 are handled', () async {
     final missing = serviceFor(FakeTokenStorage(), (request) async {
       fail('request should not run');

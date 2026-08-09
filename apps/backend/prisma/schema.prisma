@@ -1,7 +1,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
-moduleFormat = "cjs"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -9,20 +9,21 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  phone        String     @unique
-  name         String?
-  username     String?    @unique
+  id            String     @id @default(uuid())
+  phone         String     @unique
+  name          String?
+  username      String?    @unique
   profileImage  String?
-  trustScore   Int        @default(0)
-  status       UserStatus @default(ACTIVE)
+  trustScore    Int        @default(0)
+  status        UserStatus @default(ACTIVE)
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  location     UserLocation?
-  posts        Post[]
-  likes        Like[]
+  location      UserLocation?
+  posts         Post[]
+  likes         Like[]
+  witnesses     Witness[]
 
   @@index([status])
 }
@@ -48,23 +49,23 @@ model UserLocation {
 }
 
 model Locality {
-  id        String             @id @default(uuid())
-  name      String
-  type      GeographicAreaType @default(LOCALITY)
-  parentId  String?
+  id             String             @id @default(uuid())
+  name           String
+  type           GeographicAreaType @default(LOCALITY)
+  parentId       String?
 
   // Retained as the compatibility projection used by GET /location/me/locality.
   // Hierarchy ownership is represented by parentId and the self relation.
-  city      String
-  state     String
-  country   String
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  city           String
+  state          String
+  country        String
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 
-  parent   Locality?  @relation("LocalityHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
-  children Locality[] @relation("LocalityHierarchy")
-  userLocations UserLocation[]
-  posts         Post[]
+  parent         Locality?  @relation("LocalityHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children       Locality[] @relation("LocalityHierarchy")
+  userLocations  UserLocation[]
+  posts          Post[]
 
   @@unique([name, type, parentId])
   @@index([type])
@@ -80,9 +81,10 @@ model Post {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  locality Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
-  likes    Like[]
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  locality   Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
+  likes      Like[]
+  witnesses  Witness[]
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
@@ -94,8 +96,22 @@ model Like {
   userId    String
   createdAt DateTime @default(now())
 
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([userId])
+  @@index([postId, createdAt])
+}
+
+model Witness {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
   @@index([userId])
