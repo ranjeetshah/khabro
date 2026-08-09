@@ -132,6 +132,13 @@ class _FeedScreenState extends State<FeedScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              post.author?.name?.trim().isNotEmpty == true
+                  ? post.author!.name!.trim()
+                  : 'Khabro User',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
             Text(post.content),
             const SizedBox(height: 8),
             Text(

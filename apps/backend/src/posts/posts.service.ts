@@ -4,14 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { PUBLIC_USER_SELECT } from '../users/public-user.select';
 
 const POST_SELECT = {
   id: true,
   authorId: true,
-  localityId: true,
   content: true,
   createdAt: true,
   updatedAt: true,
+  author: { select: PUBLIC_USER_SELECT },
 } as const;
 
 @Injectable()

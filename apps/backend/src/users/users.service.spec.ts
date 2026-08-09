@@ -128,4 +128,20 @@ describe('UsersService', () => {
       expect(updateArg.data).toEqual({});
     });
   });
+
+  describe('findPublic', () => {
+    it('selects only id and name', async () => {
+      const publicUser = { id: 'user-123', name: 'Test User' };
+      mockDatabaseService.user.findUnique.mockResolvedValue(publicUser);
+
+      await expect(service.findPublic('user-123')).resolves.toEqual(publicUser);
+      expect(mockDatabaseService.user.findUnique).toHaveBeenCalledWith({
+        where: { id: 'user-123' },
+        select: { id: true, name: true },
+      });
+      expect(JSON.stringify(publicUser)).not.toMatch(
+        /phone|trustScore|status|location|latitude|longitude/,
+      );
+    });
+  });
 });

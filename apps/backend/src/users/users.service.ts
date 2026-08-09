@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { PUBLIC_USER_SELECT } from './public-user.select';
 
 /** Profile fields safe to expose in API responses. */
 const USER_PROFILE_SELECT = {
@@ -24,6 +25,13 @@ export class UsersService {
     return this.database.user.findUnique({
       where: { id: userId },
       select: USER_PROFILE_SELECT,
+    });
+  }
+
+  async findPublic(userId: string) {
+    return this.database.user.findUnique({
+      where: { id: userId },
+      select: PUBLIC_USER_SELECT,
     });
   }
 

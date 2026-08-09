@@ -45,6 +45,9 @@ describe('FeedService', () => {
         where: { localityId: 'locality-a', deletedAt: null },
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         take: 21,
+        select: expect.objectContaining({
+          author: { select: { id: true, name: true } },
+        }),
       }),
     );
   });

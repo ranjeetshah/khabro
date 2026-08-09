@@ -53,6 +53,9 @@ describe('PostsService', () => {
           localityId: 'locality-1',
           content: 'Hello',
         },
+        select: expect.objectContaining({
+          author: { select: { id: true, name: true } },
+        }),
       }),
     );
   });

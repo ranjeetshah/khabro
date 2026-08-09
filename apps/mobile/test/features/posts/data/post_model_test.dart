@@ -22,4 +22,13 @@ void main() {
     final post = PostModel.fromJson({...postJson, 'localityId': null});
     expect(post.localityId, isNull);
   });
+
+  test('parses an optional public author and remains compatible without one', () {
+    final post = PostModel.fromJson({
+      ...postJson,
+      'author': {'id': 'user-1', 'name': 'Test User'},
+    });
+    expect(post.author?.name, 'Test User');
+    expect(PostModel.fromJson(postJson).author, isNull);
+  });
 }

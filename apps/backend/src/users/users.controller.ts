@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
+  Param,
   Patch,
   Req,
   UnauthorizedException,
@@ -55,6 +57,13 @@ export class UsersController {
       throw new UnauthorizedException('User no longer exists');
     }
 
+    return { user };
+  }
+
+  @Get(':id/public')
+  async getPublic(@Param('id') userId: string) {
+    const user = await this.usersService.findPublic(userId);
+    if (!user) throw new NotFoundException('Public user not found');
     return { user };
   }
 }

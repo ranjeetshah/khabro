@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { PUBLIC_USER_SELECT } from '../users/public-user.select';
 
 const FEED_POST_SELECT = {
   id: true,
   authorId: true,
-  localityId: true,
   content: true,
   createdAt: true,
   updatedAt: true,
+  author: { select: PUBLIC_USER_SELECT },
 } as const;
 
 type FeedCursor = { createdAt: string; id: string };

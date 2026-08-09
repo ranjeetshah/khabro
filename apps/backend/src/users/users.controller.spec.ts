@@ -19,6 +19,7 @@ describe('UsersController', () => {
 
   const mockUsersService = {
     findMe: jest.fn(),
+    findPublic: jest.fn(),
     updateMe: jest.fn(),
   };
 
@@ -144,6 +145,25 @@ describe('UsersController', () => {
       expect(mockUsersService.updateMe).toHaveBeenCalledWith(
         'user-123',
         expect.any(Object),
+      );
+    });
+  });
+
+  describe('GET /users/:id/public', () => {
+    it('returns only the safe public user summary', async () => {
+      const publicUser = { id: 'user-456', name: 'Public Name' };
+      mockUsersService.findPublic.mockResolvedValue(publicUser);
+
+      await expect(controller.getPublic('user-456')).resolves.toEqual({
+        user: publicUser,
+      });
+      expect(mockUsersService.findPublic).toHaveBeenCalledWith('user-456');
+    });
+
+    it('returns 404 for an unknown public user', async () => {
+      mockUsersService.findPublic.mockResolvedValue(null);
+      await expect(controller.getPublic('missing')).rejects.toThrow(
+        'Public user not found',
       );
     });
   });
