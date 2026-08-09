@@ -153,7 +153,13 @@ class HomeScreen extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => FeedScreen(feedService: feedService),
+                        builder: (_) => FeedScreen(
+                          feedService: feedService,
+                          postsService: postsService,
+                          localityService: localityService,
+                          onUpdateLocation: () => _updateLocation(context),
+                          onSessionExpired: onLogout,
+                        ),
                       ),
                     ),
                     icon: const Icon(Icons.view_list_outlined),

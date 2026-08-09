@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
+import '../../location/data/locality_service.dart';
 import '../../posts/data/post_model.dart';
+import '../../posts/data/posts_service.dart';
+import '../../posts/presentation/create_post_screen.dart';
 import '../data/feed_page_model.dart';
 import '../data/feed_service.dart';
 
 class FeedScreen extends StatefulWidget {
-  const FeedScreen({super.key, this.feedService});
+  const FeedScreen({
+    super.key,
+    this.feedService,
+    this.postsService,
+    this.localityService,
+    this.onUpdateLocation,
+    this.onSessionExpired,
+  });
 
   final FeedService? feedService;
+  final PostsService? postsService;
+  final LocalityService? localityService;
+  final VoidCallback? onUpdateLocation;
+  final VoidCallback? onSessionExpired;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -18,6 +32,7 @@ class _FeedScreenState extends State<FeedScreen> {
   List<PostModel> _items = const [];
   String? _nextCursor;
   String? _errorMessage;
+  bool _hasLocality = true;
   bool _isLoading = true;
   bool _isLoadingMore = false;
 
@@ -29,12 +44,34 @@ class _FeedScreenState extends State<FeedScreen> {
     _loadInitial();
   }
 
-  Future<void> _loadInitial() async {
+  Future<void> _loadInitial({bool refreshing = false}) async {
+    if (!refreshing) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
     try {
+      if (widget.localityService != null) {
+        final locality = await widget.localityService!.getMyLocality();
+        if (locality == null) {
+          if (!mounted) return;
+          setState(() {
+            _hasLocality = false;
+            _items = const [];
+            _nextCursor = null;
+            _isLoading = false;
+            _errorMessage = null;
+          });
+          return;
+        }
+      }
+      _hasLocality = true;
       final page = await _service.getFeed();
       if (!mounted) return;
       _applyPage(page, append: false);
     } on AuthException catch (error) {
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
       _showError(error.message);
     } catch (_) {
       _showError('Could not load your local feed. Please try again.');
@@ -52,6 +89,7 @@ class _FeedScreenState extends State<FeedScreen> {
       if (!mounted) return;
       _applyPage(page, append: true);
     } on AuthException catch (error) {
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
       _showError(error.message, loadingMore: true);
     } catch (_) {
       _showError('Could not load more posts. Please try again.', loadingMore: true);
@@ -60,9 +98,13 @@ class _FeedScreenState extends State<FeedScreen> {
 
   void _applyPage(FeedPageModel page, {required bool append}) {
     final existingIds = _items.map((item) => item.id).toSet();
+    final pageIds = <String>{};
+    final uniquePageItems = page.items
+        .where((item) => pageIds.add(item.id))
+        .toList();
     final newItems = append
-        ? page.items.where((item) => !existingIds.contains(item.id)).toList()
-        : page.items;
+        ? uniquePageItems.where((item) => !existingIds.contains(item.id)).toList()
+        : uniquePageItems;
     setState(() {
       _items = append ? [..._items, ...newItems] : newItems;
       _nextCursor = page.nextCursor;
@@ -81,14 +123,34 @@ class _FeedScreenState extends State<FeedScreen> {
     });
   }
 
+  Future<void> _openComposer() async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => CreatePostScreen(
+          postsService: widget.postsService,
+          onPostCreated: () => _loadInitial(refreshing: true),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Local Feed')),
+      appBar: AppBar(
+        title: const Text('Your Local Feed'),
+        actions: [
+          IconButton(
+            onPressed: _isLoading || !_hasLocality ? null : _openComposer,
+            icon: const Icon(Icons.add),
+            tooltip: 'Create post',
+          ),
+        ],
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: _loadInitial,
+              onRefresh: () => _loadInitial(refreshing: true),
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
@@ -96,13 +158,33 @@ class _FeedScreenState extends State<FeedScreen> {
                     'Your local feed',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  if (_errorMessage != null) ...[
+                  if (!_hasLocality) ...[
+                    const SizedBox(height: 32),
+                    const Text(
+                      'Set your location to see local posts.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton(
+                      onPressed: widget.onUpdateLocation,
+                      child: const Text('UPDATE MY LOCATION'),
+                    ),
+                  ] else if (_errorMessage != null) ...[
                     const SizedBox(height: 16),
                     Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-                  ],
-                  if (_items.isEmpty && _errorMessage == null) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: () => _loadInitial(),
+                      child: const Text('RETRY'),
+                    ),
+                  ] else if (_items.isEmpty) ...[
                     const SizedBox(height: 32),
                     const Center(child: Text('No local posts yet.')),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _openComposer,
+                      child: const Text('CREATE POST'),
+                    ),
                   ],
                   ..._items.map(_buildPost),
                   if (_nextCursor != null) ...[
