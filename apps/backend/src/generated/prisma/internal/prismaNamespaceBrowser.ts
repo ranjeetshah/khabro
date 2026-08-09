@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  UserLocation: 'UserLocation'
+  UserLocation: 'UserLocation',
+  Locality: 'Locality'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -98,6 +99,19 @@ export const UserLocationScalarFieldEnum = {
 } as const
 
 export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum]
+
+
+export const LocalityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LocalityScalarFieldEnum = (typeof LocalityScalarFieldEnum)[keyof typeof LocalityScalarFieldEnum]
 
 
 export const SortOrder = {

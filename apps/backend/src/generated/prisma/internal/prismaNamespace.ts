@@ -398,7 +398,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  UserLocation: 'UserLocation'
+  UserLocation: 'UserLocation',
+  Locality: 'Locality'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLocation"
+    modelProps: "user" | "userLocation" | "locality"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -566,6 +567,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Locality: {
+      payload: Prisma.$LocalityPayload<ExtArgs>
+      fields: Prisma.LocalityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LocalityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LocalityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        findFirst: {
+          args: Prisma.LocalityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LocalityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        findMany: {
+          args: Prisma.LocalityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>[]
+        }
+        create: {
+          args: Prisma.LocalityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        createMany: {
+          args: Prisma.LocalityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LocalityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>[]
+        }
+        delete: {
+          args: Prisma.LocalityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        update: {
+          args: Prisma.LocalityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        deleteMany: {
+          args: Prisma.LocalityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LocalityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LocalityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>[]
+        }
+        upsert: {
+          args: Prisma.LocalityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LocalityPayload>
+        }
+        aggregate: {
+          args: Prisma.LocalityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLocality>
+        }
+        groupBy: {
+          args: Prisma.LocalityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LocalityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LocalityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LocalityCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -632,6 +707,19 @@ export const UserLocationScalarFieldEnum = {
 } as const
 
 export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum]
+
+
+export const LocalityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LocalityScalarFieldEnum = (typeof LocalityScalarFieldEnum)[keyof typeof LocalityScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -886,6 +974,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   userLocation?: Prisma.UserLocationOmit
+  locality?: Prisma.LocalityOmit
 }
 
 /* Types for Logging */

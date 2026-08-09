@@ -10,4 +10,5 @@
  */
 export type * from './models/User.js'
 export type * from './models/UserLocation.js'
+export type * from './models/Locality.js'
 export type * from './commonInputTypes.js'

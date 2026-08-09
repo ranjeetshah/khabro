@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
 import { LocationService } from './location.service';
+import {
+  LOCALITY_RESOLVER,
+  LocalityResolver,
+} from './locality/locality-resolver';
 
 describe('LocationService', () => {
   let service: LocationService;
@@ -22,6 +26,10 @@ describe('LocationService', () => {
     },
   };
 
+  const mockLocalityResolver: LocalityResolver = {
+    resolve: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -31,6 +39,10 @@ describe('LocationService', () => {
         {
           provide: DatabaseService,
           useValue: mockDatabaseService,
+        },
+        {
+          provide: LOCALITY_RESOLVER,
+          useValue: mockLocalityResolver,
         },
       ],
     }).compile();
@@ -109,5 +121,51 @@ describe('LocationService', () => {
     });
 
     expect(mockDatabaseService.userLocation.upsert).toHaveBeenCalledTimes(1);
+  });
+
+  describe('findMyLocality', () => {
+    it('returns null when the user has no location', async () => {
+      mockDatabaseService.userLocation.findUnique.mockResolvedValue(null);
+
+      await expect(service.findMyLocality('user-123')).resolves.toBeNull();
+      expect(mockLocalityResolver.resolve).not.toHaveBeenCalled();
+    });
+
+    it('resolves locality from the authenticated user location', async () => {
+      const locality = {
+        id: 'development-locality-a',
+        name: 'Test Locality A',
+        city: 'Delhi',
+        state: 'Delhi',
+        country: 'India',
+      };
+      mockDatabaseService.userLocation.findUnique.mockResolvedValue({
+        latitude: 28.7041,
+        longitude: 77.1025,
+      });
+      (mockLocalityResolver.resolve as jest.Mock).mockReturnValue(locality);
+
+      await expect(service.findMyLocality('user-123')).resolves.toEqual(
+        locality,
+      );
+      expect(mockDatabaseService.userLocation.findUnique).toHaveBeenCalledWith({
+        where: { userId: 'user-123' },
+        select: { latitude: true, longitude: true },
+      });
+      expect(mockLocalityResolver.resolve).toHaveBeenCalledWith(
+        28.7041,
+        77.1025,
+      );
+    });
+
+    it('returns null when the resolver cannot resolve coordinates', async () => {
+      mockDatabaseService.userLocation.findUnique.mockResolvedValue({
+        latitude: 0,
+        longitude: 0,
+      });
+      (mockLocalityResolver.resolve as jest.Mock).mockReturnValue(null);
+
+      await expect(service.findMyLocality('user-123')).resolves.toBeNull();
+    });
   });
 });

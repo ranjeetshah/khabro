@@ -39,4 +39,17 @@ export class LocationController {
     const location = await this.locationService.updateMe(userId, dto);
     return { location };
   }
+
+  @Get('me/locality')
+  async getMyLocality(@Req() request: Request) {
+    const userId = request.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    return {
+      locality: await this.locationService.findMyLocality(userId),
+    };
+  }
 }

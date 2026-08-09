@@ -66,10 +66,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
-          ),
+          home: AuthGate(authService: authService, tokenStorage: tokenStorage),
         ),
       );
       await tester.pumpAndSettle();
@@ -80,75 +77,80 @@ void main() {
     });
 
     testWidgets(
-        'valid token + successful /auth/me -> renders HomeScreen with user data',
-        (WidgetTester tester) async {
-      final tokenStorage = FakeTokenStorage('secret.jwt.token.value');
-      final apiClient = buildMockApiClient((request) async {
-        expect(request.url.path, '/auth/me');
-        expect(
-            request.headers['Authorization'], 'Bearer secret.jwt.token.value');
-        return http.Response(
-          jsonEncode({'user': _validUserJson}),
-          200,
-          headers: {'content-type': 'application/json'},
+      'valid token + successful /auth/me -> renders HomeScreen with user data',
+      (WidgetTester tester) async {
+        final tokenStorage = FakeTokenStorage('secret.jwt.token.value');
+        final apiClient = buildMockApiClient((request) async {
+          expect(request.url.path, '/auth/me');
+          expect(
+            request.headers['Authorization'],
+            'Bearer secret.jwt.token.value',
+          );
+          return http.Response(
+            jsonEncode({'user': _validUserJson}),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        });
+        final authService = AuthService(
+          apiClient: apiClient,
+          tokenStorage: tokenStorage,
         );
-      });
-      final authService = AuthService(
-        apiClient: apiClient,
-        tokenStorage: tokenStorage,
-      );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: AuthGate(
+              authService: authService,
+              tokenStorage: tokenStorage,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(HomeScreen), findsOneWidget);
-      expect(find.byType(LoginScreen), findsNothing);
-      expect(find.text('Logged in'), findsOneWidget);
-      expect(find.text('Test User'), findsOneWidget);
-      expect(find.text('+919876543210'), findsOneWidget);
-    });
+        expect(find.byType(HomeScreen), findsOneWidget);
+        expect(find.byType(LoginScreen), findsNothing);
+        expect(find.text('Logged in'), findsOneWidget);
+        expect(find.text('Test User'), findsOneWidget);
+        expect(find.text('+919876543210'), findsOneWidget);
+      },
+    );
 
     testWidgets(
-        'invalid/expired token (401) -> deletes token and renders LoginScreen',
-        (WidgetTester tester) async {
-      final tokenStorage = FakeTokenStorage('expired.jwt.token');
-      final apiClient = buildMockApiClient((request) async {
-        expect(request.url.path, '/auth/me');
-        return http.Response(
-          jsonEncode({'message': 'Unauthorized'}),
-          401,
-          headers: {'content-type': 'application/json'},
+      'invalid/expired token (401) -> deletes token and renders LoginScreen',
+      (WidgetTester tester) async {
+        final tokenStorage = FakeTokenStorage('expired.jwt.token');
+        final apiClient = buildMockApiClient((request) async {
+          expect(request.url.path, '/auth/me');
+          return http.Response(
+            jsonEncode({'message': 'Unauthorized'}),
+            401,
+            headers: {'content-type': 'application/json'},
+          );
+        });
+        final authService = AuthService(
+          apiClient: apiClient,
+          tokenStorage: tokenStorage,
         );
-      });
-      final authService = AuthService(
-        apiClient: apiClient,
-        tokenStorage: tokenStorage,
-      );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: AuthGate(
+              authService: authService,
+              tokenStorage: tokenStorage,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(tokenStorage.currentToken, isNull);
-      expect(find.byType(LoginScreen), findsOneWidget);
-      expect(find.byType(HomeScreen), findsNothing);
-    });
+        expect(tokenStorage.currentToken, isNull);
+        expect(find.byType(LoginScreen), findsOneWidget);
+        expect(find.byType(HomeScreen), findsNothing);
+      },
+    );
 
-    testWidgets('logout -> deletes token and transitions to LoginScreen',
-        (WidgetTester tester) async {
+    testWidgets('logout -> deletes token and transitions to LoginScreen', (
+      WidgetTester tester,
+    ) async {
       final tokenStorage = FakeTokenStorage('secret.jwt.token.value');
       final apiClient = buildMockApiClient((request) async {
         return http.Response(
@@ -164,17 +166,16 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
-          ),
+          home: AuthGate(authService: authService, tokenStorage: tokenStorage),
         ),
       );
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeScreen), findsOneWidget);
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'LOGOUT'));
+      final logoutButton = find.widgetWithText(ElevatedButton, 'LOGOUT');
+      await tester.ensureVisible(logoutButton);
+      await tester.tap(logoutButton);
       await tester.pumpAndSettle();
 
       expect(tokenStorage.currentToken, isNull);
@@ -182,8 +183,9 @@ void main() {
       expect(find.byType(HomeScreen), findsNothing);
     });
 
-    testWidgets('successful login -> transitions to authenticated HomeScreen',
-        (WidgetTester tester) async {
+    testWidgets('successful login -> transitions to authenticated HomeScreen', (
+      WidgetTester tester,
+    ) async {
       final tokenStorage = FakeTokenStorage(null);
       final apiClient = buildMockApiClient((request) async {
         if (request.url.path == '/auth/dev-login') {
@@ -202,10 +204,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
-          ),
+          home: AuthGate(authService: authService, tokenStorage: tokenStorage),
         ),
       );
       await tester.pumpAndSettle();
@@ -220,8 +219,9 @@ void main() {
       expect(find.text('Logged in'), findsOneWidget);
     });
 
-    testWidgets('session restoration does not expose JWT in UI',
-        (WidgetTester tester) async {
+    testWidgets('session restoration does not expose JWT in UI', (
+      WidgetTester tester,
+    ) async {
       const secretToken = 'super_secret_jwt_payload_string_xyz_999';
       final tokenStorage = FakeTokenStorage(secretToken);
       final apiClient = buildMockApiClient((request) async {
@@ -238,10 +238,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
-          ),
+          home: AuthGate(authService: authService, tokenStorage: tokenStorage),
         ),
       );
       await tester.pumpAndSettle();
@@ -249,8 +246,9 @@ void main() {
       expect(find.textContaining(secretToken), findsNothing);
     });
 
-    testWidgets('non-401 session restoration error -> shows retry view',
-        (WidgetTester tester) async {
+    testWidgets('non-401 session restoration error -> shows retry view', (
+      WidgetTester tester,
+    ) async {
       final tokenStorage = FakeTokenStorage('valid.token');
       final apiClient = buildMockApiClient((request) async {
         return http.Response(
@@ -266,10 +264,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AuthGate(
-            authService: authService,
-            tokenStorage: tokenStorage,
-          ),
+          home: AuthGate(authService: authService, tokenStorage: tokenStorage),
         ),
       );
       await tester.pumpAndSettle();

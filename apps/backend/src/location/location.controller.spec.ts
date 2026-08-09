@@ -20,6 +20,7 @@ describe('LocationController', () => {
   const mockLocationService = {
     findMe: jest.fn(),
     updateMe: jest.fn(),
+    findMyLocality: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -91,5 +92,41 @@ describe('LocationController', () => {
     ).rejects.toThrow(UnauthorizedException);
     expect(mockLocationService.findMe).not.toHaveBeenCalled();
     expect(mockLocationService.updateMe).not.toHaveBeenCalled();
+  });
+
+  it('GET /location/me/locality returns only locality fields', async () => {
+    const locality = {
+      id: 'development-locality-a',
+      name: 'Test Locality A',
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+    };
+    mockLocationService.findMyLocality.mockResolvedValue(locality);
+
+    const result = await controller.getMyLocality({
+      user: { sub: 'user-123' },
+      query: { userId: 'attacker-id' },
+    } as any);
+
+    expect(mockLocationService.findMyLocality).toHaveBeenCalledWith('user-123');
+    expect(result).toEqual({ locality });
+    expect(JSON.stringify(result)).not.toContain('latitude');
+    expect(JSON.stringify(result)).not.toContain('longitude');
+  });
+
+  it('GET /location/me/locality returns null when unresolved', async () => {
+    mockLocationService.findMyLocality.mockResolvedValue(null);
+
+    await expect(
+      controller.getMyLocality({ user: { sub: 'user-123' } } as any),
+    ).resolves.toEqual({ locality: null });
+  });
+
+  it('rejects locality requests without a JWT subject', async () => {
+    await expect(controller.getMyLocality({ user: {} } as any)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(mockLocationService.findMyLocality).not.toHaveBeenCalled();
   });
 });

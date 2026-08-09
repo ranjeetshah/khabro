@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../location/data/location_acquisition.dart';
+import '../../location/data/locality_model.dart';
+import '../../location/data/locality_service.dart';
 import '../../location/data/location_update_service.dart';
 import '../../users/data/users_service.dart';
 import '../../users/presentation/profile_screen.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatelessWidget {
     this.onUserUpdated,
     this.usersService,
     this.locationUpdateService,
+    this.localityService,
   });
 
   final UserModel user;
@@ -23,6 +26,7 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<UserModel>? onUserUpdated;
   final UsersService? usersService;
   final LocationUpdateService? locationUpdateService;
+  final LocalityService? localityService;
 
   Future<void> _updateLocation(BuildContext context) async {
     try {
@@ -131,6 +135,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+                _LocalitySection(localityService: localityService),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -181,6 +187,113 @@ class HomeScreen extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ],
+    );
+  }
+}
+
+class _LocalitySection extends StatefulWidget {
+  const _LocalitySection({this.localityService});
+
+  final LocalityService? localityService;
+
+  @override
+  State<_LocalitySection> createState() => _LocalitySectionState();
+}
+
+class _LocalitySectionState extends State<_LocalitySection> {
+  LocalityModel? _locality;
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  Future<void> _showLocality() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final locality = await (widget.localityService ?? LocalityService())
+          .getMyLocality();
+      if (!mounted) return;
+      setState(() {
+        _locality = locality;
+        _isLoading = false;
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = error.message;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Could not load your locality. Please try again.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: OutlinedButton.icon(
+            onPressed: _isLoading ? null : _showLocality,
+            icon: const Icon(Icons.home_work_outlined),
+            label: _isLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('SHOW MY LOCALITY'),
+          ),
+        ),
+        if (_locality != null) ...[
+          const SizedBox(height: 12),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Your Local Area',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  _localityRow('Locality', _locality!.name),
+                  _localityRow('City', _locality!.city),
+                  _localityRow('State', _locality!.state),
+                  _localityRow('Country', _locality!.country),
+                ],
+              ),
+            ),
+          ),
+        ],
+        if (_errorMessage != null) ...[
+          const SizedBox(height: 12),
+          Text(
+            _errorMessage!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _localityRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(label), Text(value)],
+      ),
     );
   }
 }
