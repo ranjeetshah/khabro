@@ -216,6 +216,8 @@ export type LocalityWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
   parent?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
   children?: Prisma.LocalityListRelationFilter
+  userLocations?: Prisma.UserLocationListRelationFilter
+  posts?: Prisma.PostListRelationFilter
 }
 
 export type LocalityOrderByWithRelationInput = {
@@ -230,6 +232,8 @@ export type LocalityOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   parent?: Prisma.LocalityOrderByWithRelationInput
   children?: Prisma.LocalityOrderByRelationAggregateInput
+  userLocations?: Prisma.UserLocationOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
 }
 
 export type LocalityWhereUniqueInput = Prisma.AtLeast<{
@@ -248,6 +252,8 @@ export type LocalityWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
   parent?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
   children?: Prisma.LocalityListRelationFilter
+  userLocations?: Prisma.UserLocationListRelationFilter
+  posts?: Prisma.PostListRelationFilter
 }, "id" | "name_type_parentId">
 
 export type LocalityOrderByWithAggregationInput = {
@@ -291,6 +297,8 @@ export type LocalityCreateInput = {
   updatedAt?: Date | string
   parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
   children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityUncheckedCreateInput = {
@@ -304,6 +312,8 @@ export type LocalityUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityUpdateInput = {
@@ -317,6 +327,8 @@ export type LocalityUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
   children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityUncheckedUpdateInput = {
@@ -330,6 +342,8 @@ export type LocalityUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityCreateManyInput = {
@@ -424,6 +438,22 @@ export type LocalityMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type LocalityCreateNestedOneWithoutUserLocationsInput = {
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput
+  connect?: Prisma.LocalityWhereUniqueInput
+}
+
+export type LocalityUpdateOneWithoutUserLocationsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput
+  upsert?: Prisma.LocalityUpsertWithoutUserLocationsInput
+  disconnect?: Prisma.LocalityWhereInput | boolean
+  delete?: Prisma.LocalityWhereInput | boolean
+  connect?: Prisma.LocalityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocalityUpdateToOneWithWhereWithoutUserLocationsInput, Prisma.LocalityUpdateWithoutUserLocationsInput>, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+}
+
 export type LocalityCreateNestedOneWithoutChildrenInput = {
   create?: Prisma.XOR<Prisma.LocalityCreateWithoutChildrenInput, Prisma.LocalityUncheckedCreateWithoutChildrenInput>
   connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutChildrenInput
@@ -486,6 +516,94 @@ export type LocalityUncheckedUpdateManyWithoutParentNestedInput = {
   deleteMany?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[]
 }
 
+export type LocalityCreateNestedOneWithoutPostsInput = {
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput
+  connect?: Prisma.LocalityWhereUniqueInput
+}
+
+export type LocalityUpdateOneWithoutPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput
+  upsert?: Prisma.LocalityUpsertWithoutPostsInput
+  disconnect?: Prisma.LocalityWhereInput | boolean
+  delete?: Prisma.LocalityWhereInput | boolean
+  connect?: Prisma.LocalityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocalityUpdateToOneWithWhereWithoutPostsInput, Prisma.LocalityUpdateWithoutPostsInput>, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+}
+
+export type LocalityCreateWithoutUserLocationsInput = {
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
+}
+
+export type LocalityUncheckedCreateWithoutUserLocationsInput = {
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
+}
+
+export type LocalityCreateOrConnectWithoutUserLocationsInput = {
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+}
+
+export type LocalityUpsertWithoutUserLocationsInput = {
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutUserLocationsInput, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  where?: Prisma.LocalityWhereInput
+}
+
+export type LocalityUpdateToOneWithWhereWithoutUserLocationsInput = {
+  where?: Prisma.LocalityWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutUserLocationsInput, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+}
+
+export type LocalityUpdateWithoutUserLocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
+}
+
+export type LocalityUncheckedUpdateWithoutUserLocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
+}
+
 export type LocalityCreateWithoutChildrenInput = {
   id?: string
   name: string
@@ -496,6 +614,8 @@ export type LocalityCreateWithoutChildrenInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityUncheckedCreateWithoutChildrenInput = {
@@ -508,6 +628,8 @@ export type LocalityUncheckedCreateWithoutChildrenInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityCreateOrConnectWithoutChildrenInput = {
@@ -525,6 +647,8 @@ export type LocalityCreateWithoutParentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityUncheckedCreateWithoutParentInput = {
@@ -537,6 +661,8 @@ export type LocalityUncheckedCreateWithoutParentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
 }
 
 export type LocalityCreateOrConnectWithoutParentInput = {
@@ -570,6 +696,8 @@ export type LocalityUpdateWithoutChildrenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityUncheckedUpdateWithoutChildrenInput = {
@@ -582,6 +710,8 @@ export type LocalityUncheckedUpdateWithoutChildrenInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityUpsertWithWhereUniqueWithoutParentInput = {
@@ -615,6 +745,78 @@ export type LocalityScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
 }
 
+export type LocalityCreateWithoutPostsInput = {
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+}
+
+export type LocalityUncheckedCreateWithoutPostsInput = {
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+}
+
+export type LocalityCreateOrConnectWithoutPostsInput = {
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+}
+
+export type LocalityUpsertWithoutPostsInput = {
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutPostsInput, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  where?: Prisma.LocalityWhereInput
+}
+
+export type LocalityUpdateToOneWithWhereWithoutPostsInput = {
+  where?: Prisma.LocalityWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutPostsInput, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+}
+
+export type LocalityUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+}
+
+export type LocalityUncheckedUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+}
+
 export type LocalityCreateManyParentInput = {
   id?: string
   name: string
@@ -636,6 +838,8 @@ export type LocalityUpdateWithoutParentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityUncheckedUpdateWithoutParentInput = {
@@ -648,6 +852,8 @@ export type LocalityUncheckedUpdateWithoutParentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
 }
 
 export type LocalityUncheckedUpdateManyWithoutParentInput = {
@@ -668,10 +874,14 @@ export type LocalityUncheckedUpdateManyWithoutParentInput = {
 
 export type LocalityCountOutputType = {
   children: number
+  userLocations: number
+  posts: number
 }
 
 export type LocalityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   children?: boolean | LocalityCountOutputTypeCountChildrenArgs
+  userLocations?: boolean | LocalityCountOutputTypeCountUserLocationsArgs
+  posts?: boolean | LocalityCountOutputTypeCountPostsArgs
 }
 
 /**
@@ -691,6 +901,20 @@ export type LocalityCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Typ
   where?: Prisma.LocalityWhereInput
 }
 
+/**
+ * LocalityCountOutputType without action
+ */
+export type LocalityCountOutputTypeCountUserLocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserLocationWhereInput
+}
+
+/**
+ * LocalityCountOutputType without action
+ */
+export type LocalityCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
+}
+
 
 export type LocalitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -704,6 +928,8 @@ export type LocalitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updatedAt?: boolean
   parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
   children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>
+  userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>
+  posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>
   _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["locality"]>
 
@@ -749,6 +975,8 @@ export type LocalityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type LocalityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
   children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>
+  userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>
+  posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>
   _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LocalityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -763,6 +991,8 @@ export type $LocalityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     parent: Prisma.$LocalityPayload<ExtArgs> | null
     children: Prisma.$LocalityPayload<ExtArgs>[]
+    userLocations: Prisma.$UserLocationPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1170,6 +1400,8 @@ export interface Prisma__LocalityClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   parent<T extends Prisma.Locality$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$parentArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   children<T extends Prisma.Locality$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userLocations<T extends Prisma.Locality$userLocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$userLocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Locality$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1649,6 +1881,54 @@ export type Locality$childrenArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[]
+}
+
+/**
+ * Locality.userLocations
+ */
+export type Locality$userLocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserLocation
+   */
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserLocation
+   */
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
+  where?: Prisma.UserLocationWhereInput
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
+  cursor?: Prisma.UserLocationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[]
+}
+
+/**
+ * Locality.posts
+ */
+export type Locality$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Post
+   */
+  select?: Prisma.PostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Post
+   */
+  omit?: Prisma.PostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
 }
 
 /**

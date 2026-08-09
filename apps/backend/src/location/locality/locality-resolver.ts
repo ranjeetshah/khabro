@@ -13,6 +13,14 @@ export interface Locality extends GeographicArea {
   country: string;
 }
 
+export interface LocalitySummary {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
 export interface LocalityResolver {
   resolve(latitude: number, longitude: number): Locality | null;
 }

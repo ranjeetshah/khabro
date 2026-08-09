@@ -1,0 +1,124 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { DatabaseService } from '../database/database.service';
+import { PostsService } from './posts.service';
+
+describe('PostsService', () => {
+  let service: PostsService;
+
+  const database = {
+    userLocation: { findUnique: jest.fn() },
+    post: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+      update: jest.fn(),
+    },
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PostsService,
+        { provide: DatabaseService, useValue: database },
+      ],
+    }).compile();
+    service = module.get(PostsService);
+  });
+
+  it('is defined', () => expect(service).toBeDefined());
+
+  it('creates a post using JWT author and stored locality', async () => {
+    database.userLocation.findUnique.mockResolvedValue({
+      localityId: 'locality-1',
+    });
+    database.post.create.mockResolvedValue({
+      id: 'post-1',
+      authorId: 'user-1',
+      localityId: 'locality-1',
+      content: 'Hello',
+    });
+
+    await service.create('user-1', ' Hello ');
+
+    expect(database.userLocation.findUnique).toHaveBeenCalledWith({
+      where: { userId: 'user-1' },
+      select: { localityId: true },
+    });
+    expect(database.post.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: {
+          authorId: 'user-1',
+          localityId: 'locality-1',
+          content: 'Hello',
+        },
+      }),
+    );
+  });
+
+  it('creates without locality when the user has no resolved locality', async () => {
+    database.userLocation.findUnique.mockResolvedValue(null);
+    database.post.create.mockResolvedValue({});
+
+    await service.create('user-1', 'Hello');
+
+    expect(database.post.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ localityId: null }),
+      }),
+    );
+  });
+
+  it('gets my posts newest first and excludes deleted posts', async () => {
+    database.post.findMany.mockResolvedValue([]);
+
+    await service.findMine('user-1');
+
+    expect(database.post.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { authorId: 'user-1', deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      }),
+    );
+  });
+
+  it('gets a non-deleted post', async () => {
+    database.post.findFirst.mockResolvedValue({ id: 'post-1' });
+    await expect(service.findOne('post-1')).resolves.toEqual({ id: 'post-1' });
+    expect(database.post.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'post-1', deletedAt: null } }),
+    );
+  });
+
+  it('soft deletes the author-owned post', async () => {
+    database.post.findFirst.mockResolvedValue({ authorId: 'user-1' });
+    database.post.update.mockResolvedValue({});
+
+    await expect(service.delete('user-1', 'post-1')).resolves.toEqual({
+      id: 'post-1',
+    });
+    expect(database.post.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'post-1' },
+        data: { deletedAt: expect.any(Date) },
+      }),
+    );
+  });
+
+  it('rejects deletion by another user', async () => {
+    database.post.findFirst.mockResolvedValue({ authorId: 'other-user' });
+    await expect(service.delete('user-1', 'post-1')).rejects.toThrow(
+      ForbiddenException,
+    );
+    expect(database.post.update).not.toHaveBeenCalled();
+  });
+
+  it('rejects deletion of a missing or deleted post', async () => {
+    database.post.findFirst.mockResolvedValue(null);
+    await expect(service.delete('user-1', 'post-1')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+});

@@ -20,6 +20,9 @@ describe('LocationService', () => {
   };
 
   const mockDatabaseService = {
+    $transaction: jest.fn((callback: (transaction: any) => unknown) =>
+      callback(mockDatabaseService),
+    ),
     userLocation: {
       findUnique: jest.fn(),
       upsert: jest.fn(),
@@ -64,12 +67,10 @@ describe('LocationService', () => {
       where: { userId: 'user-123' },
       select: expect.objectContaining({
         id: true,
-        latitude: true,
-        longitude: true,
-        accuracyMeters: true,
         capturedAt: true,
         createdAt: true,
         updatedAt: true,
+        locality: expect.any(Object),
       }),
     });
   });
@@ -82,6 +83,9 @@ describe('LocationService', () => {
 
   it('creates the first location record', async () => {
     mockDatabaseService.userLocation.upsert.mockResolvedValue(mockLocation);
+    (mockLocalityResolver.resolve as jest.Mock).mockReturnValue({
+      id: 'development-locality-a',
+    });
     const dto = {
       latitude: 28.7041,
       longitude: 77.1025,
@@ -100,13 +104,38 @@ describe('LocationService', () => {
           longitude: dto.longitude,
           accuracyMeters: dto.accuracyMeters,
           capturedAt: new Date(dto.capturedAt),
+          localityId: 'development-locality-a',
         }),
         update: expect.objectContaining({
           latitude: dto.latitude,
           longitude: dto.longitude,
           accuracyMeters: dto.accuracyMeters,
           capturedAt: new Date(dto.capturedAt),
+          localityId: 'development-locality-a',
         }),
+      }),
+    );
+    expect(mockLocalityResolver.resolve).toHaveBeenCalledWith(
+      dto.latitude,
+      dto.longitude,
+    );
+    expect(mockDatabaseService.$transaction).toHaveBeenCalled();
+  });
+
+  it('stores a null locality for unknown coordinates', async () => {
+    mockDatabaseService.userLocation.upsert.mockResolvedValue(mockLocation);
+    (mockLocalityResolver.resolve as jest.Mock).mockReturnValue(null);
+
+    await service.updateMe('user-123', {
+      latitude: 0,
+      longitude: 0,
+      capturedAt: '2026-08-09T09:00:00.000Z',
+    });
+
+    expect(mockDatabaseService.userLocation.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ localityId: null }),
+        update: expect.objectContaining({ localityId: null }),
       }),
     );
   });
@@ -131,46 +160,32 @@ describe('LocationService', () => {
       expect(mockLocalityResolver.resolve).not.toHaveBeenCalled();
     });
 
-    it('resolves locality from the authenticated user location', async () => {
+    it('reads the stored locality without resolving coordinates', async () => {
       const locality = {
         id: 'development-locality-a',
         name: 'Test Locality A',
-        type: 'LOCALITY' as const,
-        parent: {
-          id: 'development-city-delhi',
-          name: 'Delhi',
-          type: 'CITY' as const,
-          parent: null,
-        },
         city: 'Delhi',
         state: 'Delhi',
         country: 'India',
       };
       mockDatabaseService.userLocation.findUnique.mockResolvedValue({
-        latitude: 28.7041,
-        longitude: 77.1025,
+        locality,
       });
-      (mockLocalityResolver.resolve as jest.Mock).mockReturnValue(locality);
 
       await expect(service.findMyLocality('user-123')).resolves.toEqual(
         locality,
       );
       expect(mockDatabaseService.userLocation.findUnique).toHaveBeenCalledWith({
         where: { userId: 'user-123' },
-        select: { latitude: true, longitude: true },
+        select: { locality: { select: expect.any(Object) } },
       });
-      expect(mockLocalityResolver.resolve).toHaveBeenCalledWith(
-        28.7041,
-        77.1025,
-      );
+      expect(mockLocalityResolver.resolve).not.toHaveBeenCalled();
     });
 
     it('returns null when the resolver cannot resolve coordinates', async () => {
       mockDatabaseService.userLocation.findUnique.mockResolvedValue({
-        latitude: 0,
-        longitude: 0,
+        locality: null,
       });
-      (mockLocalityResolver.resolve as jest.Mock).mockReturnValue(null);
 
       await expect(service.findMyLocality('user-123')).resolves.toBeNull();
     });

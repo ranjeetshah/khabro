@@ -28,6 +28,14 @@ const locationJson = {
   'updatedAt': '2026-08-09T08:00:02.000Z',
 };
 
+const localityJson = {
+  'id': 'development-locality-a',
+  'name': 'Test Locality A',
+  'city': 'Delhi',
+  'state': 'Delhi',
+  'country': 'India',
+};
+
 LocationService serviceFor(
   FakeTokenStorage storage,
   http_testing.MockClientHandler handler,
@@ -91,6 +99,58 @@ void main() {
       );
 
       expect(location.id, 'location-123');
+    });
+
+    test('updateMyLocation parses the returned locality', () async {
+      final service = serviceFor(FakeTokenStorage('jwt-value'), (request) async {
+        return http.Response(
+          jsonEncode({
+            'location': {
+              'id': 'location-123',
+              'capturedAt': '2026-08-09T08:00:00.000Z',
+              'createdAt': '2026-08-09T08:00:01.000Z',
+              'updatedAt': '2026-08-09T08:00:02.000Z',
+              'locality': localityJson,
+            },
+          }),
+          200,
+        );
+      });
+
+      final location = await service.updateMyLocation(
+        latitude: 28.7041,
+        longitude: 77.1025,
+        capturedAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+      );
+
+      expect(location.locality?.name, 'Test Locality A');
+      expect(location.latitude, isNull);
+      expect(location.longitude, isNull);
+    });
+
+    test('updateMyLocation accepts an unknown locality', () async {
+      final service = serviceFor(FakeTokenStorage('jwt-value'), (request) async {
+        return http.Response(
+          jsonEncode({
+            'location': {
+              'id': 'location-123',
+              'capturedAt': '2026-08-09T08:00:00.000Z',
+              'createdAt': '2026-08-09T08:00:01.000Z',
+              'updatedAt': '2026-08-09T08:00:02.000Z',
+              'locality': null,
+            },
+          }),
+          200,
+        );
+      });
+
+      final location = await service.updateMyLocation(
+        latitude: 0,
+        longitude: 0,
+        capturedAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+      );
+
+      expect(location.locality, isNull);
     });
 
     test('missing token throws 401 without making a request', () async {

@@ -60,4 +60,9 @@ class ApiClient {
       body: body != null ? jsonEncode(body) : null,
     );
   }
+
+  /// DELETE request. Optionally include [headers].
+  Future<http.Response> delete(String path, {Map<String, String>? headers}) {
+    return _httpClient.delete(Uri.parse('$baseUrl$path'), headers: headers);
+  }
 }

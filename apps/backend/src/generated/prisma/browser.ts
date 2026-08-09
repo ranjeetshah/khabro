@@ -32,3 +32,8 @@ export type UserLocation = Prisma.UserLocationModel
  * 
  */
 export type Locality = Prisma.LocalityModel
+/**
+ * Model Post
+ * 
+ */
+export type Post = Prisma.PostModel

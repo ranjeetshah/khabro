@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/location/data/location_acquisition.dart';
+import 'package:mobile/features/location/data/locality_model.dart';
 import 'package:mobile/features/location/data/location_model.dart';
 import 'package:mobile/features/location/data/location_service.dart';
 import 'package:mobile/features/location/data/location_update_service.dart';
@@ -50,6 +51,13 @@ void main() {
         capturedAt: capturedAt,
         createdAt: capturedAt,
         updatedAt: capturedAt,
+        locality: const LocalityModel(
+          id: 'development-locality-a',
+          name: 'Test Locality A',
+          city: 'Delhi',
+          state: 'Delhi',
+          country: 'India',
+        ),
       );
       final locationService = FakeLocationService(apiResult);
       final updateService = LocationUpdateService(

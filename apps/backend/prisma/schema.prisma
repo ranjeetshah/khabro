@@ -21,6 +21,7 @@ model User {
   updatedAt    DateTime   @updatedAt
 
   location     UserLocation?
+  posts        Post[]
 
   @@index([status])
 }
@@ -29,16 +30,20 @@ model User {
 // queries can use PostGIS SQL/raw queries without coupling this foundation to
 // an unsupported Prisma geography/geometry type.
 model UserLocation {
-  id             String   @id @default(uuid())
-  userId         String   @unique
+  id             String    @id @default(uuid())
+  userId         String    @unique
   latitude       Float
   longitude      Float
   accuracyMeters Float?
   capturedAt     DateTime
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  localityId     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  locality       Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
+
+  @@index([localityId])
 }
 
 model Locality {
@@ -57,10 +62,28 @@ model Locality {
 
   parent   Locality?  @relation("LocalityHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
   children Locality[] @relation("LocalityHierarchy")
+  userLocations UserLocation[]
+  posts         Post[]
 
   @@unique([name, type, parentId])
   @@index([type])
   @@index([parentId])
+}
+
+model Post {
+  id         String    @id @default(uuid())
+  authorId   String
+  localityId String?
+  content    String
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  locality Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
+
+  @@index([authorId, createdAt])
+  @@index([localityId])
 }
 
 enum GeographicAreaType {

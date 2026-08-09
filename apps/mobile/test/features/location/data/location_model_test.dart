@@ -32,10 +32,37 @@ void main() {
       expect(location.accuracyMeters, isNull);
     });
 
-    test('serializes all fields', () {
+    test('serializes safe fields without coordinates', () {
       final location = LocationModel.fromJson(validLocationJson);
 
-      expect(location.toJson(), validLocationJson);
+      expect(location.toJson(), {
+        'id': 'location-123',
+        'capturedAt': '2026-08-09T08:00:00.000Z',
+        'createdAt': '2026-08-09T08:00:01.000Z',
+        'updatedAt': '2026-08-09T08:00:02.000Z',
+      });
+      expect(location.toJson().containsKey('latitude'), isFalse);
+      expect(location.toJson().containsKey('longitude'), isFalse);
+      expect(location.toJson().containsKey('accuracyMeters'), isFalse);
+    });
+
+    test('parses a stored locality without coordinates', () {
+      final location = LocationModel.fromJson({
+        'id': 'location-123',
+        'capturedAt': '2026-08-09T08:00:00.000Z',
+        'createdAt': '2026-08-09T08:00:01.000Z',
+        'updatedAt': '2026-08-09T08:00:02.000Z',
+        'locality': {
+          'id': 'development-locality-a',
+          'name': 'Test Locality A',
+          'city': 'Delhi',
+          'state': 'Delhi',
+          'country': 'India',
+        },
+      });
+
+      expect(location.latitude, isNull);
+      expect(location.locality?.name, 'Test Locality A');
     });
 
     test('throws when required fields are missing', () {

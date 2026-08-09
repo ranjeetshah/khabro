@@ -3,18 +3,24 @@ import { DatabaseService } from '../database/database.service';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LOCALITY_RESOLVER } from './locality/locality-resolver';
 import type {
-  Locality,
+  LocalitySummary,
   LocalityResolver,
 } from './locality/locality-resolver';
 
+const LOCALITY_SELECT = {
+  id: true,
+  name: true,
+  city: true,
+  state: true,
+  country: true,
+} as const;
+
 const LOCATION_SELECT = {
   id: true,
-  latitude: true,
-  longitude: true,
-  accuracyMeters: true,
   capturedAt: true,
   createdAt: true,
   updatedAt: true,
+  locality: { select: LOCALITY_SELECT },
 } as const;
 
 @Injectable()
@@ -33,35 +39,40 @@ export class LocationService {
   }
 
   async updateMe(userId: string, dto: UpdateLocationDto) {
-    return this.database.userLocation.upsert({
-      where: { userId },
-      create: {
-        userId,
-        latitude: dto.latitude,
-        longitude: dto.longitude,
-        accuracyMeters: dto.accuracyMeters,
-        capturedAt: new Date(dto.capturedAt),
-      },
-      update: {
-        latitude: dto.latitude,
-        longitude: dto.longitude,
-        accuracyMeters: dto.accuracyMeters,
-        capturedAt: new Date(dto.capturedAt),
-      },
-      select: LOCATION_SELECT,
-    });
+    const locality = this.localityResolver.resolve(
+      dto.latitude,
+      dto.longitude,
+    );
+
+    return this.database.$transaction((transaction) =>
+      transaction.userLocation.upsert({
+        where: { userId },
+        create: {
+          userId,
+          latitude: dto.latitude,
+          longitude: dto.longitude,
+          accuracyMeters: dto.accuracyMeters,
+          capturedAt: new Date(dto.capturedAt),
+          localityId: locality?.id ?? null,
+        },
+        update: {
+          latitude: dto.latitude,
+          longitude: dto.longitude,
+          accuracyMeters: dto.accuracyMeters,
+          capturedAt: new Date(dto.capturedAt),
+          localityId: locality?.id ?? null,
+        },
+        select: LOCATION_SELECT,
+      }),
+    );
   }
 
-  async findMyLocality(userId: string): Promise<Locality | null> {
+  async findMyLocality(userId: string): Promise<LocalitySummary | null> {
     const location = await this.database.userLocation.findUnique({
       where: { userId },
-      select: { latitude: true, longitude: true },
+      select: { locality: { select: LOCALITY_SELECT } },
     });
 
-    if (!location) {
-      return null;
-    }
-
-    return this.localityResolver.resolve(location.latitude, location.longitude);
+    return location?.locality ?? null;
   }
 }

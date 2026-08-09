@@ -9,12 +9,10 @@ describe('LocationController', () => {
 
   const mockLocation = {
     id: 'location-123',
-    latitude: 28.7041,
-    longitude: 77.1025,
-    accuracyMeters: 25,
     capturedAt: new Date('2026-08-09T08:00:00.000Z'),
     createdAt: new Date('2026-08-09T08:00:00.000Z'),
     updatedAt: new Date('2026-08-09T08:00:00.000Z'),
+    locality: null,
   };
 
   const mockLocationService = {
@@ -129,6 +127,21 @@ describe('LocationController', () => {
     expect(JSON.stringify(result)).not.toContain('parent');
     expect(JSON.stringify(result)).not.toContain('latitude');
     expect(JSON.stringify(result)).not.toContain('longitude');
+  });
+
+  it('GET /location/me/locality reads stored locality data', async () => {
+    const locality = {
+      id: 'development-locality-a',
+      name: 'Test Locality A',
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+    };
+    mockLocationService.findMyLocality.mockResolvedValue(locality);
+
+    await expect(
+      controller.getMyLocality({ user: { sub: 'user-123' } } as any),
+    ).resolves.toEqual({ locality });
   });
 
   it('GET /location/me/locality returns null when unresolved', async () => {

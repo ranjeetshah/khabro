@@ -46,7 +46,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('UPDATE MY LOCATION'));
+    final updateButton = find.text('UPDATE MY LOCATION');
+    await tester.ensureVisible(updateButton);
+    await tester.tap(updateButton);
     await tester.pumpAndSettle();
 
     expect(find.text('Location updated successfully'), findsOneWidget);

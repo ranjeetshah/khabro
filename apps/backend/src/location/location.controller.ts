@@ -10,7 +10,7 @@ import {
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateLocationDto } from './dto/update-location.dto';
-import type { Locality } from './locality/locality-resolver';
+import type { LocalitySummary } from './locality/locality-resolver';
 import { LocationService } from './location.service';
 
 @Controller('location')
@@ -53,7 +53,7 @@ export class LocationController {
     return { locality: locality ? this.toPublicLocality(locality) : null };
   }
 
-  private toPublicLocality(locality: Locality) {
+  private toPublicLocality(locality: LocalitySummary) {
     return {
       id: locality.id,
       name: locality.name,
