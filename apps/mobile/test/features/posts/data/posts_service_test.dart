@@ -154,6 +154,48 @@ void main() {
     );
   });
 
+  test('getVerificationStatus parses safe verification metadata', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      expect(request.method, 'GET');
+      expect(request.url.path, '/posts/post-1/verification');
+      expect(request.headers['Authorization'], 'Bearer jwt');
+      return http.Response(
+        '{"status":"LOCALLY_VERIFIED","witnessCount":2}',
+        200,
+      );
+    });
+
+    final status = await service.getVerificationStatus('post-1');
+    expect(status.status.isLocallyVerified, isTrue);
+    expect(status.witnessCount, 2);
+  });
+
+  test('getVerificationStatus tolerates unknown future statuses', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"status":"AUTHORITY_CONFIRMED","witnessCount":5}', 200);
+    });
+
+    final status = await service.getVerificationStatus('post-1');
+    expect(status.status.isUnknown, isTrue);
+    expect(status.status.isLocallyVerified, isFalse);
+    expect(status.witnessCount, 5);
+  });
+
+  test('witness responses expose no private witness rows', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response(
+        '{"witness":{"witnessCount":2,"witnessedByMe":false,'
+        '"verification":{"status":"LOCALLY_VERIFIED","witnessCount":2}}}',
+        200,
+      );
+    });
+
+    final status = await service.getWitnessStatus('post-1');
+    expect(status.witnessCount, 2);
+    expect(status.witnessedByMe, isFalse);
+    expect(status.verification?.status.isLocallyVerified, isTrue);
+  });
+
   test('missing token and 401 are handled', () async {
     final missing = serviceFor(FakeTokenStorage(), (request) async {
       fail('request should not run');

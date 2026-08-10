@@ -5,7 +5,9 @@ import '../../users/data/public_user_service.dart';
 import '../../users/presentation/public_author_profile_screen.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
+import '../data/verification_status.dart';
 import '../data/witness_status_model.dart';
+import 'verification_status_badge.dart';
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({
@@ -35,6 +37,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   bool _isWitnessUpdating = false;
   int _witnessCount = 0;
   bool _witnessedByMe = false;
+  VerificationStatus _verificationStatus = VerificationStatus.reported;
   String? _errorMessage;
   String? _likeError;
   String? _witnessError;
@@ -48,6 +51,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _likedByMe = widget.post.likedByMe ?? false;
     _witnessCount = widget.post.witnessCount ?? 0;
     _witnessedByMe = widget.post.witnessedByMe ?? false;
+    _verificationStatus = widget.post.verificationStatus;
+    _loadVerification();
+  }
+
+  Future<void> _loadVerification() async {
+    try {
+      final verification = await _postsService.getVerificationStatus(
+        widget.post.id,
+      );
+      if (!mounted) return;
+      setState(() {
+        _verificationStatus = verification.status;
+      });
+    } catch (_) {
+      // Verification is display-only; keep the value from the post model.
+    }
   }
 
   String get _authorName {
@@ -174,8 +193,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       setState(() {
         _witnessCount = status.witnessCount;
         _witnessedByMe = status.witnessedByMe;
+        if (status.verification != null) {
+          _verificationStatus = status.verification!.status;
+        }
         _isWitnessUpdating = false;
       });
+      if (status.verification == null) {
+        await _loadVerification();
+      }
     } on AuthException catch (error) {
       if (!mounted) return;
       if (error.statusCode == 401) widget.onSessionExpired?.call();
@@ -239,6 +264,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             widget.post.createdAt.toLocal().toString(),
             style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
+          const Divider(height: 32),
+          VerificationStatusBadge(status: _verificationStatus),
+          const SizedBox(height: 8),
+          Text(
+            'Witnesses: $_witnessCount',
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+          ),
           Row(
             children: [
               IconButton(
@@ -277,7 +309,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               _witnessedByMe ? 'Witnessed' : 'I Witnessed This',
             ),
           ),
-          Text('Witnesses: $_witnessCount'),
           if (_witnessError != null) ...[
             Text(_witnessError!, style: const TextStyle(color: Colors.red)),
             OutlinedButton(

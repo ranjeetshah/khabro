@@ -4,6 +4,7 @@ export const postSelect = (userId: string) => ({
   id: true,
   authorId: true,
   content: true,
+  verificationStatus: true,
   createdAt: true,
   updatedAt: true,
   author: { select: PUBLIC_USER_SELECT },

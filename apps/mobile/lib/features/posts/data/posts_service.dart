@@ -5,6 +5,7 @@ import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
+import 'verification_status_model.dart';
 import 'witness_status_model.dart';
 
 class PostsService {
@@ -85,6 +86,16 @@ class PostsService {
     );
     _checkStatus(response, 'Failed to fetch witness status');
     return _parseWitnessStatus(response.body);
+  }
+
+  Future<VerificationStatusModel> getVerificationStatus(String id) async {
+    final response = await _request(
+      (headers) => _apiClient.get('/posts/$id/verification', headers: headers),
+    );
+    _checkStatus(response, 'Failed to fetch verification status');
+    return VerificationStatusModel.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<LikeStatusModel> _updateLike(String path, String fallback) async {

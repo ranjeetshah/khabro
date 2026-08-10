@@ -6,6 +6,7 @@ import '../../posts/data/post_model.dart';
 import '../../posts/data/posts_service.dart';
 import '../../posts/presentation/create_post_screen.dart';
 import '../../posts/presentation/post_detail_screen.dart';
+import '../../posts/presentation/verification_status_badge.dart';
 import '../../users/data/public_user_service.dart';
 import '../data/feed_page_model.dart';
 import '../data/feed_service.dart';
@@ -228,6 +229,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   ? item.copyWith(
                       witnessCount: status.witnessCount,
                       witnessedByMe: status.witnessedByMe,
+                      verificationStatus: status.verification?.status,
                     )
                   : item,
             )
@@ -373,6 +375,10 @@ class _FeedScreenState extends State<FeedScreen> {
               Text(
                 post.createdAt.toLocal().toString(),
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+              VerificationStatusBadge(
+                status: post.verificationStatus,
+                compact: true,
               ),
               Row(
                 children: [

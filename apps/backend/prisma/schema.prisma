@@ -73,13 +73,14 @@ model Locality {
 }
 
 model Post {
-  id         String    @id @default(uuid())
-  authorId   String
-  localityId String?
-  content    String
-  deletedAt  DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id                 String             @id @default(uuid())
+  authorId           String
+  localityId         String?
+  content            String
+  verificationStatus VerificationStatus @default(REPORTED)
+  deletedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   locality   Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
@@ -130,4 +131,10 @@ enum UserStatus {
   SUSPENDED
   BANNED
   DELETED
+}
+
+enum VerificationStatus {
+  REPORTED
+  UNDER_VERIFICATION
+  LOCALLY_VERIFIED
 }

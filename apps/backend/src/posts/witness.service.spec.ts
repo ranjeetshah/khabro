@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
+import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
 
 describe('WitnessService', () => {
@@ -18,6 +19,11 @@ describe('WitnessService', () => {
     },
   };
 
+  const verificationService = {
+    evaluatePost: jest.fn(),
+    getVerificationStatus: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -27,6 +33,10 @@ describe('WitnessService', () => {
         {
           provide: DatabaseService,
           useValue: database,
+        },
+        {
+          provide: VerificationService,
+          useValue: verificationService,
         },
       ],
     }).compile();
@@ -42,18 +52,30 @@ describe('WitnessService', () => {
     database.witness.findFirst.mockResolvedValue({
       id: 'witness-1',
     });
+
+    verificationService.evaluatePost.mockResolvedValue({
+      status: 'UNDER_VERIFICATION',
+      witnessCount: 1,
+    });
+
+    verificationService.getVerificationStatus.mockResolvedValue({
+      status: 'REPORTED',
+      witnessCount: 1,
+    });
   });
 
   it('is defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('witnesses a post and returns metadata', async () => {
-    await expect(
-      service.witness('user-1', 'post-1'),
-    ).resolves.toEqual({
+  it('witnesses a post and returns metadata plus verification', async () => {
+    await expect(service.witness('user-1', 'post-1')).resolves.toEqual({
       witnessCount: 1,
       witnessedByMe: true,
+      verification: {
+        status: 'UNDER_VERIFICATION',
+        witnessCount: 1,
+      },
     });
 
     expect(database.witness.upsert).toHaveBeenCalledWith({
@@ -71,22 +93,50 @@ describe('WitnessService', () => {
     });
   });
 
+  it('evaluates verification state after saving a witness', async () => {
+    await service.witness('user-1', 'post-1');
+
+    expect(database.witness.upsert).toHaveBeenCalledTimes(1);
+    expect(verificationService.evaluatePost).toHaveBeenCalledWith('post-1');
+    expect(database.witness.count).toHaveBeenCalled();
+  });
+
+  it('reports LOCALLY_VERIFIED once the second unique witness reaches the threshold', async () => {
+    verificationService.evaluatePost.mockResolvedValue({
+      status: 'LOCALLY_VERIFIED',
+      witnessCount: 2,
+    });
+    database.witness.count.mockResolvedValue(2);
+
+    await expect(service.witness('user-2', 'post-1')).resolves.toEqual({
+      witnessCount: 2,
+      witnessedByMe: true,
+      verification: {
+        status: 'LOCALLY_VERIFIED',
+        witnessCount: 2,
+      },
+    });
+  });
+
   it('uses an idempotent upsert for duplicate witnesses', async () => {
     await service.witness('user-1', 'post-1');
     await service.witness('user-1', 'post-1');
 
     expect(database.witness.upsert).toHaveBeenCalledTimes(2);
+    expect(verificationService.evaluatePost).toHaveBeenCalledTimes(2);
   });
 
   it('unwitnesses safely, including an already-unwitnessed post', async () => {
     database.witness.count.mockResolvedValue(0);
     database.witness.findFirst.mockResolvedValue(null);
 
-    await expect(
-      service.unwitness('user-1', 'post-1'),
-    ).resolves.toEqual({
+    await expect(service.unwitness('user-1', 'post-1')).resolves.toEqual({
       witnessCount: 0,
       witnessedByMe: false,
+      verification: {
+        status: 'REPORTED',
+        witnessCount: 1,
+      },
     });
 
     expect(database.witness.deleteMany).toHaveBeenCalledWith({
@@ -95,32 +145,53 @@ describe('WitnessService', () => {
         postId: 'post-1',
       },
     });
+
+    expect(verificationService.evaluatePost).not.toHaveBeenCalled();
+  });
+
+  it('does not downgrade LOCALLY_VERIFIED after unwitness', async () => {
+    verificationService.getVerificationStatus.mockResolvedValue({
+      status: 'LOCALLY_VERIFIED',
+      witnessCount: 1,
+    });
+
+    await expect(service.unwitness('user-1', 'post-1')).resolves.toEqual({
+      witnessCount: 1,
+      witnessedByMe: true,
+      verification: {
+        status: 'LOCALLY_VERIFIED',
+        witnessCount: 1,
+      },
+    });
   });
 
   it('rejects witnessing a missing or deleted post', async () => {
     database.post.findFirst.mockResolvedValue(null);
 
-    await expect(
-      service.witness('user-1', 'missing'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.witness('user-1', 'missing')).rejects.toThrow(
+      NotFoundException,
+    );
 
-    await expect(
-      service.unwitness('user-1', 'missing'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.unwitness('user-1', 'missing')).rejects.toThrow(
+      NotFoundException,
+    );
 
     expect(database.witness.upsert).not.toHaveBeenCalled();
     expect(database.witness.deleteMany).not.toHaveBeenCalled();
+    expect(verificationService.evaluatePost).not.toHaveBeenCalled();
   });
 
   it('returns count and current-user state without exposing witness rows', async () => {
     database.witness.count.mockResolvedValue(2);
     database.witness.findFirst.mockResolvedValue(null);
 
-    await expect(
-      service.getStatus('user-2', 'post-1'),
-    ).resolves.toEqual({
+    await expect(service.getStatus('user-2', 'post-1')).resolves.toEqual({
       witnessCount: 2,
       witnessedByMe: false,
+      verification: {
+        status: 'REPORTED',
+        witnessCount: 1,
+      },
     });
   });
 
@@ -141,40 +212,46 @@ describe('WitnessService', () => {
   it('rejects witnessing a soft-deleted post', async () => {
     database.post.findFirst.mockResolvedValue(null);
 
-    await expect(
-      service.witness('user-1', 'deleted-post'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.witness('user-1', 'deleted-post')).rejects.toThrow(
+      NotFoundException,
+    );
 
-    await expect(
-      service.unwitness('user-1', 'deleted-post'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.unwitness('user-1', 'deleted-post')).rejects.toThrow(
+      NotFoundException,
+    );
 
-    await expect(
-      service.getStatus('user-1', 'deleted-post'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getStatus('user-1', 'deleted-post')).rejects.toThrow(
+      NotFoundException,
+    );
 
     expect(database.witness.upsert).not.toHaveBeenCalled();
     expect(database.witness.deleteMany).not.toHaveBeenCalled();
+    expect(verificationService.evaluatePost).not.toHaveBeenCalled();
+    expect(verificationService.getVerificationStatus).not.toHaveBeenCalled();
   });
 
   it('keeps witness state isolated per user', async () => {
     database.witness.count.mockResolvedValue(1);
     database.witness.findFirst.mockResolvedValue({ id: 'witness-1' });
 
-    await expect(
-      service.getStatus('user-1', 'post-1'),
-    ).resolves.toEqual({
+    await expect(service.getStatus('user-1', 'post-1')).resolves.toEqual({
       witnessCount: 1,
       witnessedByMe: true,
+      verification: {
+        status: 'REPORTED',
+        witnessCount: 1,
+      },
     });
 
     database.witness.findFirst.mockResolvedValue(null);
 
-    await expect(
-      service.getStatus('user-2', 'post-1'),
-    ).resolves.toEqual({
+    await expect(service.getStatus('user-2', 'post-1')).resolves.toEqual({
       witnessCount: 1,
       witnessedByMe: false,
+      verification: {
+        status: 'REPORTED',
+        witnessCount: 1,
+      },
     });
   });
 });

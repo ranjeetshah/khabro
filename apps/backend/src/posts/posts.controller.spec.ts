@@ -3,6 +3,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { LikesService } from './likes.service';
+import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -26,6 +27,10 @@ describe('PostsController', () => {
     witness: jest.fn(),
     unwitness: jest.fn(),
     getStatus: jest.fn(),
+  };
+
+  const verificationService = {
+    getVerificationStatus: jest.fn(),
   };
 
   const authenticatedRequest = {
@@ -52,6 +57,10 @@ describe('PostsController', () => {
           provide: WitnessService,
           useValue: witnessService,
         },
+        {
+          provide: VerificationService,
+          useValue: verificationService,
+        },
       ],
     })
       .overrideGuard(JwtAuthGuard)
@@ -74,17 +83,11 @@ describe('PostsController', () => {
       content: 'Hello locally',
     });
 
-    const result = await controller.create(
-      authenticatedRequest,
-      {
-        content: 'Hello locally',
-      } as any,
-    );
+    const result = await controller.create(authenticatedRequest, {
+      content: 'Hello locally',
+    } as any);
 
-    expect(service.create).toHaveBeenCalledWith(
-      'user-1',
-      'Hello locally',
-    );
+    expect(service.create).toHaveBeenCalledWith('user-1', 'Hello locally');
 
     expect(result).toEqual({
       id: 'post-1',
@@ -101,9 +104,7 @@ describe('PostsController', () => {
       },
     ]);
 
-    await expect(
-      controller.findMine(authenticatedRequest),
-    ).resolves.toEqual([
+    await expect(controller.findMine(authenticatedRequest)).resolves.toEqual([
       {
         id: 'post-1',
         authorId: 'user-1',
@@ -120,27 +121,18 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.findOne(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.findOne(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       id: 'post-1',
       authorId: 'user-1',
     });
 
-    expect(service.findOne).toHaveBeenCalledWith(
-      'post-1',
-      'user-1',
-    );
+    expect(service.findOne).toHaveBeenCalledWith('post-1', 'user-1');
 
     service.findOne.mockResolvedValue(null);
 
     await expect(
-      controller.findOne(
-        authenticatedRequest,
-        'missing-post',
-      ),
+      controller.findOne(authenticatedRequest, 'missing-post'),
     ).resolves.toEqual({
       message: 'Post not found',
     });
@@ -152,36 +144,22 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.delete(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.delete(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       success: true,
     });
 
-    expect(service.delete).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(service.delete).toHaveBeenCalledWith('user-1', 'post-1');
   });
 
   it('propagates author ownership rejection', async () => {
-    service.delete.mockRejectedValue(
-      new ForbiddenException('Not allowed'),
-    );
+    service.delete.mockRejectedValue(new ForbiddenException('Not allowed'));
 
     await expect(
-      controller.delete(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.delete(authenticatedRequest, 'post-1'),
     ).rejects.toThrow(ForbiddenException);
 
-    expect(service.delete).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(service.delete).toHaveBeenCalledWith('user-1', 'post-1');
   });
 
   it('uses JWT identity for like endpoints', async () => {
@@ -201,10 +179,7 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.like(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.like(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       like: {
         likeCount: 1,
@@ -212,16 +187,10 @@ describe('PostsController', () => {
       },
     });
 
-    expect(likesService.like).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(likesService.like).toHaveBeenCalledWith('user-1', 'post-1');
 
     await expect(
-      controller.unlike(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.unlike(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       like: {
         likeCount: 0,
@@ -229,16 +198,10 @@ describe('PostsController', () => {
       },
     });
 
-    expect(likesService.unlike).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(likesService.unlike).toHaveBeenCalledWith('user-1', 'post-1');
 
     await expect(
-      controller.getLikes(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.getLikes(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       like: {
         likeCount: 1,
@@ -246,10 +209,7 @@ describe('PostsController', () => {
       },
     });
 
-    expect(likesService.getStatus).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(likesService.getStatus).toHaveBeenCalledWith('user-1', 'post-1');
   });
 
   it('uses JWT identity for witness endpoint', async () => {
@@ -259,10 +219,7 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.witness(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.witness(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       witness: {
         witnessCount: 1,
@@ -270,10 +227,7 @@ describe('PostsController', () => {
       },
     });
 
-    expect(witnessService.witness).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(witnessService.witness).toHaveBeenCalledWith('user-1', 'post-1');
   });
 
   it('uses JWT identity for unwitness endpoint', async () => {
@@ -283,10 +237,7 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.unwitness(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.unwitness(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       witness: {
         witnessCount: 0,
@@ -294,10 +245,7 @@ describe('PostsController', () => {
       },
     });
 
-    expect(witnessService.unwitness).toHaveBeenCalledWith(
-      'user-1',
-      'post-1',
-    );
+    expect(witnessService.unwitness).toHaveBeenCalledWith('user-1', 'post-1');
   });
 
   it('uses JWT identity for witness status endpoint', async () => {
@@ -307,10 +255,7 @@ describe('PostsController', () => {
     });
 
     await expect(
-      controller.getWitnesses(
-        authenticatedRequest,
-        'post-1',
-      ),
+      controller.getWitnesses(authenticatedRequest, 'post-1'),
     ).resolves.toEqual({
       witness: {
         witnessCount: 2,
@@ -318,9 +263,34 @@ describe('PostsController', () => {
       },
     });
 
-    expect(witnessService.getStatus).toHaveBeenCalledWith(
-      'user-1',
+    expect(witnessService.getStatus).toHaveBeenCalledWith('user-1', 'post-1');
+  });
+
+  it('returns verification metadata with only safe public fields', async () => {
+    verificationService.getVerificationStatus.mockResolvedValue({
+      status: 'LOCALLY_VERIFIED',
+      witnessCount: 2,
+    });
+
+    await expect(controller.getVerification('post-1')).resolves.toEqual({
+      status: 'LOCALLY_VERIFIED',
+      witnessCount: 2,
+    });
+
+    expect(verificationService.getVerificationStatus).toHaveBeenCalledWith(
       'post-1',
     );
+  });
+
+  it('reports REPORTED for a freshly created post via the verification endpoint', async () => {
+    verificationService.getVerificationStatus.mockResolvedValue({
+      status: 'REPORTED',
+      witnessCount: 0,
+    });
+
+    await expect(controller.getVerification('new-post')).resolves.toEqual({
+      status: 'REPORTED',
+      witnessCount: 0,
+    });
   });
 });

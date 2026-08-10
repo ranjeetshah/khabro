@@ -11,6 +11,7 @@ import 'package:mobile/features/location/data/locality_service.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
+import 'package:mobile/features/posts/data/verification_status.dart';
 import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -32,6 +33,7 @@ PostModel authoredPost(
   bool? likedByMe,
   int? witnessCount,
   bool? witnessedByMe,
+  VerificationStatus verificationStatus = VerificationStatus.reported,
 }) => PostModel(
   id: id,
   authorId: 'private-author-id',
@@ -44,6 +46,7 @@ PostModel authoredPost(
   likedByMe: likedByMe,
   witnessCount: witnessCount,
   witnessedByMe: witnessedByMe,
+  verificationStatus: verificationStatus,
 );
 
 class FakeFeedService extends FeedService {
@@ -496,6 +499,37 @@ void main() {
     await tester.pumpAndSettle();
     expect(postsService.witnessCalls, 2);
     expect(find.text('Witnessed 1'), findsOneWidget);
+  });
+
+  testWidgets('feed shows a compact badge only for active verification states', (
+    tester,
+  ) async {
+    final feedService = FakeFeedService([
+      FeedPageModel(
+        items: [
+          authoredPost('post-reported', 'Reported post'),
+          authoredPost(
+            'post-progress',
+            'Verification in progress post',
+            verificationStatus: VerificationStatus.underVerification,
+          ),
+          authoredPost(
+            'post-verified',
+            'Locally verified post',
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+        ],
+        nextCursor: null,
+      ),
+    ]);
+    await tester.pumpWidget(
+      MaterialApp(home: FeedScreen(feedService: feedService)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Community verification in progress'), findsOneWidget);
+    expect(find.text('Locally verified'), findsOneWidget);
+    expect(find.text('Reported locally'), findsNothing);
   });
 }
 

@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { VerificationService } from './verification.service';
 
 @Injectable()
 export class WitnessService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly verificationService: VerificationService,
+  ) {}
 
   async witness(userId: string, postId: string) {
     await this.assertPostExists(postId);
@@ -22,7 +26,13 @@ export class WitnessService {
       update: {},
     });
 
-    return this.status(userId, postId);
+    const verification = await this.verificationService.evaluatePost(postId);
+    const status = await this.status(userId, postId);
+
+    return {
+      ...status,
+      verification,
+    };
   }
 
   async unwitness(userId: string, postId: string) {
@@ -35,13 +45,25 @@ export class WitnessService {
       },
     });
 
-    return this.status(userId, postId);
+    const status = await this.status(userId, postId);
+
+    return {
+      ...status,
+      verification:
+        await this.verificationService.getVerificationStatus(postId),
+    };
   }
 
   async getStatus(userId: string, postId: string) {
     await this.assertPostExists(postId);
 
-    return this.status(userId, postId);
+    const status = await this.status(userId, postId);
+
+    return {
+      ...status,
+      verification:
+        await this.verificationService.getVerificationStatus(postId),
+    };
   }
 
   private async assertPostExists(postId: string) {

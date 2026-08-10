@@ -1,4 +1,5 @@
 import '../../users/data/public_user_model.dart';
+import 'verification_status.dart';
 
 class PostModel {
   const PostModel({
@@ -13,6 +14,7 @@ class PostModel {
     this.likedByMe,
     this.witnessCount,
     this.witnessedByMe,
+    this.verificationStatus = VerificationStatus.reported,
   });
 
   final String id;
@@ -26,6 +28,7 @@ class PostModel {
   final bool? likedByMe;
   final int? witnessCount;
   final bool? witnessedByMe;
+  final VerificationStatus verificationStatus;
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
@@ -42,7 +45,17 @@ class PostModel {
       likedByMe: json['likedByMe'] as bool?,
       witnessCount: json['witnessCount'] as int?,
       witnessedByMe: json['witnessedByMe'] as bool?,
+      verificationStatus: PostModel._safeVerificationStatus(
+        json['verificationStatus'] as String?,
+      ),
     );
+  }
+
+  static VerificationStatus _safeVerificationStatus(String? value) {
+    final parsed = VerificationStatus.fromWire(value);
+    return parsed == VerificationStatus.unknown
+        ? VerificationStatus.reported
+        : parsed;
   }
 
   PostModel copyWith({
@@ -50,6 +63,7 @@ class PostModel {
     bool? likedByMe,
     int? witnessCount,
     bool? witnessedByMe,
+    VerificationStatus? verificationStatus,
   }) {
     return PostModel(
       id: id,
@@ -63,6 +77,7 @@ class PostModel {
       likedByMe: likedByMe ?? this.likedByMe,
       witnessCount: witnessCount ?? this.witnessCount,
       witnessedByMe: witnessedByMe ?? this.witnessedByMe,
+      verificationStatus: verificationStatus ?? this.verificationStatus,
     );
   }
 
@@ -80,6 +95,9 @@ class PostModel {
     if (likedByMe != null) json['likedByMe'] = likedByMe;
     if (witnessCount != null) json['witnessCount'] = witnessCount;
     if (witnessedByMe != null) json['witnessedByMe'] = witnessedByMe;
+    if (verificationStatus != VerificationStatus.reported) {
+      json['verificationStatus'] = verificationStatus.wire;
+    }
     return json;
   }
 }

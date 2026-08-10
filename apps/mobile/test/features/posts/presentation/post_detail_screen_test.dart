@@ -4,13 +4,18 @@ import 'package:mobile/features/auth/data/auth_exception.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
+import 'package:mobile/features/posts/data/verification_status.dart';
+import 'package:mobile/features/posts/data/verification_status_model.dart';
 import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/posts/presentation/post_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
 import 'package:mobile/features/users/presentation/public_author_profile_screen.dart';
 
-PostModel detailPost({String? name = 'Test User'}) => PostModel(
+PostModel detailPost({
+  String? name = 'Test User',
+  VerificationStatus verificationStatus = VerificationStatus.reported,
+}) => PostModel(
   id: 'post-1',
   authorId: 'private-author-id',
   localityId: 'private-locality-id',
@@ -18,6 +23,7 @@ PostModel detailPost({String? name = 'Test User'}) => PostModel(
   createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
   updatedAt: DateTime.parse('2026-08-09T08:00:01.000Z'),
   author: PublicUserModel(id: 'author-1', name: name),
+  verificationStatus: verificationStatus,
 );
 
 class FakePublicUserService extends PublicUserService {
@@ -37,16 +43,20 @@ class FakePublicUserService extends PublicUserService {
 }
 
 class FakeDeletePostsService extends PostsService {
-  FakeDeletePostsService({this.errors = const []})
-    : super(apiClient: null, tokenStorage: null);
+  FakeDeletePostsService({
+    this.errors = const [],
+    this.verificationStatus = VerificationStatus.reported,
+  }) : super(apiClient: null, tokenStorage: null);
 
   final List<Object> errors;
+  VerificationStatus verificationStatus;
   var calls = 0;
   String? deletedId;
   var likeCalls = 0;
   var unlikeCalls = 0;
   var witnessCalls = 0;
   var unwitnessCalls = 0;
+  var verificationCalls = 0;
 
   @override
   Future<void> deletePost(String id) async {
@@ -77,6 +87,15 @@ class FakeDeletePostsService extends PostsService {
   Future<WitnessStatusModel> unwitnessPost(String id) async {
     unwitnessCalls++;
     return const WitnessStatusModel(witnessCount: 0, witnessedByMe: false);
+  }
+
+  @override
+  Future<VerificationStatusModel> getVerificationStatus(String id) async {
+    verificationCalls++;
+    return VerificationStatusModel(
+      status: verificationStatus,
+      witnessCount: 0,
+    );
   }
 }
 
@@ -296,5 +315,98 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text("Couldn't delete this post."), findsOneWidget);
     expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets('REPORTED post shows the reported locally label', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(home: PostDetailScreen(post: detailPost())),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Reported locally'), findsOneWidget);
+    expect(find.text('Locally verified'), findsNothing);
+    expect(find.text('Community verification in progress'), findsNothing);
+  });
+
+  testWidgets('UNDER_VERIFICATION post shows verification in progress', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.underVerification,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Community verification in progress'), findsOneWidget);
+    expect(find.text('Reported locally'), findsNothing);
+    expect(find.text('Locally verified'), findsNothing);
+    expect(service.verificationCalls, 1);
+  });
+
+  testWidgets('LOCALLY_VERIFIED post shows the locally verified label', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Locally verified'), findsOneWidget);
+    expect(find.text('Reported locally'), findsNothing);
+    expect(find.text('Community verification in progress'), findsNothing);
+    expect(find.text('True'), findsNothing);
+    expect(find.text('Confirmed'), findsNothing);
+    expect(find.text('Officially verified'), findsNothing);
+    expect(find.text('Government verified'), findsNothing);
+  });
+
+  testWidgets('unknown future status falls back to the reported label', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.unknown,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Reported locally'), findsOneWidget);
+    expect(find.text('Locally verified'), findsNothing);
+  });
+
+  testWidgets('verification section never exposes private metadata', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('private-author-id'), findsNothing);
+    expect(find.text('private-locality-id'), findsNothing);
+    expect(find.text('author-1'), findsNothing);
+    expect(find.text('latitude'), findsNothing);
+    expect(find.text('longitude'), findsNothing);
+    expect(find.text('JWT'), findsNothing);
   });
 }

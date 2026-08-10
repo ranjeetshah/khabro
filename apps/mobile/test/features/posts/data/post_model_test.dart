@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
+import 'package:mobile/features/posts/data/verification_status.dart';
 
 const postJson = {
   'id': 'post-1',
@@ -57,5 +58,48 @@ void main() {
     expect(post.witnessedByMe, isTrue);
     expect(post.toJson()['witnessCount'], 3);
     expect(post.toJson()['witnessedByMe'], isTrue);
+  });
+
+  test('defaults to REPORTED when verification status is absent', () {
+    final post = PostModel.fromJson(postJson);
+    expect(post.verificationStatus, VerificationStatus.reported);
+    expect(post.toJson().containsKey('verificationStatus'), isFalse);
+  });
+
+  test('parses known verification statuses', () {
+    final under = PostModel.fromJson({
+      ...postJson,
+      'verificationStatus': 'UNDER_VERIFICATION',
+    });
+    expect(under.verificationStatus, VerificationStatus.underVerification);
+    expect(under.toJson()['verificationStatus'], 'UNDER_VERIFICATION');
+
+    final verified = PostModel.fromJson({
+      ...postJson,
+      'verificationStatus': 'LOCALLY_VERIFIED',
+    });
+    expect(verified.verificationStatus, VerificationStatus.locallyVerified);
+    expect(verified.toJson()['verificationStatus'], 'LOCALLY_VERIFIED');
+  });
+
+  test('unknown future verification statuses never crash parsing', () {
+    final post = PostModel.fromJson({
+      ...postJson,
+      'verificationStatus': 'AUTHORITY_CONFIRMED',
+    });
+    expect(post.verificationStatus, VerificationStatus.reported);
+    expect(post.verificationStatus.isUnknown, isFalse);
+  });
+
+  test('copyWith preserves and overrides verification status', () {
+    final post = PostModel.fromJson({
+      ...postJson,
+      'verificationStatus': 'UNDER_VERIFICATION',
+    });
+    final promoted = post.copyWith(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    expect(promoted.verificationStatus, VerificationStatus.locallyVerified);
+    expect(post.verificationStatus, VerificationStatus.underVerification);
   });
 }
