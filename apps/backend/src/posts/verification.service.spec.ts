@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../database/database.service';
+import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 
 describe('VerificationService', () => {
@@ -19,6 +20,10 @@ describe('VerificationService', () => {
 
   const config = {
     get: jest.fn(),
+  };
+
+  const verificationHistory = {
+    recordStatusChanged: jest.fn(),
   };
 
   const postStatus = (status: string) => ({
@@ -40,6 +45,10 @@ describe('VerificationService', () => {
           provide: ConfigService,
           useValue: config,
         },
+        {
+          provide: VerificationHistoryService,
+          useValue: verificationHistory,
+        },
       ],
     }).compile();
 
@@ -47,6 +56,7 @@ describe('VerificationService', () => {
 
     config.get.mockReturnValue(undefined);
     database.witness.count.mockResolvedValue(0);
+    verificationHistory.recordStatusChanged.mockResolvedValue(undefined);
   });
 
   it('is defined', () => {
@@ -76,6 +86,62 @@ describe('VerificationService', () => {
       where: { id: 'post-1' },
       data: { verificationStatus: 'UNDER_VERIFICATION' },
     });
+  });
+
+  it('records a STATUS_CHANGED event and STATUS_TRANSITION contribution on transition', async () => {
+    database.post.findFirst.mockResolvedValue(postStatus('REPORTED'));
+    database.witness.count.mockResolvedValue(1);
+
+    await service.evaluatePost('post-1');
+
+    expect(verificationHistory.recordStatusChanged).toHaveBeenCalledWith(
+      'post-1',
+      'REPORTED',
+      'UNDER_VERIFICATION',
+      undefined,
+    );
+  });
+
+  it('records nothing when the status does not change', async () => {
+    database.post.findFirst.mockResolvedValue(postStatus('UNDER_VERIFICATION'));
+    database.witness.count.mockResolvedValue(1);
+
+    await service.evaluatePost('post-1');
+
+    expect(database.post.update).not.toHaveBeenCalled();
+    expect(verificationHistory.recordStatusChanged).not.toHaveBeenCalled();
+  });
+
+  it('forwards the transaction client when evaluating inside one', async () => {
+    database.post.findFirst.mockResolvedValue(postStatus('REPORTED'));
+    database.witness.count.mockResolvedValue(1);
+
+    const tx = {
+      post: {
+        findFirst: jest.fn().mockResolvedValue(postStatus('REPORTED')),
+        update: jest.fn().mockResolvedValue({}),
+      },
+      witness: {
+        count: jest.fn().mockResolvedValue(1),
+      },
+    };
+
+    await service.evaluatePost('post-1', tx as never);
+
+    expect(tx.post.findFirst).toHaveBeenCalled();
+    expect(tx.witness.count).toHaveBeenCalled();
+    expect(tx.post.update).toHaveBeenCalledWith({
+      where: { id: 'post-1' },
+      data: { verificationStatus: 'UNDER_VERIFICATION' },
+    });
+    expect(verificationHistory.recordStatusChanged).toHaveBeenCalledWith(
+      'post-1',
+      'REPORTED',
+      'UNDER_VERIFICATION',
+      tx,
+    );
+    expect(database.post.findFirst).not.toHaveBeenCalled();
+    expect(database.post.update).not.toHaveBeenCalled();
   });
 
   it('moves UNDER_VERIFICATION to LOCALLY_VERIFIED at the threshold', async () => {

@@ -9,40 +9,50 @@
  * This file does not contain a `PrismaClient` class, nor several other helpers that are intended as server-side only.
  * See `client.ts` for the standard, server-side entry point.
  *
- * 🟢 You can import this file directly.
+ * ðŸŸ¢ You can import this file directly.
  */
 
-import * as Prisma from './internal/prismaNamespaceBrowser.js';
-export { Prisma };
-export * as $Enums from './enums.js';
+import * as Prisma from './internal/prismaNamespaceBrowser.js'
+export { Prisma }
+export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
  * Model User
  *
  */
-export type User = Prisma.UserModel;
+export type User = Prisma.UserModel
 /**
  * Model UserLocation
  *
  */
-export type UserLocation = Prisma.UserLocationModel;
+export type UserLocation = Prisma.UserLocationModel
 /**
  * Model Locality
  *
  */
-export type Locality = Prisma.LocalityModel;
+export type Locality = Prisma.LocalityModel
 /**
  * Model Post
  *
  */
-export type Post = Prisma.PostModel;
+export type Post = Prisma.PostModel
 /**
  * Model Like
  *
  */
-export type Like = Prisma.LikeModel;
+export type Like = Prisma.LikeModel
 /**
  * Model Witness
  *
  */
-export type Witness = Prisma.WitnessModel;
+export type Witness = Prisma.WitnessModel
+/**
+ * Model VerificationEvent
+ *
+ */
+export type VerificationEvent = Prisma.VerificationEventModel
+/**
+ * Model VerificationContribution
+ *
+ */
+export type VerificationContribution = Prisma.VerificationContributionModel

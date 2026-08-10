@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { LikesService } from './likes.service';
 import { PostsService } from './posts.service';
+import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
 
@@ -30,6 +31,7 @@ export class PostsController {
     private readonly likesService: LikesService,
     private readonly witnessService: WitnessService,
     private readonly verificationService: VerificationService,
+    private readonly verificationHistoryService: VerificationHistoryService,
   ) {}
 
   private userId(request: Request): string {
@@ -109,5 +111,10 @@ export class PostsController {
   @Get(':id/verification')
   async getVerification(@Param('id') id: string) {
     return this.verificationService.getVerificationStatus(id);
+  }
+
+  @Get(':id/verification/history')
+  async getVerificationHistory(@Param('id') id: string) {
+    return this.verificationHistoryService.getHistory(id);
   }
 }

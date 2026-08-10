@@ -1,27 +1,49 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
+import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
 
 describe('WitnessService', () => {
   let service: WitnessService;
 
-  const database = {
+  const transactionClient = {
     post: {
       findFirst: jest.fn(),
+      update: jest.fn(),
     },
     witness: {
-      upsert: jest.fn(),
+      findUnique: jest.fn(),
+      create: jest.fn(),
       deleteMany: jest.fn(),
       count: jest.fn(),
       findFirst: jest.fn(),
     },
   };
 
+  const database = {
+    post: {
+      findFirst: jest.fn(),
+    },
+    witness: {
+      count: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    $transaction: jest.fn((callback: (tx: any) => Promise<unknown>) =>
+      callback(transactionClient),
+    ),
+  };
+
   const verificationService = {
     evaluatePost: jest.fn(),
     getVerificationStatus: jest.fn(),
+  };
+
+  const verificationHistory = {
+    recordWitnessAdded: jest.fn(),
+    recordWitnessRemoved: jest.fn(),
+    recordWitnessContribution: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -38,6 +60,10 @@ describe('WitnessService', () => {
           provide: VerificationService,
           useValue: verificationService,
         },
+        {
+          provide: VerificationHistoryService,
+          useValue: verificationHistory,
+        },
       ],
     }).compile();
 
@@ -47,8 +73,17 @@ describe('WitnessService', () => {
       id: 'post-1',
     });
 
-    database.witness.count.mockResolvedValue(1);
+    transactionClient.witness.findUnique.mockResolvedValue(null);
+    transactionClient.witness.create.mockResolvedValue({
+      id: 'witness-1',
+    });
+    transactionClient.witness.deleteMany.mockResolvedValue({ count: 1 });
+    transactionClient.witness.count.mockResolvedValue(1);
+    transactionClient.witness.findFirst.mockResolvedValue({
+      id: 'witness-1',
+    });
 
+    database.witness.count.mockResolvedValue(1);
     database.witness.findFirst.mockResolvedValue({
       id: 'witness-1',
     });
@@ -78,27 +113,48 @@ describe('WitnessService', () => {
       },
     });
 
-    expect(database.witness.upsert).toHaveBeenCalledWith({
+    expect(transactionClient.witness.create).toHaveBeenCalledWith({
+      data: {
+        userId: 'user-1',
+        postId: 'post-1',
+      },
+    });
+  });
+
+  it('records a WITNESS_ADDED event and WITNESS contribution for a new witness', async () => {
+    await service.witness('user-1', 'post-1');
+
+    expect(transactionClient.witness.findUnique).toHaveBeenCalledWith({
       where: {
         userId_postId: {
           userId: 'user-1',
           postId: 'post-1',
         },
       },
-      create: {
-        userId: 'user-1',
-        postId: 'post-1',
+      select: {
+        id: true,
       },
-      update: {},
     });
+    expect(verificationHistory.recordWitnessAdded).toHaveBeenCalledWith(
+      'post-1',
+      transactionClient,
+    );
+    expect(verificationHistory.recordWitnessContribution).toHaveBeenCalledWith(
+      'post-1',
+      transactionClient,
+    );
+    expect(transactionClient.witness.create).toHaveBeenCalledTimes(1);
   });
 
-  it('evaluates verification state after saving a witness', async () => {
+  it('evaluates verification state inside the same transaction after saving a witness', async () => {
     await service.witness('user-1', 'post-1');
 
-    expect(database.witness.upsert).toHaveBeenCalledTimes(1);
-    expect(verificationService.evaluatePost).toHaveBeenCalledWith('post-1');
-    expect(database.witness.count).toHaveBeenCalled();
+    expect(database.$transaction).toHaveBeenCalledTimes(1);
+    expect(transactionClient.witness.create).toHaveBeenCalledTimes(1);
+    expect(verificationService.evaluatePost).toHaveBeenCalledWith(
+      'post-1',
+      transactionClient,
+    );
   });
 
   it('reports LOCALLY_VERIFIED once the second unique witness reaches the threshold', async () => {
@@ -106,7 +162,7 @@ describe('WitnessService', () => {
       status: 'LOCALLY_VERIFIED',
       witnessCount: 2,
     });
-    database.witness.count.mockResolvedValue(2);
+    transactionClient.witness.count.mockResolvedValue(2);
 
     await expect(service.witness('user-2', 'post-1')).resolves.toEqual({
       witnessCount: 2,
@@ -118,17 +174,43 @@ describe('WitnessService', () => {
     });
   });
 
-  it('uses an idempotent upsert for duplicate witnesses', async () => {
-    await service.witness('user-1', 'post-1');
+  it('records no event or contribution for a duplicate witness', async () => {
+    transactionClient.witness.findUnique.mockResolvedValue({
+      id: 'witness-1',
+    });
+
     await service.witness('user-1', 'post-1');
 
-    expect(database.witness.upsert).toHaveBeenCalledTimes(2);
-    expect(verificationService.evaluatePost).toHaveBeenCalledTimes(2);
+    expect(transactionClient.witness.create).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessAdded).not.toHaveBeenCalled();
+    expect(
+      verificationHistory.recordWitnessContribution,
+    ).not.toHaveBeenCalled();
+    expect(verificationService.evaluatePost).toHaveBeenCalledTimes(1);
+  });
+
+  it('wraps witness create, events, contribution, and evaluation in one transaction', async () => {
+    await service.witness('user-1', 'post-1');
+
+    const callback = database.$transaction.mock.calls[0][0];
+    const tx = transactionClient;
+    tx.witness.findUnique.mockClear();
+    tx.witness.create.mockClear();
+    verificationHistory.recordWitnessAdded.mockClear();
+    verificationHistory.recordWitnessContribution.mockClear();
+
+    await callback(tx);
+
+    expect(tx.witness.findUnique).toHaveBeenCalled();
+    expect(tx.witness.create).toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessAdded).toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessContribution).toHaveBeenCalled();
   });
 
   it('unwitnesses safely, including an already-unwitnessed post', async () => {
-    database.witness.count.mockResolvedValue(0);
-    database.witness.findFirst.mockResolvedValue(null);
+    transactionClient.witness.deleteMany.mockResolvedValue({ count: 0 });
+    transactionClient.witness.count.mockResolvedValue(0);
+    transactionClient.witness.findFirst.mockResolvedValue(null);
 
     await expect(service.unwitness('user-1', 'post-1')).resolves.toEqual({
       witnessCount: 0,
@@ -139,14 +221,27 @@ describe('WitnessService', () => {
       },
     });
 
-    expect(database.witness.deleteMany).toHaveBeenCalledWith({
+    expect(transactionClient.witness.deleteMany).toHaveBeenCalledWith({
       where: {
         userId: 'user-1',
         postId: 'post-1',
       },
     });
 
+    expect(verificationHistory.recordWitnessRemoved).not.toHaveBeenCalled();
+    expect(
+      verificationHistory.recordWitnessContribution,
+    ).not.toHaveBeenCalled();
     expect(verificationService.evaluatePost).not.toHaveBeenCalled();
+  });
+
+  it('records a WITNESS_REMOVED event only when a witness was actually removed', async () => {
+    await service.unwitness('user-1', 'post-1');
+
+    expect(verificationHistory.recordWitnessRemoved).toHaveBeenCalledWith(
+      'post-1',
+      transactionClient,
+    );
   });
 
   it('does not downgrade LOCALLY_VERIFIED after unwitness', async () => {
@@ -163,6 +258,11 @@ describe('WitnessService', () => {
         witnessCount: 1,
       },
     });
+
+    expect(verificationService.getVerificationStatus).toHaveBeenCalledWith(
+      'post-1',
+      transactionClient,
+    );
   });
 
   it('rejects witnessing a missing or deleted post', async () => {
@@ -176,8 +276,9 @@ describe('WitnessService', () => {
       NotFoundException,
     );
 
-    expect(database.witness.upsert).not.toHaveBeenCalled();
-    expect(database.witness.deleteMany).not.toHaveBeenCalled();
+    expect(database.$transaction).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessAdded).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessRemoved).not.toHaveBeenCalled();
     expect(verificationService.evaluatePost).not.toHaveBeenCalled();
   });
 
@@ -224,15 +325,16 @@ describe('WitnessService', () => {
       NotFoundException,
     );
 
-    expect(database.witness.upsert).not.toHaveBeenCalled();
-    expect(database.witness.deleteMany).not.toHaveBeenCalled();
+    expect(database.$transaction).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessAdded).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessRemoved).not.toHaveBeenCalled();
     expect(verificationService.evaluatePost).not.toHaveBeenCalled();
     expect(verificationService.getVerificationStatus).not.toHaveBeenCalled();
   });
 
   it('keeps witness state isolated per user', async () => {
-    database.witness.count.mockResolvedValue(1);
-    database.witness.findFirst.mockResolvedValue({ id: 'witness-1' });
+    transactionClient.witness.count.mockResolvedValue(1);
+    transactionClient.witness.findFirst.mockResolvedValue({ id: 'witness-1' });
 
     await expect(service.getStatus('user-1', 'post-1')).resolves.toEqual({
       witnessCount: 1,
@@ -253,5 +355,15 @@ describe('WitnessService', () => {
         witnessCount: 1,
       },
     });
+  });
+
+  it('never records history for a plain status read', async () => {
+    await service.getStatus('user-1', 'post-1');
+
+    expect(verificationHistory.recordWitnessAdded).not.toHaveBeenCalled();
+    expect(verificationHistory.recordWitnessRemoved).not.toHaveBeenCalled();
+    expect(
+      verificationHistory.recordWitnessContribution,
+    ).not.toHaveBeenCalled();
   });
 });

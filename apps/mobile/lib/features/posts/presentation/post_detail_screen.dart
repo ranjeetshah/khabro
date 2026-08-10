@@ -5,6 +5,8 @@ import '../../users/data/public_user_service.dart';
 import '../../users/presentation/public_author_profile_screen.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
+import '../data/verification_event.dart';
+import '../data/verification_history_model.dart';
 import '../data/verification_status.dart';
 import '../data/witness_status_model.dart';
 import 'verification_status_badge.dart';
@@ -38,6 +40,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   int _witnessCount = 0;
   bool _witnessedByMe = false;
   VerificationStatus _verificationStatus = VerificationStatus.reported;
+  VerificationHistoryModel? _history;
+  bool _isHistoryLoading = false;
+  String? _historyError;
   String? _errorMessage;
   String? _likeError;
   String? _witnessError;
@@ -53,6 +58,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _witnessedByMe = widget.post.witnessedByMe ?? false;
     _verificationStatus = widget.post.verificationStatus;
     _loadVerification();
+    _loadHistory();
   }
 
   Future<void> _loadVerification() async {
@@ -66,6 +72,36 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       });
     } catch (_) {
       // Verification is display-only; keep the value from the post model.
+    }
+  }
+
+  Future<void> _loadHistory() async {
+    setState(() {
+      _isHistoryLoading = true;
+      _historyError = null;
+    });
+    try {
+      final history = await _postsService.getVerificationHistory(
+        widget.post.id,
+      );
+      if (!mounted) return;
+      setState(() {
+        _history = history;
+        _isHistoryLoading = false;
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      if (error.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _isHistoryLoading = false;
+        _historyError = "Couldn't load verification history.";
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isHistoryLoading = false;
+        _historyError = "Couldn't load verification history.";
+      });
     }
   }
 
@@ -316,6 +352,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               child: const Text('RETRY WITNESS'),
             ),
           ],
+          const Divider(height: 32),
+          _VerificationHistorySection(
+            isLoading: _isHistoryLoading,
+            history: _history,
+            errorMessage: _historyError,
+            onRetry: _loadHistory,
+          ),
           if (_errorMessage != null) ...[
             const SizedBox(height: 20),
             Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
@@ -332,5 +375,138 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         ],
       ),
     );
+  }
+}
+
+/// Human-readable label for a verification event. Never exposes identities.
+String verificationEventLabel(VerificationEventModel event) {
+  switch (event.type) {
+    case VerificationEventType.postCreated:
+      return 'Post reported locally';
+    case VerificationEventType.witnessAdded:
+      return 'A community member witnessed this';
+    case VerificationEventType.witnessRemoved:
+      return 'A community witness was removed';
+    case VerificationEventType.statusChanged:
+      return 'Verification status changed to '
+          '${verificationStatusName(event.toStatus)}';
+    case VerificationEventType.unknown:
+      return 'Verification activity';
+  }
+}
+
+/// Neutral name for a verification status inside the history timeline.
+String verificationStatusName(VerificationStatus? status) {
+  return switch (status) {
+    VerificationStatus.reported => 'Reported',
+    VerificationStatus.underVerification => 'Under verification',
+    VerificationStatus.locallyVerified => 'Locally verified',
+    VerificationStatus.unknown || null => 'a new status',
+  };
+}
+
+/// Privacy-safe verification timeline for a post. Only event metadata is
+/// shown — never witness identities, phone, locality, or coordinates.
+class _VerificationHistorySection extends StatelessWidget {
+  const _VerificationHistorySection({
+    required this.isLoading,
+    required this.history,
+    required this.errorMessage,
+    required this.onRetry,
+  });
+
+  final bool isLoading;
+  final VerificationHistoryModel? history;
+  final String? errorMessage;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Verification history',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 8),
+        if (isLoading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Center(
+              child: SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          )
+        else if (errorMessage != null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton(
+                onPressed: onRetry,
+                child: const Text('RETRY HISTORY'),
+              ),
+            ],
+          )
+        else if (history == null || history!.events.isEmpty)
+          const Text(
+            'No verification activity yet.',
+            style: TextStyle(color: Colors.grey, fontSize: 13),
+          )
+        else
+          ...history!.events.map(
+            (event) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2, right: 8),
+                    child: Icon(
+                      Icons.circle_outlined,
+                      size: 12,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          verificationEventLabel(event),
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        Text(
+                          _formatEventTime(event.createdAt),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _formatEventTime(DateTime dateTime) {
+    final local = dateTime.toLocal();
+    return '${local.day.toString().padLeft(2, '0')}/'
+        '${local.month.toString().padLeft(2, '0')}/${local.year} '
+        '${local.hour.toString().padLeft(2, '0')}:'
+        '${local.minute.toString().padLeft(2, '0')}';
   }
 }

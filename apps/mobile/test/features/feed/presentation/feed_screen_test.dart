@@ -12,6 +12,7 @@ import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
 import 'package:mobile/features/posts/data/verification_status.dart';
+import 'package:mobile/features/posts/data/verification_history_model.dart';
 import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -110,6 +111,10 @@ class FakeDeletePostsService extends PostsService {
 
   @override
   Future<void> deletePost(String id) async => calls++;
+
+  @override
+  Future<VerificationHistoryModel> getVerificationHistory(String id) async =>
+      const VerificationHistoryModel(events: []);
 }
 
 class FakeLikePostsService extends PostsService {
@@ -299,6 +304,7 @@ void main() {
       MaterialApp(
         home: FeedScreen(
           feedService: service,
+          postsService: FakeDeletePostsService(),
           publicUserService: FakePublicUserService(),
           currentUserId: 'private-author-id',
         ),

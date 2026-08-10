@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { Prisma } from '../generated/prisma/client';
+import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 
 @Injectable()
@@ -7,51 +9,75 @@ export class WitnessService {
   constructor(
     private readonly database: DatabaseService,
     private readonly verificationService: VerificationService,
+    private readonly verificationHistory: VerificationHistoryService,
   ) {}
 
   async witness(userId: string, postId: string) {
     await this.assertPostExists(postId);
 
-    await this.database.witness.upsert({
-      where: {
-        userId_postId: {
-          userId,
-          postId,
+    return this.database.$transaction(async (tx) => {
+      const existing = await tx.witness.findUnique({
+        where: {
+          userId_postId: {
+            userId,
+            postId,
+          },
         },
-      },
-      create: {
-        userId,
+        select: {
+          id: true,
+        },
+      });
+
+      if (!existing) {
+        await tx.witness.create({
+          data: {
+            userId,
+            postId,
+          },
+        });
+
+        await this.verificationHistory.recordWitnessAdded(postId, tx);
+        await this.verificationHistory.recordWitnessContribution(postId, tx);
+      }
+
+      const verification = await this.verificationService.evaluatePost(
         postId,
-      },
-      update: {},
+        tx,
+      );
+      const status = await this.status(userId, postId, tx);
+
+      return {
+        ...status,
+        verification,
+      };
     });
-
-    const verification = await this.verificationService.evaluatePost(postId);
-    const status = await this.status(userId, postId);
-
-    return {
-      ...status,
-      verification,
-    };
   }
 
   async unwitness(userId: string, postId: string) {
     await this.assertPostExists(postId);
 
-    await this.database.witness.deleteMany({
-      where: {
-        userId,
-        postId,
-      },
+    return this.database.$transaction(async (tx) => {
+      const removed = await tx.witness.deleteMany({
+        where: {
+          userId,
+          postId,
+        },
+      });
+
+      if (removed.count > 0) {
+        await this.verificationHistory.recordWitnessRemoved(postId, tx);
+      }
+
+      const status = await this.status(userId, postId, tx);
+
+      return {
+        ...status,
+        verification: await this.verificationService.getVerificationStatus(
+          postId,
+          tx,
+        ),
+      };
     });
-
-    const status = await this.status(userId, postId);
-
-    return {
-      ...status,
-      verification:
-        await this.verificationService.getVerificationStatus(postId),
-    };
   }
 
   async getStatus(userId: string, postId: string) {
@@ -82,12 +108,17 @@ export class WitnessService {
     }
   }
 
-  private async status(userId: string, postId: string) {
+  private async status(
+    userId: string,
+    postId: string,
+    client?: Prisma.TransactionClient,
+  ) {
+    const db = client ?? this.database;
     const [witnessCount, witnessed] = await Promise.all([
-      this.database.witness.count({
+      db.witness.count({
         where: { postId },
       }),
-      this.database.witness.findFirst({
+      db.witness.findFirst({
         where: {
           postId,
           userId,

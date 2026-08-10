@@ -5,7 +5,7 @@
 /*
  * WARNING: This is an internal file that is subject to change!
  *
- * 🛑 Under no circumstances should you import this file directly! 🛑
+ * ðŸ›‘ Under no circumstances should you import this file directly! ðŸ›‘
  *
  * All exports from this file are wrapped under a `Prisma` namespace object in the browser.ts file.
  * While this enables partial backward compatibility, it is not part of the stable public API.
@@ -14,44 +14,40 @@
  * model files in the `model` directory!
  */
 
-import * as runtime from '@prisma/client/runtime/index-browser';
+import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.js';
-export type * from './prismaNamespace.js';
+export type * from '../models.js'
+export type * from './prismaNamespace.js'
 
-export const Decimal = runtime.Decimal;
+export const Decimal = runtime.Decimal
+
 
 export const NullTypes = {
-  DbNull: runtime.NullTypes.DbNull as new (
-    secret: never,
-  ) => typeof runtime.DbNull,
-  JsonNull: runtime.NullTypes.JsonNull as new (
-    secret: never,
-  ) => typeof runtime.JsonNull,
-  AnyNull: runtime.NullTypes.AnyNull as new (
-    secret: never,
-  ) => typeof runtime.AnyNull,
-};
+  DbNull: runtime.NullTypes.DbNull as (new (secret: never) => typeof runtime.DbNull),
+  JsonNull: runtime.NullTypes.JsonNull as (new (secret: never) => typeof runtime.JsonNull),
+  AnyNull: runtime.NullTypes.AnyNull as (new (secret: never) => typeof runtime.AnyNull),
+}
 /**
  * Helper for filtering JSON entries that have `null` on the database (empty on the db)
  *
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
  */
-export const DbNull = runtime.DbNull;
+export const DbNull = runtime.DbNull
 
 /**
  * Helper for filtering JSON entries that have JSON `null` values (not empty on the db)
  *
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
  */
-export const JsonNull = runtime.JsonNull;
+export const JsonNull = runtime.JsonNull
 
 /**
  * Helper for filtering JSON entries that are `Prisma.DbNull` or `Prisma.JsonNull`
  *
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
  */
-export const AnyNull = runtime.AnyNull;
+export const AnyNull = runtime.AnyNull
+
 
 export const ModelName = {
   User: 'User',
@@ -60,9 +56,11 @@ export const ModelName = {
   Post: 'Post',
   Like: 'Like',
   Witness: 'Witness',
-} as const;
+  VerificationEvent: 'VerificationEvent',
+  VerificationContribution: 'VerificationContribution'
+} as const
 
-export type ModelName = (typeof ModelName)[keyof typeof ModelName];
+export type ModelName = (typeof ModelName)[keyof typeof ModelName]
 
 /*
  * Enums
@@ -72,11 +70,11 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
   RepeatableRead: 'RepeatableRead',
-  Serializable: 'Serializable',
-} as const);
+  Serializable: 'Serializable'
+} as const)
 
-export type TransactionIsolationLevel =
-  (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
+export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
 
 export const UserScalarFieldEnum = {
   id: 'id',
@@ -87,11 +85,11 @@ export const UserScalarFieldEnum = {
   trustScore: 'trustScore',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-} as const;
+  updatedAt: 'updatedAt'
+} as const
 
-export type UserScalarFieldEnum =
-  (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
 
 export const UserLocationScalarFieldEnum = {
   id: 'id',
@@ -102,11 +100,11 @@ export const UserLocationScalarFieldEnum = {
   capturedAt: 'capturedAt',
   localityId: 'localityId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-} as const;
+  updatedAt: 'updatedAt'
+} as const
 
-export type UserLocationScalarFieldEnum =
-  (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum];
+export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum]
+
 
 export const LocalityScalarFieldEnum = {
   id: 'id',
@@ -117,11 +115,11 @@ export const LocalityScalarFieldEnum = {
   state: 'state',
   country: 'country',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-} as const;
+  updatedAt: 'updatedAt'
+} as const
 
-export type LocalityScalarFieldEnum =
-  (typeof LocalityScalarFieldEnum)[keyof typeof LocalityScalarFieldEnum];
+export type LocalityScalarFieldEnum = (typeof LocalityScalarFieldEnum)[keyof typeof LocalityScalarFieldEnum]
+
 
 export const PostScalarFieldEnum = {
   id: 'id',
@@ -131,49 +129,74 @@ export const PostScalarFieldEnum = {
   verificationStatus: 'verificationStatus',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-} as const;
+  updatedAt: 'updatedAt'
+} as const
 
-export type PostScalarFieldEnum =
-  (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum];
+export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+
 
 export const LikeScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
   userId: 'userId',
-  createdAt: 'createdAt',
-} as const;
+  createdAt: 'createdAt'
+} as const
 
-export type LikeScalarFieldEnum =
-  (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum];
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
 
 export const WitnessScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
   userId: 'userId',
-  createdAt: 'createdAt',
-} as const;
+  createdAt: 'createdAt'
+} as const
 
-export type WitnessScalarFieldEnum =
-  (typeof WitnessScalarFieldEnum)[keyof typeof WitnessScalarFieldEnum];
+export type WitnessScalarFieldEnum = (typeof WitnessScalarFieldEnum)[keyof typeof WitnessScalarFieldEnum]
+
+
+export const VerificationEventScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  type: 'type',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationEventScalarFieldEnum = (typeof VerificationEventScalarFieldEnum)[keyof typeof VerificationEventScalarFieldEnum]
+
+
+export const VerificationContributionScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationContributionScalarFieldEnum = (typeof VerificationContributionScalarFieldEnum)[keyof typeof VerificationContributionScalarFieldEnum]
+
 
 export const SortOrder = {
   asc: 'asc',
-  desc: 'desc',
-} as const;
+  desc: 'desc'
+} as const
 
-export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
 
 export const QueryMode = {
   default: 'default',
-  insensitive: 'insensitive',
-} as const;
+  insensitive: 'insensitive'
+} as const
 
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode];
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
 
 export const NullsOrder = {
   first: 'first',
-  last: 'last',
-} as const;
+  last: 'last'
+} as const
 
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+

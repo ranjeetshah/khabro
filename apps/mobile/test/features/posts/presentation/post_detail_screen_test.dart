@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
@@ -7,6 +9,8 @@ import 'package:mobile/features/posts/data/like_status_model.dart';
 import 'package:mobile/features/posts/data/verification_status.dart';
 import 'package:mobile/features/posts/data/verification_status_model.dart';
 import 'package:mobile/features/posts/data/witness_status_model.dart';
+import 'package:mobile/features/posts/data/verification_event.dart';
+import 'package:mobile/features/posts/data/verification_history_model.dart';
 import 'package:mobile/features/posts/presentation/post_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -46,6 +50,9 @@ class FakeDeletePostsService extends PostsService {
   FakeDeletePostsService({
     this.errors = const [],
     this.verificationStatus = VerificationStatus.reported,
+    this.history,
+    this.historyError,
+    this.historyCompleter,
   }) : super(apiClient: null, tokenStorage: null);
 
   final List<Object> errors;
@@ -57,6 +64,10 @@ class FakeDeletePostsService extends PostsService {
   var witnessCalls = 0;
   var unwitnessCalls = 0;
   var verificationCalls = 0;
+  var historyCalls = 0;
+  VerificationHistoryModel? history;
+  Object? historyError;
+  Completer<VerificationHistoryModel>? historyCompleter;
 
   @override
   Future<void> deletePost(String id) async {
@@ -97,6 +108,14 @@ class FakeDeletePostsService extends PostsService {
       witnessCount: 0,
     );
   }
+
+  @override
+  Future<VerificationHistoryModel> getVerificationHistory(String id) async {
+    historyCalls++;
+    if (historyCompleter != null) return historyCompleter!.future;
+    if (historyError != null) throw historyError!;
+    return history ?? const VerificationHistoryModel(events: []);
+  }
 }
 
 void main() {
@@ -125,6 +144,7 @@ void main() {
           home: PostDetailScreen(
             post: detailPost(),
             publicUserService: service,
+            postsService: FakeDeletePostsService(),
           ),
         ),
       );
@@ -319,7 +339,12 @@ void main() {
 
   testWidgets('REPORTED post shows the reported locally label', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(home: PostDetailScreen(post: detailPost())),
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(),
+          postsService: FakeDeletePostsService(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Reported locally'), findsOneWidget);
@@ -357,6 +382,9 @@ void main() {
           post: detailPost(
             verificationStatus: VerificationStatus.locallyVerified,
           ),
+          postsService: FakeDeletePostsService(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
         ),
       ),
     );
@@ -379,6 +407,7 @@ void main() {
           post: detailPost(
             verificationStatus: VerificationStatus.unknown,
           ),
+          postsService: FakeDeletePostsService(),
         ),
       ),
     );
@@ -408,5 +437,200 @@ void main() {
     expect(find.text('latitude'), findsNothing);
     expect(find.text('longitude'), findsNothing);
     expect(find.text('JWT'), findsNothing);
+  });
+
+  testWidgets('verification history loads and shows events oldest-first', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      history: VerificationHistoryModel(
+        events: [
+          VerificationEventModel(
+            type: VerificationEventType.postCreated,
+            toStatus: VerificationStatus.reported,
+            createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+          ),
+          VerificationEventModel(
+            type: VerificationEventType.witnessAdded,
+            createdAt: DateTime.parse('2026-08-09T09:00:00.000Z'),
+          ),
+          VerificationEventModel(
+            type: VerificationEventType.statusChanged,
+            fromStatus: VerificationStatus.reported,
+            toStatus: VerificationStatus.underVerification,
+            createdAt: DateTime.parse('2026-08-09T10:00:00.000Z'),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(service.historyCalls, 1);
+    expect(find.text('Verification history'), findsOneWidget);
+    expect(find.text('Post reported locally'), findsOneWidget);
+    expect(find.text('A community member witnessed this'), findsOneWidget);
+    expect(
+      find.text('Verification status changed to Under verification'),
+      findsOneWidget,
+    );
+
+    final firstY = tester.getTopLeft(find.text('Post reported locally')).dy;
+    final lastY = tester
+        .getTopLeft(
+          find.text('Verification status changed to Under verification'),
+        )
+        .dy;
+    expect(firstY, lessThan(lastY));
+  });
+
+  testWidgets('verification history shows a loading indicator first', (
+    tester,
+  ) async {
+    final completer = Completer<VerificationHistoryModel>();
+    final service = FakeDeletePostsService(historyCompleter: completer);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    completer.complete(const VerificationHistoryModel(events: []));
+    await tester.pumpAndSettle();
+    expect(find.text('No verification activity yet.'), findsOneWidget);
+  });
+
+  testWidgets('verification history shows an empty state', (tester) async {
+    final service = FakeDeletePostsService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Verification history'), findsOneWidget);
+    expect(find.text('No verification activity yet.'), findsOneWidget);
+  });
+
+  testWidgets('verification history errors show a retry that recovers', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      historyError: const AuthException('Unavailable', statusCode: 500),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text("Couldn't load verification history."), findsOneWidget);
+
+    service.historyError = null;
+    service.history = VerificationHistoryModel(
+      events: [
+        VerificationEventModel(
+          type: VerificationEventType.witnessAdded,
+          createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+        ),
+      ],
+    );
+    await tester.tap(find.text('RETRY HISTORY'));
+    await tester.pumpAndSettle();
+    expect(find.text("Couldn't load verification history."), findsNothing);
+    expect(find.text('A community member witnessed this'), findsOneWidget);
+  });
+
+  testWidgets('unknown history event types render a safe fallback', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      history: VerificationHistoryModel(
+        events: [
+          VerificationEventModel(
+            type: VerificationEventType.unknown,
+            createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Verification activity'), findsOneWidget);
+    expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets('history never exposes witness identities or coordinates', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      history: VerificationHistoryModel(
+        events: [
+          VerificationEventModel(
+            type: VerificationEventType.witnessAdded,
+            createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+          ),
+          VerificationEventModel(
+            type: VerificationEventType.statusChanged,
+            fromStatus: VerificationStatus.reported,
+            toStatus: VerificationStatus.underVerification,
+            createdAt: DateTime.parse('2026-08-09T09:00:00.000Z'),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('user-1'), findsNothing);
+    expect(find.text('private-author-id'), findsNothing);
+    expect(find.text('private-locality-id'), findsNothing);
+    expect(find.text('latitude'), findsNothing);
+    expect(find.text('longitude'), findsNothing);
+    expect(find.text('JWT'), findsNothing);
+  });
+
+  testWidgets('history stays visible while witness actions still work', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      history: VerificationHistoryModel(
+        events: [
+          VerificationEventModel(
+            type: VerificationEventType.postCreated,
+            toStatus: VerificationStatus.reported,
+            createdAt: DateTime.parse('2026-08-09T08:00:00.000Z'),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Post reported locally'), findsOneWidget);
+
+    await tester.tap(find.text('I Witnessed This'));
+    await tester.pumpAndSettle();
+    expect(service.witnessCalls, 1);
+    expect(find.text('Witnessed'), findsOneWidget);
+    expect(find.text('Post reported locally'), findsOneWidget);
+    expect(find.text('Hello Khabro!'), findsOneWidget);
   });
 }

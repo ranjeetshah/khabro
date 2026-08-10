@@ -86,6 +86,8 @@ model Post {
   locality   Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
   likes      Like[]
   witnesses  Witness[]
+  verificationEvents        VerificationEvent[]
+  verificationContributions VerificationContribution[]
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
@@ -119,6 +121,35 @@ model Witness {
   @@index([postId, createdAt])
 }
 
+// Backend-owned verification lifecycle history. Public and safe: no user
+// relation, no witness identity, no coordinates. Post deletion cascades.
+model VerificationEvent {
+  id         String                  @id @default(uuid())
+  postId     String
+  type       VerificationEventType
+  fromStatus VerificationStatus?
+  toStatus   VerificationStatus?
+  createdAt  DateTime                @default(now())
+
+  post       Post                    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt, id])
+}
+
+// Backend-internal record of a user action that contributed to verification.
+// Deliberately attribution-free for now; a future Trust System may consume
+// these records without rewriting WitnessService or VerificationService.
+model VerificationContribution {
+  id        String                         @id @default(uuid())
+  postId    String
+  type      VerificationContributionType
+  createdAt DateTime                       @default(now())
+
+  post      Post                           @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt, id])
+}
+
 enum GeographicAreaType {
   COUNTRY
   STATE
@@ -137,4 +168,16 @@ enum VerificationStatus {
   REPORTED
   UNDER_VERIFICATION
   LOCALLY_VERIFIED
+}
+
+enum VerificationEventType {
+  POST_CREATED
+  WITNESS_ADDED
+  WITNESS_REMOVED
+  STATUS_CHANGED
+}
+
+enum VerificationContributionType {
+  WITNESS
+  STATUS_TRANSITION
 }

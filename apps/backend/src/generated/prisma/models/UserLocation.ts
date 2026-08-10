@@ -5,1027 +5,824 @@
 /*
  * This file exports the `UserLocation` model and its related types.
  *
- * 🟢 You can import this file directly.
+ * ðŸŸ¢ You can import this file directly.
  */
-import type * as runtime from '@prisma/client/runtime/client';
-import type * as $Enums from '../enums.js';
-import type * as Prisma from '../internal/prismaNamespace.js';
+import type * as runtime from "@prisma/client/runtime/client"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model UserLocation
  *
  */
-export type UserLocationModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$UserLocationPayload>;
+export type UserLocationModel = runtime.Types.Result.DefaultSelection<Prisma.$UserLocationPayload>
 
 export type AggregateUserLocation = {
-  _count: UserLocationCountAggregateOutputType | null;
-  _avg: UserLocationAvgAggregateOutputType | null;
-  _sum: UserLocationSumAggregateOutputType | null;
-  _min: UserLocationMinAggregateOutputType | null;
-  _max: UserLocationMaxAggregateOutputType | null;
-};
+  _count: UserLocationCountAggregateOutputType | null
+  _avg: UserLocationAvgAggregateOutputType | null
+  _sum: UserLocationSumAggregateOutputType | null
+  _min: UserLocationMinAggregateOutputType | null
+  _max: UserLocationMaxAggregateOutputType | null
+}
 
 export type UserLocationAvgAggregateOutputType = {
-  latitude: number | null;
-  longitude: number | null;
-  accuracyMeters: number | null;
-};
+  latitude: number | null
+  longitude: number | null
+  accuracyMeters: number | null
+}
 
 export type UserLocationSumAggregateOutputType = {
-  latitude: number | null;
-  longitude: number | null;
-  accuracyMeters: number | null;
-};
+  latitude: number | null
+  longitude: number | null
+  accuracyMeters: number | null
+}
 
 export type UserLocationMinAggregateOutputType = {
-  id: string | null;
-  userId: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  accuracyMeters: number | null;
-  capturedAt: Date | null;
-  localityId: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+  id: string | null
+  userId: string | null
+  latitude: number | null
+  longitude: number | null
+  accuracyMeters: number | null
+  capturedAt: Date | null
+  localityId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
+}
 
 export type UserLocationMaxAggregateOutputType = {
-  id: string | null;
-  userId: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  accuracyMeters: number | null;
-  capturedAt: Date | null;
-  localityId: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+  id: string | null
+  userId: string | null
+  latitude: number | null
+  longitude: number | null
+  accuracyMeters: number | null
+  capturedAt: Date | null
+  localityId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
+}
 
 export type UserLocationCountAggregateOutputType = {
-  id: number;
-  userId: number;
-  latitude: number;
-  longitude: number;
-  accuracyMeters: number;
-  capturedAt: number;
-  localityId: number;
-  createdAt: number;
-  updatedAt: number;
-  _all: number;
-};
+  id: number
+  userId: number
+  latitude: number
+  longitude: number
+  accuracyMeters: number
+  capturedAt: number
+  localityId: number
+  createdAt: number
+  updatedAt: number
+  _all: number
+}
+
 
 export type UserLocationAvgAggregateInputType = {
-  latitude?: true;
-  longitude?: true;
-  accuracyMeters?: true;
-};
+  latitude?: true
+  longitude?: true
+  accuracyMeters?: true
+}
 
 export type UserLocationSumAggregateInputType = {
-  latitude?: true;
-  longitude?: true;
-  accuracyMeters?: true;
-};
+  latitude?: true
+  longitude?: true
+  accuracyMeters?: true
+}
 
 export type UserLocationMinAggregateInputType = {
-  id?: true;
-  userId?: true;
-  latitude?: true;
-  longitude?: true;
-  accuracyMeters?: true;
-  capturedAt?: true;
-  localityId?: true;
-  createdAt?: true;
-  updatedAt?: true;
-};
+  id?: true
+  userId?: true
+  latitude?: true
+  longitude?: true
+  accuracyMeters?: true
+  capturedAt?: true
+  localityId?: true
+  createdAt?: true
+  updatedAt?: true
+}
 
 export type UserLocationMaxAggregateInputType = {
-  id?: true;
-  userId?: true;
-  latitude?: true;
-  longitude?: true;
-  accuracyMeters?: true;
-  capturedAt?: true;
-  localityId?: true;
-  createdAt?: true;
-  updatedAt?: true;
-};
+  id?: true
+  userId?: true
+  latitude?: true
+  longitude?: true
+  accuracyMeters?: true
+  capturedAt?: true
+  localityId?: true
+  createdAt?: true
+  updatedAt?: true
+}
 
 export type UserLocationCountAggregateInputType = {
-  id?: true;
-  userId?: true;
-  latitude?: true;
-  longitude?: true;
-  accuracyMeters?: true;
-  capturedAt?: true;
-  localityId?: true;
-  createdAt?: true;
-  updatedAt?: true;
-  _all?: true;
-};
+  id?: true
+  userId?: true
+  latitude?: true
+  longitude?: true
+  accuracyMeters?: true
+  capturedAt?: true
+  localityId?: true
+  createdAt?: true
+  updatedAt?: true
+  _all?: true
+}
 
-export type UserLocationAggregateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Filter which UserLocation to aggregate.
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of UserLocations to fetch.
    */
-  orderBy?:
-    | Prisma.UserLocationOrderByWithRelationInput
-    | Prisma.UserLocationOrderByWithRelationInput[];
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the start position
    */
-  cursor?: Prisma.UserLocationWhereUniqueInput;
+  cursor?: Prisma.UserLocationWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` UserLocations from the position of the cursor.
+   * Take `Â±n` UserLocations from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` UserLocations.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Count returned UserLocations
-   **/
-  _count?: true | UserLocationCountAggregateInputType;
+  **/
+  _count?: true | UserLocationCountAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to average
-   **/
-  _avg?: UserLocationAvgAggregateInputType;
+  **/
+  _avg?: UserLocationAvgAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to sum
-   **/
-  _sum?: UserLocationSumAggregateInputType;
+  **/
+  _sum?: UserLocationSumAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the minimum value
-   **/
-  _min?: UserLocationMinAggregateInputType;
+  **/
+  _min?: UserLocationMinAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the maximum value
-   **/
-  _max?: UserLocationMaxAggregateInputType;
-};
+  **/
+  _max?: UserLocationMaxAggregateInputType
+}
 
-export type GetUserLocationAggregateType<T extends UserLocationAggregateArgs> =
-  {
-    [P in keyof T & keyof AggregateUserLocation]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : Prisma.GetScalarType<T[P], AggregateUserLocation[P]>
-      : Prisma.GetScalarType<T[P], AggregateUserLocation[P]>;
-  };
+export type GetUserLocationAggregateType<T extends UserLocationAggregateArgs> = {
+      [P in keyof T & keyof AggregateUserLocation]: P extends '_count' | 'count'
+    ? T[P] extends true
+      ? number
+      : Prisma.GetScalarType<T[P], AggregateUserLocation[P]>
+    : Prisma.GetScalarType<T[P], AggregateUserLocation[P]>
+}
 
-export type UserLocationGroupByArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.UserLocationWhereInput;
-  orderBy?:
-    | Prisma.UserLocationOrderByWithAggregationInput
-    | Prisma.UserLocationOrderByWithAggregationInput[];
-  by: Prisma.UserLocationScalarFieldEnum[] | Prisma.UserLocationScalarFieldEnum;
-  having?: Prisma.UserLocationScalarWhereWithAggregatesInput;
-  take?: number;
-  skip?: number;
-  _count?: UserLocationCountAggregateInputType | true;
-  _avg?: UserLocationAvgAggregateInputType;
-  _sum?: UserLocationSumAggregateInputType;
-  _min?: UserLocationMinAggregateInputType;
-  _max?: UserLocationMaxAggregateInputType;
-};
+
+
+
+export type UserLocationGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserLocationWhereInput
+  orderBy?: Prisma.UserLocationOrderByWithAggregationInput | Prisma.UserLocationOrderByWithAggregationInput[]
+  by: Prisma.UserLocationScalarFieldEnum[] | Prisma.UserLocationScalarFieldEnum
+  having?: Prisma.UserLocationScalarWhereWithAggregatesInput
+  take?: number
+  skip?: number
+  _count?: UserLocationCountAggregateInputType | true
+  _avg?: UserLocationAvgAggregateInputType
+  _sum?: UserLocationSumAggregateInputType
+  _min?: UserLocationMinAggregateInputType
+  _max?: UserLocationMaxAggregateInputType
+}
 
 export type UserLocationGroupByOutputType = {
-  id: string;
-  userId: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters: number | null;
-  capturedAt: Date;
-  localityId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: UserLocationCountAggregateOutputType | null;
-  _avg: UserLocationAvgAggregateOutputType | null;
-  _sum: UserLocationSumAggregateOutputType | null;
-  _min: UserLocationMinAggregateOutputType | null;
-  _max: UserLocationMaxAggregateOutputType | null;
-};
+  id: string
+  userId: string
+  latitude: number
+  longitude: number
+  accuracyMeters: number | null
+  capturedAt: Date
+  localityId: string | null
+  createdAt: Date
+  updatedAt: Date
+  _count: UserLocationCountAggregateOutputType | null
+  _avg: UserLocationAvgAggregateOutputType | null
+  _sum: UserLocationSumAggregateOutputType | null
+  _min: UserLocationMinAggregateOutputType | null
+  _max: UserLocationMaxAggregateOutputType | null
+}
 
-export type GetUserLocationGroupByPayload<T extends UserLocationGroupByArgs> =
-  Prisma.PrismaPromise<
-    Array<
-      Prisma.PickEnumerable<UserLocationGroupByOutputType, T['by']> & {
-        [P in keyof T & keyof UserLocationGroupByOutputType]: P extends '_count'
+export type GetUserLocationGroupByPayload<T extends UserLocationGroupByArgs> = Prisma.PrismaPromise<
+  Array<
+    Prisma.PickEnumerable<UserLocationGroupByOutputType, T['by']> &
+      {
+        [P in ((keyof T) & (keyof UserLocationGroupByOutputType))]: P extends '_count'
           ? T[P] extends boolean
             ? number
             : Prisma.GetScalarType<T[P], UserLocationGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], UserLocationGroupByOutputType[P]>;
+          : Prisma.GetScalarType<T[P], UserLocationGroupByOutputType[P]>
       }
     >
-  >;
+  >
+
+
 
 export type UserLocationWhereInput = {
-  AND?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[];
-  OR?: Prisma.UserLocationWhereInput[];
-  NOT?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[];
-  id?: Prisma.StringFilter<'UserLocation'> | string;
-  userId?: Prisma.StringFilter<'UserLocation'> | string;
-  latitude?: Prisma.FloatFilter<'UserLocation'> | number;
-  longitude?: Prisma.FloatFilter<'UserLocation'> | number;
-  accuracyMeters?: Prisma.FloatNullableFilter<'UserLocation'> | number | null;
-  capturedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-  localityId?: Prisma.StringNullableFilter<'UserLocation'> | string | null;
-  createdAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-  updatedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
-  locality?: Prisma.XOR<
-    Prisma.LocalityNullableScalarRelationFilter,
-    Prisma.LocalityWhereInput
-  > | null;
-};
+  AND?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[]
+  OR?: Prisma.UserLocationWhereInput[]
+  NOT?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[]
+  id?: Prisma.StringFilter<"UserLocation"> | string
+  userId?: Prisma.StringFilter<"UserLocation"> | string
+  latitude?: Prisma.FloatFilter<"UserLocation"> | number
+  longitude?: Prisma.FloatFilter<"UserLocation"> | number
+  accuracyMeters?: Prisma.FloatNullableFilter<"UserLocation"> | number | null
+  capturedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  localityId?: Prisma.StringNullableFilter<"UserLocation"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  locality?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
+}
 
 export type UserLocationOrderByWithRelationInput = {
-  id?: Prisma.SortOrder;
-  userId?: Prisma.SortOrder;
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder;
-  capturedAt?: Prisma.SortOrder;
-  localityId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-  user?: Prisma.UserOrderByWithRelationInput;
-  locality?: Prisma.LocalityOrderByWithRelationInput;
-};
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  capturedAt?: Prisma.SortOrder
+  localityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
+  locality?: Prisma.LocalityOrderByWithRelationInput
+}
 
-export type UserLocationWhereUniqueInput = Prisma.AtLeast<
-  {
-    id?: string;
-    userId?: string;
-    AND?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[];
-    OR?: Prisma.UserLocationWhereInput[];
-    NOT?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[];
-    latitude?: Prisma.FloatFilter<'UserLocation'> | number;
-    longitude?: Prisma.FloatFilter<'UserLocation'> | number;
-    accuracyMeters?: Prisma.FloatNullableFilter<'UserLocation'> | number | null;
-    capturedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-    localityId?: Prisma.StringNullableFilter<'UserLocation'> | string | null;
-    createdAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-    updatedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-    user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
-    locality?: Prisma.XOR<
-      Prisma.LocalityNullableScalarRelationFilter,
-      Prisma.LocalityWhereInput
-    > | null;
-  },
-  'id' | 'userId'
->;
+export type UserLocationWhereUniqueInput = Prisma.AtLeast<{
+  id?: string
+  userId?: string
+  AND?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[]
+  OR?: Prisma.UserLocationWhereInput[]
+  NOT?: Prisma.UserLocationWhereInput | Prisma.UserLocationWhereInput[]
+  latitude?: Prisma.FloatFilter<"UserLocation"> | number
+  longitude?: Prisma.FloatFilter<"UserLocation"> | number
+  accuracyMeters?: Prisma.FloatNullableFilter<"UserLocation"> | number | null
+  capturedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  localityId?: Prisma.StringNullableFilter<"UserLocation"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  locality?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
+}, "id" | "userId">
 
 export type UserLocationOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder;
-  userId?: Prisma.SortOrder;
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder;
-  capturedAt?: Prisma.SortOrder;
-  localityId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-  _count?: Prisma.UserLocationCountOrderByAggregateInput;
-  _avg?: Prisma.UserLocationAvgOrderByAggregateInput;
-  _max?: Prisma.UserLocationMaxOrderByAggregateInput;
-  _min?: Prisma.UserLocationMinOrderByAggregateInput;
-  _sum?: Prisma.UserLocationSumOrderByAggregateInput;
-};
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  capturedAt?: Prisma.SortOrder
+  localityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  _count?: Prisma.UserLocationCountOrderByAggregateInput
+  _avg?: Prisma.UserLocationAvgOrderByAggregateInput
+  _max?: Prisma.UserLocationMaxOrderByAggregateInput
+  _min?: Prisma.UserLocationMinOrderByAggregateInput
+  _sum?: Prisma.UserLocationSumOrderByAggregateInput
+}
 
 export type UserLocationScalarWhereWithAggregatesInput = {
-  AND?:
-    | Prisma.UserLocationScalarWhereWithAggregatesInput
-    | Prisma.UserLocationScalarWhereWithAggregatesInput[];
-  OR?: Prisma.UserLocationScalarWhereWithAggregatesInput[];
-  NOT?:
-    | Prisma.UserLocationScalarWhereWithAggregatesInput
-    | Prisma.UserLocationScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<'UserLocation'> | string;
-  userId?: Prisma.StringWithAggregatesFilter<'UserLocation'> | string;
-  latitude?: Prisma.FloatWithAggregatesFilter<'UserLocation'> | number;
-  longitude?: Prisma.FloatWithAggregatesFilter<'UserLocation'> | number;
-  accuracyMeters?:
-    Prisma.FloatNullableWithAggregatesFilter<'UserLocation'> | number | null;
-  capturedAt?:
-    Prisma.DateTimeWithAggregatesFilter<'UserLocation'> | Date | string;
-  localityId?:
-    Prisma.StringNullableWithAggregatesFilter<'UserLocation'> | string | null;
-  createdAt?:
-    Prisma.DateTimeWithAggregatesFilter<'UserLocation'> | Date | string;
-  updatedAt?:
-    Prisma.DateTimeWithAggregatesFilter<'UserLocation'> | Date | string;
-};
+  AND?: Prisma.UserLocationScalarWhereWithAggregatesInput | Prisma.UserLocationScalarWhereWithAggregatesInput[]
+  OR?: Prisma.UserLocationScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.UserLocationScalarWhereWithAggregatesInput | Prisma.UserLocationScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"UserLocation"> | string
+  userId?: Prisma.StringWithAggregatesFilter<"UserLocation"> | string
+  latitude?: Prisma.FloatWithAggregatesFilter<"UserLocation"> | number
+  longitude?: Prisma.FloatWithAggregatesFilter<"UserLocation"> | number
+  accuracyMeters?: Prisma.FloatNullableWithAggregatesFilter<"UserLocation"> | number | null
+  capturedAt?: Prisma.DateTimeWithAggregatesFilter<"UserLocation"> | Date | string
+  localityId?: Prisma.StringNullableWithAggregatesFilter<"UserLocation"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserLocation"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserLocation"> | Date | string
+}
 
 export type UserLocationCreateInput = {
-  id?: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  user: Prisma.UserCreateNestedOneWithoutLocationInput;
-  locality?: Prisma.LocalityCreateNestedOneWithoutUserLocationsInput;
-};
+  id?: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutLocationInput
+  locality?: Prisma.LocalityCreateNestedOneWithoutUserLocationsInput
+}
 
 export type UserLocationUncheckedCreateInput = {
-  id?: string;
-  userId: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  localityId?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  userId: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  localityId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type UserLocationUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  user?: Prisma.UserUpdateOneRequiredWithoutLocationNestedInput;
-  locality?: Prisma.LocalityUpdateOneWithoutUserLocationsNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutLocationNestedInput
+  locality?: Prisma.LocalityUpdateOneWithoutUserLocationsNestedInput
+}
 
 export type UserLocationUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  userId?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type UserLocationCreateManyInput = {
-  id?: string;
-  userId: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  localityId?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  userId: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  localityId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type UserLocationUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type UserLocationUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  userId?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type UserLocationNullableScalarRelationFilter = {
-  is?: Prisma.UserLocationWhereInput | null;
-  isNot?: Prisma.UserLocationWhereInput | null;
-};
+  is?: Prisma.UserLocationWhereInput | null
+  isNot?: Prisma.UserLocationWhereInput | null
+}
 
 export type UserLocationCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  userId?: Prisma.SortOrder;
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrder;
-  capturedAt?: Prisma.SortOrder;
-  localityId?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
+  capturedAt?: Prisma.SortOrder
+  localityId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type UserLocationAvgOrderByAggregateInput = {
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrder;
-};
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
+}
 
 export type UserLocationMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  userId?: Prisma.SortOrder;
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrder;
-  capturedAt?: Prisma.SortOrder;
-  localityId?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
+  capturedAt?: Prisma.SortOrder
+  localityId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type UserLocationMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  userId?: Prisma.SortOrder;
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrder;
-  capturedAt?: Prisma.SortOrder;
-  localityId?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
+  capturedAt?: Prisma.SortOrder
+  localityId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type UserLocationSumOrderByAggregateInput = {
-  latitude?: Prisma.SortOrder;
-  longitude?: Prisma.SortOrder;
-  accuracyMeters?: Prisma.SortOrder;
-};
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
+}
 
 export type UserLocationListRelationFilter = {
-  every?: Prisma.UserLocationWhereInput;
-  some?: Prisma.UserLocationWhereInput;
-  none?: Prisma.UserLocationWhereInput;
-};
+  every?: Prisma.UserLocationWhereInput
+  some?: Prisma.UserLocationWhereInput
+  none?: Prisma.UserLocationWhereInput
+}
 
 export type UserLocationOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder;
-};
+  _count?: Prisma.SortOrder
+}
 
 export type UserLocationCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput;
-  connect?: Prisma.UserLocationWhereUniqueInput;
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput
+  connect?: Prisma.UserLocationWhereUniqueInput
+}
 
 export type UserLocationUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput;
-  connect?: Prisma.UserLocationWhereUniqueInput;
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput
+  connect?: Prisma.UserLocationWhereUniqueInput
+}
 
 export type UserLocationUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput;
-  upsert?: Prisma.UserLocationUpsertWithoutUserInput;
-  disconnect?: Prisma.UserLocationWhereInput | boolean;
-  delete?: Prisma.UserLocationWhereInput | boolean;
-  connect?: Prisma.UserLocationWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.UserLocationUpdateToOneWithWhereWithoutUserInput,
-      Prisma.UserLocationUpdateWithoutUserInput
-    >,
-    Prisma.UserLocationUncheckedUpdateWithoutUserInput
-  >;
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput
+  upsert?: Prisma.UserLocationUpsertWithoutUserInput
+  disconnect?: Prisma.UserLocationWhereInput | boolean
+  delete?: Prisma.UserLocationWhereInput | boolean
+  connect?: Prisma.UserLocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserLocationUpdateToOneWithWhereWithoutUserInput, Prisma.UserLocationUpdateWithoutUserInput>, Prisma.UserLocationUncheckedUpdateWithoutUserInput>
+}
 
 export type UserLocationUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput;
-  upsert?: Prisma.UserLocationUpsertWithoutUserInput;
-  disconnect?: Prisma.UserLocationWhereInput | boolean;
-  delete?: Prisma.UserLocationWhereInput | boolean;
-  connect?: Prisma.UserLocationWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.UserLocationUpdateToOneWithWhereWithoutUserInput,
-      Prisma.UserLocationUpdateWithoutUserInput
-    >,
-    Prisma.UserLocationUncheckedUpdateWithoutUserInput
-  >;
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutUserInput
+  upsert?: Prisma.UserLocationUpsertWithoutUserInput
+  disconnect?: Prisma.UserLocationWhereInput | boolean
+  delete?: Prisma.UserLocationWhereInput | boolean
+  connect?: Prisma.UserLocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserLocationUpdateToOneWithWhereWithoutUserInput, Prisma.UserLocationUpdateWithoutUserInput>, Prisma.UserLocationUncheckedUpdateWithoutUserInput>
+}
 
 export type FloatFieldUpdateOperationsInput = {
-  set?: number;
-  increment?: number;
-  decrement?: number;
-  multiply?: number;
-  divide?: number;
-};
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
 
 export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null;
-  increment?: number;
-  decrement?: number;
-  multiply?: number;
-  divide?: number;
-};
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
 
 export type UserLocationCreateNestedManyWithoutLocalityInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.UserLocationCreateWithoutLocalityInput,
-        Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-      >
-    | Prisma.UserLocationCreateWithoutLocalityInput[]
-    | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[];
-  connectOrCreate?:
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[];
-  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope;
-  connect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput> | Prisma.UserLocationCreateWithoutLocalityInput[] | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[]
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutLocalityInput | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[]
+  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope
+  connect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+}
 
 export type UserLocationUncheckedCreateNestedManyWithoutLocalityInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.UserLocationCreateWithoutLocalityInput,
-        Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-      >
-    | Prisma.UserLocationCreateWithoutLocalityInput[]
-    | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[];
-  connectOrCreate?:
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[];
-  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope;
-  connect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput> | Prisma.UserLocationCreateWithoutLocalityInput[] | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[]
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutLocalityInput | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[]
+  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope
+  connect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+}
 
 export type UserLocationUpdateManyWithoutLocalityNestedInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.UserLocationCreateWithoutLocalityInput,
-        Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-      >
-    | Prisma.UserLocationCreateWithoutLocalityInput[]
-    | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[];
-  connectOrCreate?:
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[];
-  upsert?:
-    | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput
-    | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput[];
-  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope;
-  set?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  disconnect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  delete?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  connect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  update?:
-    | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput
-    | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput[];
-  updateMany?:
-    | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput
-    | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput[];
-  deleteMany?:
-    Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[];
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput> | Prisma.UserLocationCreateWithoutLocalityInput[] | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[]
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutLocalityInput | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[]
+  upsert?: Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput[]
+  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope
+  set?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  disconnect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  delete?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  connect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  update?: Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput[]
+  updateMany?: Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput[]
+  deleteMany?: Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[]
+}
 
 export type UserLocationUncheckedUpdateManyWithoutLocalityNestedInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.UserLocationCreateWithoutLocalityInput,
-        Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-      >
-    | Prisma.UserLocationCreateWithoutLocalityInput[]
-    | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[];
-  connectOrCreate?:
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput
-    | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[];
-  upsert?:
-    | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput
-    | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput[];
-  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope;
-  set?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  disconnect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  delete?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  connect?:
-    Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[];
-  update?:
-    | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput
-    | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput[];
-  updateMany?:
-    | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput
-    | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput[];
-  deleteMany?:
-    Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[];
-};
+  create?: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput> | Prisma.UserLocationCreateWithoutLocalityInput[] | Prisma.UserLocationUncheckedCreateWithoutLocalityInput[]
+  connectOrCreate?: Prisma.UserLocationCreateOrConnectWithoutLocalityInput | Prisma.UserLocationCreateOrConnectWithoutLocalityInput[]
+  upsert?: Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput | Prisma.UserLocationUpsertWithWhereUniqueWithoutLocalityInput[]
+  createMany?: Prisma.UserLocationCreateManyLocalityInputEnvelope
+  set?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  disconnect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  delete?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  connect?: Prisma.UserLocationWhereUniqueInput | Prisma.UserLocationWhereUniqueInput[]
+  update?: Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput | Prisma.UserLocationUpdateWithWhereUniqueWithoutLocalityInput[]
+  updateMany?: Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput | Prisma.UserLocationUpdateManyWithWhereWithoutLocalityInput[]
+  deleteMany?: Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[]
+}
 
 export type UserLocationCreateWithoutUserInput = {
-  id?: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  locality?: Prisma.LocalityCreateNestedOneWithoutUserLocationsInput;
-};
+  id?: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  locality?: Prisma.LocalityCreateNestedOneWithoutUserLocationsInput
+}
 
 export type UserLocationUncheckedCreateWithoutUserInput = {
-  id?: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  localityId?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  localityId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type UserLocationCreateOrConnectWithoutUserInput = {
-  where: Prisma.UserLocationWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+}
 
 export type UserLocationUpsertWithoutUserInput = {
-  update: Prisma.XOR<
-    Prisma.UserLocationUpdateWithoutUserInput,
-    Prisma.UserLocationUncheckedUpdateWithoutUserInput
-  >;
-  create: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutUserInput,
-    Prisma.UserLocationUncheckedCreateWithoutUserInput
-  >;
-  where?: Prisma.UserLocationWhereInput;
-};
+  update: Prisma.XOR<Prisma.UserLocationUpdateWithoutUserInput, Prisma.UserLocationUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.UserLocationCreateWithoutUserInput, Prisma.UserLocationUncheckedCreateWithoutUserInput>
+  where?: Prisma.UserLocationWhereInput
+}
 
 export type UserLocationUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.UserLocationWhereInput;
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateWithoutUserInput,
-    Prisma.UserLocationUncheckedUpdateWithoutUserInput
-  >;
-};
+  where?: Prisma.UserLocationWhereInput
+  data: Prisma.XOR<Prisma.UserLocationUpdateWithoutUserInput, Prisma.UserLocationUncheckedUpdateWithoutUserInput>
+}
 
 export type UserLocationUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  locality?: Prisma.LocalityUpdateOneWithoutUserLocationsNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  locality?: Prisma.LocalityUpdateOneWithoutUserLocationsNestedInput
+}
 
 export type UserLocationUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type UserLocationCreateWithoutLocalityInput = {
-  id?: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  user: Prisma.UserCreateNestedOneWithoutLocationInput;
-};
+  id?: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutLocationInput
+}
 
 export type UserLocationUncheckedCreateWithoutLocalityInput = {
-  id?: string;
-  userId: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  userId: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type UserLocationCreateOrConnectWithoutLocalityInput = {
-  where: Prisma.UserLocationWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutLocalityInput,
-    Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-  >;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput>
+}
 
 export type UserLocationCreateManyLocalityInputEnvelope = {
-  data:
-    | Prisma.UserLocationCreateManyLocalityInput
-    | Prisma.UserLocationCreateManyLocalityInput[];
-  skipDuplicates?: boolean;
-};
+  data: Prisma.UserLocationCreateManyLocalityInput | Prisma.UserLocationCreateManyLocalityInput[]
+  skipDuplicates?: boolean
+}
 
 export type UserLocationUpsertWithWhereUniqueWithoutLocalityInput = {
-  where: Prisma.UserLocationWhereUniqueInput;
-  update: Prisma.XOR<
-    Prisma.UserLocationUpdateWithoutLocalityInput,
-    Prisma.UserLocationUncheckedUpdateWithoutLocalityInput
-  >;
-  create: Prisma.XOR<
-    Prisma.UserLocationCreateWithoutLocalityInput,
-    Prisma.UserLocationUncheckedCreateWithoutLocalityInput
-  >;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserLocationUpdateWithoutLocalityInput, Prisma.UserLocationUncheckedUpdateWithoutLocalityInput>
+  create: Prisma.XOR<Prisma.UserLocationCreateWithoutLocalityInput, Prisma.UserLocationUncheckedCreateWithoutLocalityInput>
+}
 
 export type UserLocationUpdateWithWhereUniqueWithoutLocalityInput = {
-  where: Prisma.UserLocationWhereUniqueInput;
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateWithoutLocalityInput,
-    Prisma.UserLocationUncheckedUpdateWithoutLocalityInput
-  >;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserLocationUpdateWithoutLocalityInput, Prisma.UserLocationUncheckedUpdateWithoutLocalityInput>
+}
 
 export type UserLocationUpdateManyWithWhereWithoutLocalityInput = {
-  where: Prisma.UserLocationScalarWhereInput;
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateManyMutationInput,
-    Prisma.UserLocationUncheckedUpdateManyWithoutLocalityInput
-  >;
-};
+  where: Prisma.UserLocationScalarWhereInput
+  data: Prisma.XOR<Prisma.UserLocationUpdateManyMutationInput, Prisma.UserLocationUncheckedUpdateManyWithoutLocalityInput>
+}
 
 export type UserLocationScalarWhereInput = {
-  AND?:
-    Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[];
-  OR?: Prisma.UserLocationScalarWhereInput[];
-  NOT?:
-    Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[];
-  id?: Prisma.StringFilter<'UserLocation'> | string;
-  userId?: Prisma.StringFilter<'UserLocation'> | string;
-  latitude?: Prisma.FloatFilter<'UserLocation'> | number;
-  longitude?: Prisma.FloatFilter<'UserLocation'> | number;
-  accuracyMeters?: Prisma.FloatNullableFilter<'UserLocation'> | number | null;
-  capturedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-  localityId?: Prisma.StringNullableFilter<'UserLocation'> | string | null;
-  createdAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-  updatedAt?: Prisma.DateTimeFilter<'UserLocation'> | Date | string;
-};
+  AND?: Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[]
+  OR?: Prisma.UserLocationScalarWhereInput[]
+  NOT?: Prisma.UserLocationScalarWhereInput | Prisma.UserLocationScalarWhereInput[]
+  id?: Prisma.StringFilter<"UserLocation"> | string
+  userId?: Prisma.StringFilter<"UserLocation"> | string
+  latitude?: Prisma.FloatFilter<"UserLocation"> | number
+  longitude?: Prisma.FloatFilter<"UserLocation"> | number
+  accuracyMeters?: Prisma.FloatNullableFilter<"UserLocation"> | number | null
+  capturedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  localityId?: Prisma.StringNullableFilter<"UserLocation"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"UserLocation"> | Date | string
+}
 
 export type UserLocationCreateManyLocalityInput = {
-  id?: string;
-  userId: string;
-  latitude: number;
-  longitude: number;
-  accuracyMeters?: number | null;
-  capturedAt: Date | string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  userId: string
+  latitude: number
+  longitude: number
+  accuracyMeters?: number | null
+  capturedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type UserLocationUpdateWithoutLocalityInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  user?: Prisma.UserUpdateOneRequiredWithoutLocationNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutLocationNestedInput
+}
 
 export type UserLocationUncheckedUpdateWithoutLocalityInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  userId?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type UserLocationUncheckedUpdateManyWithoutLocalityInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  userId?: Prisma.StringFieldUpdateOperationsInput | string;
-  latitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  longitude?: Prisma.FloatFieldUpdateOperationsInput | number;
-  accuracyMeters?:
-    Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
-  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
-export type UserLocationSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    userId?: boolean;
-    latitude?: boolean;
-    longitude?: boolean;
-    accuracyMeters?: boolean;
-    capturedAt?: boolean;
-    localityId?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-    locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-  },
-  ExtArgs['result']['userLocation']
->;
 
-export type UserLocationSelectCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    userId?: boolean;
-    latitude?: boolean;
-    longitude?: boolean;
-    accuracyMeters?: boolean;
-    capturedAt?: boolean;
-    localityId?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-    locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-  },
-  ExtArgs['result']['userLocation']
->;
 
-export type UserLocationSelectUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    userId?: boolean;
-    latitude?: boolean;
-    longitude?: boolean;
-    accuracyMeters?: boolean;
-    capturedAt?: boolean;
-    localityId?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-    locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-  },
-  ExtArgs['result']['userLocation']
->;
+export type UserLocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  accuracyMeters?: boolean
+  capturedAt?: boolean
+  localityId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}, ExtArgs["result"]["userLocation"]>
+
+export type UserLocationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  accuracyMeters?: boolean
+  capturedAt?: boolean
+  localityId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}, ExtArgs["result"]["userLocation"]>
+
+export type UserLocationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  accuracyMeters?: boolean
+  capturedAt?: boolean
+  localityId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}, ExtArgs["result"]["userLocation"]>
 
 export type UserLocationSelectScalar = {
-  id?: boolean;
-  userId?: boolean;
-  latitude?: boolean;
-  longitude?: boolean;
-  accuracyMeters?: boolean;
-  capturedAt?: boolean;
-  localityId?: boolean;
-  createdAt?: boolean;
-  updatedAt?: boolean;
-};
+  id?: boolean
+  userId?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  accuracyMeters?: boolean
+  capturedAt?: boolean
+  localityId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+}
 
-export type UserLocationOmit<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetOmit<
-  | 'id'
-  | 'userId'
-  | 'latitude'
-  | 'longitude'
-  | 'accuracyMeters'
-  | 'capturedAt'
-  | 'localityId'
-  | 'createdAt'
-  | 'updatedAt',
-  ExtArgs['result']['userLocation']
->;
-export type UserLocationInclude<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-};
-export type UserLocationIncludeCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-};
-export type UserLocationIncludeUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>;
-};
+export type UserLocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "latitude" | "longitude" | "accuracyMeters" | "capturedAt" | "localityId" | "createdAt" | "updatedAt", ExtArgs["result"]["userLocation"]>
+export type UserLocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}
+export type UserLocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}
+export type UserLocationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  locality?: boolean | Prisma.UserLocation$localityArgs<ExtArgs>
+}
 
-export type $UserLocationPayload<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  name: 'UserLocation';
+export type $UserLocationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "UserLocation"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>;
-    locality: Prisma.$LocalityPayload<ExtArgs> | null;
-  };
-  scalars: runtime.Types.Extensions.GetPayloadResult<
-    {
-      id: string;
-      userId: string;
-      latitude: number;
-      longitude: number;
-      accuracyMeters: number | null;
-      capturedAt: Date;
-      localityId: string | null;
-      createdAt: Date;
-      updatedAt: Date;
-    },
-    ExtArgs['result']['userLocation']
-  >;
-  composites: {};
-};
+    user: Prisma.$UserPayload<ExtArgs>
+    locality: Prisma.$LocalityPayload<ExtArgs> | null
+  }
+  scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: string
+    userId: string
+    latitude: number
+    longitude: number
+    accuracyMeters: number | null
+    capturedAt: Date
+    localityId: string | null
+    createdAt: Date
+    updatedAt: Date
+  }, ExtArgs["result"]["userLocation"]>
+  composites: {}
+}
 
-export type UserLocationGetPayload<
-  S extends boolean | null | undefined | UserLocationDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$UserLocationPayload, S>;
+export type UserLocationGetPayload<S extends boolean | null | undefined | UserLocationDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$UserLocationPayload, S>
 
-export type UserLocationCountArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = Omit<
-  UserLocationFindManyArgs,
-  'select' | 'include' | 'distinct' | 'omit'
-> & {
-  select?: UserLocationCountAggregateInputType | true;
-};
+export type UserLocationCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<UserLocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: UserLocationCountAggregateInputType | true
+  }
 
-export interface UserLocationDelegate<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-  GlobalOmitOptions = {},
-> {
-  [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>['model']['UserLocation'];
-    meta: { name: 'UserLocation' };
-  };
+export interface UserLocationDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserLocation'], meta: { name: 'UserLocation' } }
   /**
    * Find zero or one UserLocation that matches the filter.
    * @param {UserLocationFindUniqueArgs} args - Arguments to find a UserLocation
@@ -1037,19 +834,7 @@ export interface UserLocationDelegate<
    *   }
    * })
    */
-  findUnique<T extends UserLocationFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, UserLocationFindUniqueArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'findUnique',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findUnique<T extends UserLocationFindUniqueArgs>(args: Prisma.SelectSubset<T, UserLocationFindUniqueArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one UserLocation that matches the filter or throw an error with `error.code='P2025'`
@@ -1063,19 +848,7 @@ export interface UserLocationDelegate<
    *   }
    * })
    */
-  findUniqueOrThrow<T extends UserLocationFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, UserLocationFindUniqueOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'findUniqueOrThrow',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findUniqueOrThrow<T extends UserLocationFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, UserLocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first UserLocation that matches the filter.
@@ -1090,19 +863,7 @@ export interface UserLocationDelegate<
    *   }
    * })
    */
-  findFirst<T extends UserLocationFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationFindFirstArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'findFirst',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findFirst<T extends UserLocationFindFirstArgs>(args?: Prisma.SelectSubset<T, UserLocationFindFirstArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first UserLocation that matches the filter or
@@ -1118,19 +879,7 @@ export interface UserLocationDelegate<
    *   }
    * })
    */
-  findFirstOrThrow<T extends UserLocationFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationFindFirstOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'findFirstOrThrow',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findFirstOrThrow<T extends UserLocationFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, UserLocationFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more UserLocations that matches the filter.
@@ -1148,16 +897,7 @@ export interface UserLocationDelegate<
    * const userLocationWithIdOnly = await prisma.userLocation.findMany({ select: { id: true } })
    *
    */
-  findMany<T extends UserLocationFindManyArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationFindManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'findMany',
-      GlobalOmitOptions
-    >
-  >;
+  findMany<T extends UserLocationFindManyArgs>(args?: Prisma.SelectSubset<T, UserLocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a UserLocation.
@@ -1171,19 +911,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  create<T extends UserLocationCreateArgs>(
-    args: Prisma.SelectSubset<T, UserLocationCreateArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'create',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  create<T extends UserLocationCreateArgs>(args: Prisma.SelectSubset<T, UserLocationCreateArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many UserLocations.
@@ -1197,9 +925,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  createMany<T extends UserLocationCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationCreateManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  createMany<T extends UserLocationCreateManyArgs>(args?: Prisma.SelectSubset<T, UserLocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create many UserLocations and returns the data saved in the database.
@@ -1223,16 +949,7 @@ export interface UserLocationDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  createManyAndReturn<T extends UserLocationCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationCreateManyAndReturnArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'createManyAndReturn',
-      GlobalOmitOptions
-    >
-  >;
+  createManyAndReturn<T extends UserLocationCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, UserLocationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a UserLocation.
@@ -1246,19 +963,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  delete<T extends UserLocationDeleteArgs>(
-    args: Prisma.SelectSubset<T, UserLocationDeleteArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'delete',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  delete<T extends UserLocationDeleteArgs>(args: Prisma.SelectSubset<T, UserLocationDeleteArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one UserLocation.
@@ -1275,19 +980,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  update<T extends UserLocationUpdateArgs>(
-    args: Prisma.SelectSubset<T, UserLocationUpdateArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'update',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  update<T extends UserLocationUpdateArgs>(args: Prisma.SelectSubset<T, UserLocationUpdateArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more UserLocations.
@@ -1301,9 +994,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  deleteMany<T extends UserLocationDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, UserLocationDeleteManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  deleteMany<T extends UserLocationDeleteManyArgs>(args?: Prisma.SelectSubset<T, UserLocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more UserLocations.
@@ -1322,9 +1013,7 @@ export interface UserLocationDelegate<
    * })
    *
    */
-  updateMany<T extends UserLocationUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, UserLocationUpdateManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  updateMany<T extends UserLocationUpdateManyArgs>(args: Prisma.SelectSubset<T, UserLocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more UserLocations and returns the data updated in the database.
@@ -1354,16 +1043,7 @@ export interface UserLocationDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  updateManyAndReturn<T extends UserLocationUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<T, UserLocationUpdateManyAndReturnArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'updateManyAndReturn',
-      GlobalOmitOptions
-    >
-  >;
+  updateManyAndReturn<T extends UserLocationUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, UserLocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one UserLocation.
@@ -1382,19 +1062,8 @@ export interface UserLocationDelegate<
    *   }
    * })
    */
-  upsert<T extends UserLocationUpsertArgs>(
-    args: Prisma.SelectSubset<T, UserLocationUpsertArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserLocationClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$UserLocationPayload<ExtArgs>,
-      T,
-      'upsert',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  upsert<T extends UserLocationUpsertArgs>(args: Prisma.SelectSubset<T, UserLocationUpsertArgs<ExtArgs>>): Prisma.Prisma__UserLocationClient<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
 
   /**
    * Count the number of UserLocations.
@@ -1408,19 +1077,16 @@ export interface UserLocationDelegate<
    *     // ... the filter for the UserLocations we want to count
    *   }
    * })
-   **/
+  **/
   count<T extends UserLocationCountArgs>(
     args?: Prisma.Subset<T, UserLocationCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<
-            T['select'],
-            UserLocationCountAggregateOutputType
-          >
+        : Prisma.GetScalarType<T['select'], UserLocationCountAggregateOutputType>
       : number
-  >;
+  >
 
   /**
    * Allows you to perform aggregations operations on a UserLocation.
@@ -1445,10 +1111,8 @@ export interface UserLocationDelegate<
    *   },
    *   take: 10,
    * })
-   **/
-  aggregate<T extends UserLocationAggregateArgs>(
-    args: Prisma.Subset<T, UserLocationAggregateArgs>,
-  ): Prisma.PrismaPromise<GetUserLocationAggregateType<T>>;
+  **/
+  aggregate<T extends UserLocationAggregateArgs>(args: Prisma.Subset<T, UserLocationAggregateArgs>): Prisma.PrismaPromise<GetUserLocationAggregateType<T>>
 
   /**
    * Group by UserLocation.
@@ -1467,76 +1131,69 @@ export interface UserLocationDelegate<
    *   },
    * })
    *
-   **/
+  **/
   groupBy<
     T extends UserLocationGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
-    OrderByArg extends (Prisma.True extends HasSelectOrTake
+    OrderByArg extends Prisma.True extends HasSelectOrTake
       ? { orderBy: UserLocationGroupByArgs['orderBy'] }
-      : { orderBy?: UserLocationGroupByArgs['orderBy'] }),
-    OrderFields extends Prisma.ExcludeUnderscoreKeys<
-      Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
-    >,
+      : { orderBy?: UserLocationGroupByArgs['orderBy'] },
+    OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
     HavingFields extends Prisma.GetHavingFields<T['having']>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends (T['by'] extends never[] ? Prisma.True : Prisma.False),
-    InputErrors extends (ByEmpty extends Prisma.True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends Prisma.False
-        ? {
-            [P in HavingFields]: P extends ByFields
+    ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False,
+    InputErrors extends ByEmpty extends Prisma.True
+    ? `Error: "by" must not be empty.`
+    : HavingValid extends Prisma.False
+    ? {
+        [P in HavingFields]: P extends ByFields
+          ? never
+          : P extends string
+          ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+          : [
+              Error,
+              'Field ',
+              P,
+              ` in "having" needs to be provided in "by"`,
+            ]
+      }[HavingFields]
+    : 'take' extends Prisma.Keys<T>
+    ? 'orderBy' extends Prisma.Keys<T>
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
               ? never
-              : P extends string
-                ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                : [
-                    Error,
-                    'Field ',
-                    P,
-                    ` in "having" needs to be provided in "by"`,
-                  ];
-          }[HavingFields]
-        : 'take' extends Prisma.Keys<T>
-          ? 'orderBy' extends Prisma.Keys<T>
-            ? ByValid extends Prisma.True
-              ? {}
-              : {
-                  [P in OrderFields]: P extends ByFields
-                    ? never
-                    : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                }[OrderFields]
-            : 'Error: If you provide "take", you also need to provide "orderBy"'
-          : 'skip' extends Prisma.Keys<T>
-            ? 'orderBy' extends Prisma.Keys<T>
-              ? ByValid extends Prisma.True
-                ? {}
-                : {
-                    [P in OrderFields]: P extends ByFields
-                      ? never
-                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                  }[OrderFields]
-              : 'Error: If you provide "skip", you also need to provide "orderBy"'
-            : ByValid extends Prisma.True
-              ? {}
-              : {
-                  [P in OrderFields]: P extends ByFields
-                    ? never
-                    : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                }[OrderFields]),
-  >(
-    args: Prisma.SubsetIntersection<T, UserLocationGroupByArgs, OrderByArg> &
-      InputErrors,
-  ): {} extends InputErrors
-    ? GetUserLocationGroupByPayload<T>
-    : Prisma.PrismaPromise<InputErrors>;
-  /**
-   * Fields of the UserLocation model
-   */
-  readonly fields: UserLocationFieldRefs;
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "take", you also need to provide "orderBy"'
+    : 'skip' extends Prisma.Keys<T>
+    ? 'orderBy' extends Prisma.Keys<T>
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
+              ? never
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "skip", you also need to provide "orderBy"'
+    : ByValid extends Prisma.True
+    ? {}
+    : {
+        [P in OrderFields]: P extends ByFields
+          ? never
+          : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+      }[OrderFields]
+  >(args: Prisma.SubsetIntersection<T, UserLocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+/**
+ * Fields of the UserLocation model
+ */
+readonly fields: UserLocationFieldRefs;
 }
 
 /**
@@ -1545,595 +1202,481 @@ export interface UserLocationDelegate<
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__UserLocationClient<
-  T,
-  Null = never,
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-  GlobalOmitOptions = {},
-> extends Prisma.PrismaPromise<T> {
-  readonly [Symbol.toStringTag]: 'PrismaPromise';
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserClient<
-    | runtime.Types.Result.GetResult<
-        Prisma.$UserPayload<ExtArgs>,
-        T,
-        'findUniqueOrThrow',
-        GlobalOmitOptions
-      >
-    | Null,
-    Null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
-  locality<T extends Prisma.UserLocation$localityArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.UserLocation$localityArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findUniqueOrThrow',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+export interface Prisma__UserLocationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  locality<T extends Prisma.UserLocation$localityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserLocation$localityArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
    * @param onrejected The callback to execute when the Promise is rejected.
    * @returns A Promise for the completion of which ever callback is executed.
    */
-  then<TResult1 = T, TResult2 = never>(
-    onfulfilled?:
-      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?:
-      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+  then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>
   /**
    * Attaches a callback for only the rejection of the Promise.
    * @param onrejected The callback to execute when the Promise is rejected.
    * @returns A Promise for the completion of the callback.
    */
-  catch<TResult = never>(
-    onrejected?:
-      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T | TResult>;
+  catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
    * resolved value cannot be modified from the callback.
    * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
    * @returns A Promise for the completion of the callback.
    */
-  finally(
-    onfinally?: (() => void) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T>;
+  finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>
 }
+
+
+
 
 /**
  * Fields of the UserLocation model
  */
 export interface UserLocationFieldRefs {
-  readonly id: Prisma.FieldRef<'UserLocation', 'String'>;
-  readonly userId: Prisma.FieldRef<'UserLocation', 'String'>;
-  readonly latitude: Prisma.FieldRef<'UserLocation', 'Float'>;
-  readonly longitude: Prisma.FieldRef<'UserLocation', 'Float'>;
-  readonly accuracyMeters: Prisma.FieldRef<'UserLocation', 'Float'>;
-  readonly capturedAt: Prisma.FieldRef<'UserLocation', 'DateTime'>;
-  readonly localityId: Prisma.FieldRef<'UserLocation', 'String'>;
-  readonly createdAt: Prisma.FieldRef<'UserLocation', 'DateTime'>;
-  readonly updatedAt: Prisma.FieldRef<'UserLocation', 'DateTime'>;
+  readonly id: Prisma.FieldRef<"UserLocation", 'String'>
+  readonly userId: Prisma.FieldRef<"UserLocation", 'String'>
+  readonly latitude: Prisma.FieldRef<"UserLocation", 'Float'>
+  readonly longitude: Prisma.FieldRef<"UserLocation", 'Float'>
+  readonly accuracyMeters: Prisma.FieldRef<"UserLocation", 'Float'>
+  readonly capturedAt: Prisma.FieldRef<"UserLocation", 'DateTime'>
+  readonly localityId: Prisma.FieldRef<"UserLocation", 'String'>
+  readonly createdAt: Prisma.FieldRef<"UserLocation", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"UserLocation", 'DateTime'>
 }
+
 
 // Custom InputTypes
 /**
  * UserLocation findUnique
  */
-export type UserLocationFindUniqueArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter, which UserLocation to fetch.
    */
-  where: Prisma.UserLocationWhereUniqueInput;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+}
 
 /**
  * UserLocation findUniqueOrThrow
  */
-export type UserLocationFindUniqueOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter, which UserLocation to fetch.
    */
-  where: Prisma.UserLocationWhereUniqueInput;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+}
 
 /**
  * UserLocation findFirst
  */
-export type UserLocationFindFirstArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter, which UserLocation to fetch.
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of UserLocations to fetch.
    */
-  orderBy?:
-    | Prisma.UserLocationOrderByWithRelationInput
-    | Prisma.UserLocationOrderByWithRelationInput[];
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for searching for UserLocations.
    */
-  cursor?: Prisma.UserLocationWhereUniqueInput;
+  cursor?: Prisma.UserLocationWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` UserLocations from the position of the cursor.
+   * Take `Â±n` UserLocations from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` UserLocations.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of UserLocations.
    */
-  distinct?:
-    Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[];
-};
+  distinct?: Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[]
+}
 
 /**
  * UserLocation findFirstOrThrow
  */
-export type UserLocationFindFirstOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter, which UserLocation to fetch.
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of UserLocations to fetch.
    */
-  orderBy?:
-    | Prisma.UserLocationOrderByWithRelationInput
-    | Prisma.UserLocationOrderByWithRelationInput[];
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for searching for UserLocations.
    */
-  cursor?: Prisma.UserLocationWhereUniqueInput;
+  cursor?: Prisma.UserLocationWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` UserLocations from the position of the cursor.
+   * Take `Â±n` UserLocations from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` UserLocations.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of UserLocations.
    */
-  distinct?:
-    Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[];
-};
+  distinct?: Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[]
+}
 
 /**
  * UserLocation findMany
  */
-export type UserLocationFindManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter, which UserLocations to fetch.
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of UserLocations to fetch.
    */
-  orderBy?:
-    | Prisma.UserLocationOrderByWithRelationInput
-    | Prisma.UserLocationOrderByWithRelationInput[];
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for listing UserLocations.
    */
-  cursor?: Prisma.UserLocationWhereUniqueInput;
+  cursor?: Prisma.UserLocationWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` UserLocations from the position of the cursor.
+   * Take `Â±n` UserLocations from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` UserLocations.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of UserLocations.
    */
-  distinct?:
-    Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[];
-};
+  distinct?: Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[]
+}
 
 /**
  * UserLocation create
  */
-export type UserLocationCreateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * The data needed to create a UserLocation.
    */
-  data: Prisma.XOR<
-    Prisma.UserLocationCreateInput,
-    Prisma.UserLocationUncheckedCreateInput
-  >;
-};
+  data: Prisma.XOR<Prisma.UserLocationCreateInput, Prisma.UserLocationUncheckedCreateInput>
+}
 
 /**
  * UserLocation createMany
  */
-export type UserLocationCreateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * The data used to create many UserLocations.
    */
-  data:
-    Prisma.UserLocationCreateManyInput | Prisma.UserLocationCreateManyInput[];
-  skipDuplicates?: boolean;
-};
+  data: Prisma.UserLocationCreateManyInput | Prisma.UserLocationCreateManyInput[]
+  skipDuplicates?: boolean
+}
 
 /**
  * UserLocation createManyAndReturn
  */
-export type UserLocationCreateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelectCreateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.UserLocationSelectCreateManyAndReturn<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * The data used to create many UserLocations.
    */
-  data:
-    Prisma.UserLocationCreateManyInput | Prisma.UserLocationCreateManyInput[];
-  skipDuplicates?: boolean;
+  data: Prisma.UserLocationCreateManyInput | Prisma.UserLocationCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationIncludeCreateManyAndReturn<ExtArgs> | null;
-};
+  include?: Prisma.UserLocationIncludeCreateManyAndReturn<ExtArgs> | null
+}
 
 /**
  * UserLocation update
  */
-export type UserLocationUpdateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * The data needed to update a UserLocation.
    */
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateInput,
-    Prisma.UserLocationUncheckedUpdateInput
-  >;
+  data: Prisma.XOR<Prisma.UserLocationUpdateInput, Prisma.UserLocationUncheckedUpdateInput>
   /**
    * Choose, which UserLocation to update.
    */
-  where: Prisma.UserLocationWhereUniqueInput;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+}
 
 /**
  * UserLocation updateMany
  */
-export type UserLocationUpdateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * The data used to update UserLocations.
    */
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateManyMutationInput,
-    Prisma.UserLocationUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.UserLocationUpdateManyMutationInput, Prisma.UserLocationUncheckedUpdateManyInput>
   /**
    * Filter which UserLocations to update
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * Limit how many UserLocations to update.
    */
-  limit?: number;
-};
+  limit?: number
+}
 
 /**
  * UserLocation updateManyAndReturn
  */
-export type UserLocationUpdateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelectUpdateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.UserLocationSelectUpdateManyAndReturn<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * The data used to update UserLocations.
    */
-  data: Prisma.XOR<
-    Prisma.UserLocationUpdateManyMutationInput,
-    Prisma.UserLocationUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.UserLocationUpdateManyMutationInput, Prisma.UserLocationUncheckedUpdateManyInput>
   /**
    * Filter which UserLocations to update
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * Limit how many UserLocations to update.
    */
-  limit?: number;
+  limit?: number
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationIncludeUpdateManyAndReturn<ExtArgs> | null;
-};
+  include?: Prisma.UserLocationIncludeUpdateManyAndReturn<ExtArgs> | null
+}
 
 /**
  * UserLocation upsert
  */
-export type UserLocationUpsertArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * The filter to search for the UserLocation to update in case it exists.
    */
-  where: Prisma.UserLocationWhereUniqueInput;
+  where: Prisma.UserLocationWhereUniqueInput
   /**
    * In case the UserLocation found by the `where` argument doesn't exist, create a new UserLocation with this data.
    */
-  create: Prisma.XOR<
-    Prisma.UserLocationCreateInput,
-    Prisma.UserLocationUncheckedCreateInput
-  >;
+  create: Prisma.XOR<Prisma.UserLocationCreateInput, Prisma.UserLocationUncheckedCreateInput>
   /**
    * In case the UserLocation was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<
-    Prisma.UserLocationUpdateInput,
-    Prisma.UserLocationUncheckedUpdateInput
-  >;
-};
+  update: Prisma.XOR<Prisma.UserLocationUpdateInput, Prisma.UserLocationUncheckedUpdateInput>
+}
 
 /**
  * UserLocation delete
  */
-export type UserLocationDeleteArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
   /**
    * Filter which UserLocation to delete.
    */
-  where: Prisma.UserLocationWhereUniqueInput;
-};
+  where: Prisma.UserLocationWhereUniqueInput
+}
 
 /**
  * UserLocation deleteMany
  */
-export type UserLocationDeleteManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Filter which UserLocations to delete
    */
-  where?: Prisma.UserLocationWhereInput;
+  where?: Prisma.UserLocationWhereInput
   /**
    * Limit how many UserLocations to delete.
    */
-  limit?: number;
-};
+  limit?: number
+}
 
 /**
  * UserLocation.locality
  */
-export type UserLocation$localityArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocation$localityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
-  where?: Prisma.LocalityWhereInput;
-};
+  include?: Prisma.LocalityInclude<ExtArgs> | null
+  where?: Prisma.LocalityWhereInput
+}
 
 /**
  * UserLocation without action
  */
-export type UserLocationDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type UserLocationDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
-};
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
+}

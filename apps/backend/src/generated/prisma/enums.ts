@@ -3,35 +3,53 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck
 /*
- * This file exports all enum related types from the schema.
- *
- * 🟢 You can import this file directly.
- */
+* This file exports all enum related types from the schema.
+*
+* ðŸŸ¢ You can import this file directly.
+*/
 
 export const GeographicAreaType = {
   COUNTRY: 'COUNTRY',
   STATE: 'STATE',
   CITY: 'CITY',
-  LOCALITY: 'LOCALITY',
-} as const;
+  LOCALITY: 'LOCALITY'
+} as const
 
-export type GeographicAreaType =
-  (typeof GeographicAreaType)[keyof typeof GeographicAreaType];
+export type GeographicAreaType = (typeof GeographicAreaType)[keyof typeof GeographicAreaType]
+
 
 export const UserStatus = {
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
   BANNED: 'BANNED',
-  DELETED: 'DELETED',
-} as const;
+  DELETED: 'DELETED'
+} as const
 
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
 
 export const VerificationStatus = {
   REPORTED: 'REPORTED',
   UNDER_VERIFICATION: 'UNDER_VERIFICATION',
-  LOCALLY_VERIFIED: 'LOCALLY_VERIFIED',
-} as const;
+  LOCALLY_VERIFIED: 'LOCALLY_VERIFIED'
+} as const
 
-export type VerificationStatus =
-  (typeof VerificationStatus)[keyof typeof VerificationStatus];
+export type VerificationStatus = (typeof VerificationStatus)[keyof typeof VerificationStatus]
+
+
+export const VerificationEventType = {
+  POST_CREATED: 'POST_CREATED',
+  WITNESS_ADDED: 'WITNESS_ADDED',
+  WITNESS_REMOVED: 'WITNESS_REMOVED',
+  STATUS_CHANGED: 'STATUS_CHANGED'
+} as const
+
+export type VerificationEventType = (typeof VerificationEventType)[keyof typeof VerificationEventType]
+
+
+export const VerificationContributionType = {
+  WITNESS: 'WITNESS',
+  STATUS_TRANSITION: 'STATUS_TRANSITION'
+} as const
+
+export type VerificationContributionType = (typeof VerificationContributionType)[keyof typeof VerificationContributionType]

@@ -1,6 +1,7 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
+import { VerificationHistoryService } from './verification.history.service';
 import { PostsService } from './posts.service';
 
 describe('PostsService', () => {
@@ -14,6 +15,13 @@ describe('PostsService', () => {
       findFirst: jest.fn(),
       update: jest.fn(),
     },
+    $transaction: jest.fn((callback: (tx: any) => Promise<unknown>) =>
+      callback(database),
+    ),
+  };
+
+  const verificationHistory = {
+    recordPostCreated: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -22,6 +30,7 @@ describe('PostsService', () => {
       providers: [
         PostsService,
         { provide: DatabaseService, useValue: database },
+        { provide: VerificationHistoryService, useValue: verificationHistory },
       ],
     }).compile();
     service = module.get(PostsService);
@@ -57,6 +66,23 @@ describe('PostsService', () => {
           author: { select: { id: true, name: true } },
         }),
       }),
+    );
+  });
+
+  it('records a POST_CREATED event inside the create transaction', async () => {
+    database.userLocation.findUnique.mockResolvedValue(null);
+    database.post.create.mockResolvedValue({
+      id: 'post-1',
+      authorId: 'user-1',
+      content: 'Hello',
+    });
+
+    await service.create('user-1', 'Hello');
+
+    expect(database.$transaction).toHaveBeenCalledTimes(1);
+    expect(verificationHistory.recordPostCreated).toHaveBeenCalledWith(
+      'post-1',
+      database,
     );
   });
 

@@ -3,6 +3,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { LikesService } from './likes.service';
+import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -33,6 +34,10 @@ describe('PostsController', () => {
     getVerificationStatus: jest.fn(),
   };
 
+  const verificationHistoryService = {
+    getHistory: jest.fn(),
+  };
+
   const authenticatedRequest = {
     user: {
       sub: 'user-1',
@@ -61,6 +66,10 @@ describe('PostsController', () => {
           provide: VerificationService,
           useValue: verificationService,
         },
+        {
+          provide: VerificationHistoryService,
+          useValue: verificationHistoryService,
+        },
       ],
     })
       .overrideGuard(JwtAuthGuard)
@@ -85,7 +94,7 @@ describe('PostsController', () => {
 
     const result = await controller.create(authenticatedRequest, {
       content: 'Hello locally',
-    } as any);
+    });
 
     expect(service.create).toHaveBeenCalledWith('user-1', 'Hello locally');
 
@@ -292,5 +301,45 @@ describe('PostsController', () => {
       status: 'REPORTED',
       witnessCount: 0,
     });
+  });
+
+  it('returns verification history with only safe event metadata', async () => {
+    verificationHistoryService.getHistory.mockResolvedValue({
+      events: [
+        {
+          type: 'POST_CREATED',
+          toStatus: 'REPORTED',
+          createdAt: new Date('2026-08-10T00:00:00.000Z'),
+        },
+        {
+          type: 'WITNESS_ADDED',
+          createdAt: new Date('2026-08-10T00:00:01.000Z'),
+        },
+      ],
+    });
+
+    await expect(controller.getVerificationHistory('post-1')).resolves.toEqual({
+      events: [
+        {
+          type: 'POST_CREATED',
+          toStatus: 'REPORTED',
+          createdAt: new Date('2026-08-10T00:00:00.000Z'),
+        },
+        {
+          type: 'WITNESS_ADDED',
+          createdAt: new Date('2026-08-10T00:00:01.000Z'),
+        },
+      ],
+    });
+
+    expect(verificationHistoryService.getHistory).toHaveBeenCalledWith(
+      'post-1',
+    );
+  });
+
+  it('requires authentication for the verification history endpoint', async () => {
+    expect(
+      Reflect.getMetadata('__guards__', PostsController).includes(JwtAuthGuard),
+    ).toBe(true);
   });
 });

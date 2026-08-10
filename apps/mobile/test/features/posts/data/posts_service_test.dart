@@ -181,6 +181,79 @@ void main() {
     expect(status.witnessCount, 5);
   });
 
+  test('getVerificationHistory uses the authenticated history endpoint', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      expect(request.method, 'GET');
+      expect(request.url.path, '/posts/post-1/verification/history');
+      expect(request.headers['Authorization'], 'Bearer jwt');
+      return http.Response(
+        '{"events":[{"type":"POST_CREATED","toStatus":"REPORTED",'
+        '"createdAt":"2026-08-09T08:00:00.000Z"},'
+        '{"type":"STATUS_CHANGED","fromStatus":"REPORTED",'
+        '"toStatus":"UNDER_VERIFICATION",'
+        '"createdAt":"2026-08-09T09:00:00.000Z"}]}',
+        200,
+      );
+    });
+
+    final history = await service.getVerificationHistory('post-1');
+    expect(history.events, hasLength(2));
+    expect(history.events.first.type.isPostCreated, isTrue);
+    expect(history.events.first.toStatus?.isReported, isTrue);
+    expect(history.events.first.fromStatus, isNull);
+    expect(history.events.last.type.isStatusChanged, isTrue);
+    expect(history.events.last.fromStatus?.isReported, isTrue);
+    expect(history.events.last.toStatus?.isUnderVerification, isTrue);
+  });
+
+  test('getVerificationHistory parses an empty history', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"events":[]}', 200);
+    });
+
+    final history = await service.getVerificationHistory('post-1');
+    expect(history.events, isEmpty);
+  });
+
+  test('getVerificationHistory tolerates unknown future event types', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response(
+        '{"events":[{"type":"AUTHORITY_REVIEWED",'
+        '"createdAt":"2026-08-09T08:00:00.000Z"}]}',
+        200,
+      );
+    });
+
+    final history = await service.getVerificationHistory('post-1');
+    expect(history.events.single.type.isUnknown, isTrue);
+  });
+
+  test('getVerificationHistory never exposes witness identity fields', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response(
+        '{"events":[{"type":"WITNESS_ADDED",'
+        '"createdAt":"2026-08-09T08:00:00.000Z"}]}',
+        200,
+      );
+    });
+
+    final history = await service.getVerificationHistory('post-1');
+    final event = history.events.single;
+    expect(event.type.isWitnessAdded, isTrue);
+    expect(history.events.single.toMap().keys.any((key) =>
+        key.contains('userId') || key.contains('phone')), isFalse);
+  });
+
+  test('getVerificationHistory errors preserve status', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"message":"Not found"}', 404);
+    });
+    expect(
+      () => service.getVerificationHistory('post-1'),
+      throwsA(isA<AuthException>().having((e) => e.statusCode, 'status', 404)),
+    );
+  });
+
   test('witness responses expose no private witness rows', () async {
     final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
       return http.Response(

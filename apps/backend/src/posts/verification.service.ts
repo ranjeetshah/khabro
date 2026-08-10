@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../database/database.service';
+import { Prisma } from '../generated/prisma/client';
 import { VerificationStatus } from '../generated/prisma/enums';
+import { VerificationHistoryService } from './verification.history.service';
 
 const DEFAULT_LOCAL_VERIFICATION_THRESHOLD = 2;
 
@@ -18,12 +20,17 @@ export class VerificationService {
   constructor(
     private readonly database: DatabaseService,
     private readonly config: ConfigService,
+    private readonly verificationHistory: VerificationHistoryService,
   ) {}
 
   /** Safe public metadata only — status plus witness count, no private rows. */
-  async getVerificationStatus(postId: string) {
-    const post = await this.assertActivePost(postId);
-    const witnessCount = await this.database.witness.count({
+  async getVerificationStatus(
+    postId: string,
+    client?: Prisma.TransactionClient,
+  ) {
+    const db = client ?? this.database;
+    const post = await this.assertActivePost(postId, db);
+    const witnessCount = await db.witness.count({
       where: { postId },
     });
 
@@ -41,11 +48,14 @@ export class VerificationService {
    *
    * Only actual Witness records count; the author is not auto-witnessed and
    * the unique (userId, postId) constraint prevents duplicates from inflating
-   * the count.
+   * the count. When a transition actually occurs it is recorded as a
+   * STATUS_CHANGED event plus a STATUS_TRANSITION contribution, always inside
+   * the caller's transaction when one is supplied.
    */
-  async evaluatePost(postId: string) {
-    const post = await this.assertActivePost(postId);
-    const witnessCount = await this.database.witness.count({
+  async evaluatePost(postId: string, client?: Prisma.TransactionClient) {
+    const db = client ?? this.database;
+    const post = await this.assertActivePost(postId, db);
+    const witnessCount = await db.witness.count({
       where: { postId },
     });
 
@@ -64,10 +74,16 @@ export class VerificationService {
     }
 
     if (next !== current) {
-      await this.database.post.update({
+      await db.post.update({
         where: { id: postId },
         data: { verificationStatus: next },
       });
+      await this.verificationHistory.recordStatusChanged(
+        postId,
+        current,
+        next,
+        client,
+      );
     }
 
     return {
@@ -84,8 +100,12 @@ export class VerificationService {
       : DEFAULT_LOCAL_VERIFICATION_THRESHOLD;
   }
 
-  private async assertActivePost(postId: string) {
-    const post = await this.database.post.findFirst({
+  private async assertActivePost(
+    postId: string,
+    client?: Prisma.TransactionClient,
+  ) {
+    const db = client ?? this.database;
+    const post = await db.post.findFirst({
       where: {
         id: postId,
         deletedAt: null,

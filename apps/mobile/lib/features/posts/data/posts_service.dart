@@ -5,6 +5,7 @@ import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
+import 'verification_history_model.dart';
 import 'verification_status_model.dart';
 import 'witness_status_model.dart';
 
@@ -94,6 +95,17 @@ class PostsService {
     );
     _checkStatus(response, 'Failed to fetch verification status');
     return VerificationStatusModel.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+  }
+
+  Future<VerificationHistoryModel> getVerificationHistory(String id) async {
+    final response = await _request(
+      (headers) =>
+          _apiClient.get('/posts/$id/verification/history', headers: headers),
+    );
+    _checkStatus(response, 'Failed to fetch verification history');
+    return VerificationHistoryModel.fromJson(
       jsonDecode(response.body) as Map<String, dynamic>,
     );
   }

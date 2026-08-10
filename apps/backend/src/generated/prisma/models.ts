@@ -5,12 +5,14 @@
 /*
  * This is a barrel export file for all models and their related types.
  *
- * 🟢 You can import this file directly.
+ * ðŸŸ¢ You can import this file directly.
  */
-export type * from './models/User.js';
-export type * from './models/UserLocation.js';
-export type * from './models/Locality.js';
-export type * from './models/Post.js';
-export type * from './models/Like.js';
-export type * from './models/Witness.js';
-export type * from './commonInputTypes.js';
+export type * from './models/User.js'
+export type * from './models/UserLocation.js'
+export type * from './models/Locality.js'
+export type * from './models/Post.js'
+export type * from './models/Like.js'
+export type * from './models/Witness.js'
+export type * from './models/VerificationEvent.js'
+export type * from './models/VerificationContribution.js'
+export type * from './commonInputTypes.js'

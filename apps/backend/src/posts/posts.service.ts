@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { postSelect, toPostResponse } from './post.select';
+import { VerificationHistoryService } from './verification.history.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly verificationHistory: VerificationHistoryService,
+  ) {}
 
   async create(authorId: string, content: string) {
     const location = await this.database.userLocation.findUnique({
@@ -16,13 +20,19 @@ export class PostsService {
       select: { localityId: true },
     });
 
-    const post = await this.database.post.create({
-      data: {
-        authorId,
-        localityId: location?.localityId ?? null,
-        content: content.trim(),
-      },
-      select: postSelect(authorId),
+    const post = await this.database.$transaction(async (tx) => {
+      const created = await tx.post.create({
+        data: {
+          authorId,
+          localityId: location?.localityId ?? null,
+          content: content.trim(),
+        },
+        select: postSelect(authorId),
+      });
+
+      await this.verificationHistory.recordPostCreated(created.id, tx);
+
+      return created;
     });
     return toPostResponse(post);
   }

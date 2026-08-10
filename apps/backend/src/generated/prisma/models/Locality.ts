@@ -5,1276 +5,1017 @@
 /*
  * This file exports the `Locality` model and its related types.
  *
- * 🟢 You can import this file directly.
+ * ðŸŸ¢ You can import this file directly.
  */
-import type * as runtime from '@prisma/client/runtime/client';
-import type * as $Enums from '../enums.js';
-import type * as Prisma from '../internal/prismaNamespace.js';
+import type * as runtime from "@prisma/client/runtime/client"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model Locality
  *
  */
-export type LocalityModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$LocalityPayload>;
+export type LocalityModel = runtime.Types.Result.DefaultSelection<Prisma.$LocalityPayload>
 
 export type AggregateLocality = {
-  _count: LocalityCountAggregateOutputType | null;
-  _min: LocalityMinAggregateOutputType | null;
-  _max: LocalityMaxAggregateOutputType | null;
-};
+  _count: LocalityCountAggregateOutputType | null
+  _min: LocalityMinAggregateOutputType | null
+  _max: LocalityMaxAggregateOutputType | null
+}
 
 export type LocalityMinAggregateOutputType = {
-  id: string | null;
-  name: string | null;
-  type: $Enums.GeographicAreaType | null;
-  parentId: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+  id: string | null
+  name: string | null
+  type: $Enums.GeographicAreaType | null
+  parentId: string | null
+  city: string | null
+  state: string | null
+  country: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
+}
 
 export type LocalityMaxAggregateOutputType = {
-  id: string | null;
-  name: string | null;
-  type: $Enums.GeographicAreaType | null;
-  parentId: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+  id: string | null
+  name: string | null
+  type: $Enums.GeographicAreaType | null
+  parentId: string | null
+  city: string | null
+  state: string | null
+  country: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
+}
 
 export type LocalityCountAggregateOutputType = {
-  id: number;
-  name: number;
-  type: number;
-  parentId: number;
-  city: number;
-  state: number;
-  country: number;
-  createdAt: number;
-  updatedAt: number;
-  _all: number;
-};
+  id: number
+  name: number
+  type: number
+  parentId: number
+  city: number
+  state: number
+  country: number
+  createdAt: number
+  updatedAt: number
+  _all: number
+}
+
 
 export type LocalityMinAggregateInputType = {
-  id?: true;
-  name?: true;
-  type?: true;
-  parentId?: true;
-  city?: true;
-  state?: true;
-  country?: true;
-  createdAt?: true;
-  updatedAt?: true;
-};
+  id?: true
+  name?: true
+  type?: true
+  parentId?: true
+  city?: true
+  state?: true
+  country?: true
+  createdAt?: true
+  updatedAt?: true
+}
 
 export type LocalityMaxAggregateInputType = {
-  id?: true;
-  name?: true;
-  type?: true;
-  parentId?: true;
-  city?: true;
-  state?: true;
-  country?: true;
-  createdAt?: true;
-  updatedAt?: true;
-};
+  id?: true
+  name?: true
+  type?: true
+  parentId?: true
+  city?: true
+  state?: true
+  country?: true
+  createdAt?: true
+  updatedAt?: true
+}
 
 export type LocalityCountAggregateInputType = {
-  id?: true;
-  name?: true;
-  type?: true;
-  parentId?: true;
-  city?: true;
-  state?: true;
-  country?: true;
-  createdAt?: true;
-  updatedAt?: true;
-  _all?: true;
-};
+  id?: true
+  name?: true
+  type?: true
+  parentId?: true
+  city?: true
+  state?: true
+  country?: true
+  createdAt?: true
+  updatedAt?: true
+  _all?: true
+}
 
-export type LocalityAggregateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Filter which Locality to aggregate.
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of Localities to fetch.
    */
-  orderBy?:
-    | Prisma.LocalityOrderByWithRelationInput
-    | Prisma.LocalityOrderByWithRelationInput[];
+  orderBy?: Prisma.LocalityOrderByWithRelationInput | Prisma.LocalityOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the start position
    */
-  cursor?: Prisma.LocalityWhereUniqueInput;
+  cursor?: Prisma.LocalityWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` Localities from the position of the cursor.
+   * Take `Â±n` Localities from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` Localities.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Count returned Localities
-   **/
-  _count?: true | LocalityCountAggregateInputType;
+  **/
+  _count?: true | LocalityCountAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the minimum value
-   **/
-  _min?: LocalityMinAggregateInputType;
+  **/
+  _min?: LocalityMinAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the maximum value
-   **/
-  _max?: LocalityMaxAggregateInputType;
-};
+  **/
+  _max?: LocalityMaxAggregateInputType
+}
 
 export type GetLocalityAggregateType<T extends LocalityAggregateArgs> = {
-  [P in keyof T & keyof AggregateLocality]: P extends '_count' | 'count'
+      [P in keyof T & keyof AggregateLocality]: P extends '_count' | 'count'
     ? T[P] extends true
       ? number
       : Prisma.GetScalarType<T[P], AggregateLocality[P]>
-    : Prisma.GetScalarType<T[P], AggregateLocality[P]>;
-};
+    : Prisma.GetScalarType<T[P], AggregateLocality[P]>
+}
 
-export type LocalityGroupByArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.LocalityWhereInput;
-  orderBy?:
-    | Prisma.LocalityOrderByWithAggregationInput
-    | Prisma.LocalityOrderByWithAggregationInput[];
-  by: Prisma.LocalityScalarFieldEnum[] | Prisma.LocalityScalarFieldEnum;
-  having?: Prisma.LocalityScalarWhereWithAggregatesInput;
-  take?: number;
-  skip?: number;
-  _count?: LocalityCountAggregateInputType | true;
-  _min?: LocalityMinAggregateInputType;
-  _max?: LocalityMaxAggregateInputType;
-};
+
+
+
+export type LocalityGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LocalityWhereInput
+  orderBy?: Prisma.LocalityOrderByWithAggregationInput | Prisma.LocalityOrderByWithAggregationInput[]
+  by: Prisma.LocalityScalarFieldEnum[] | Prisma.LocalityScalarFieldEnum
+  having?: Prisma.LocalityScalarWhereWithAggregatesInput
+  take?: number
+  skip?: number
+  _count?: LocalityCountAggregateInputType | true
+  _min?: LocalityMinAggregateInputType
+  _max?: LocalityMaxAggregateInputType
+}
 
 export type LocalityGroupByOutputType = {
-  id: string;
-  name: string;
-  type: $Enums.GeographicAreaType;
-  parentId: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: LocalityCountAggregateOutputType | null;
-  _min: LocalityMinAggregateOutputType | null;
-  _max: LocalityMaxAggregateOutputType | null;
-};
+  id: string
+  name: string
+  type: $Enums.GeographicAreaType
+  parentId: string | null
+  city: string
+  state: string
+  country: string
+  createdAt: Date
+  updatedAt: Date
+  _count: LocalityCountAggregateOutputType | null
+  _min: LocalityMinAggregateOutputType | null
+  _max: LocalityMaxAggregateOutputType | null
+}
 
-export type GetLocalityGroupByPayload<T extends LocalityGroupByArgs> =
-  Prisma.PrismaPromise<
-    Array<
-      Prisma.PickEnumerable<LocalityGroupByOutputType, T['by']> & {
-        [P in keyof T & keyof LocalityGroupByOutputType]: P extends '_count'
+export type GetLocalityGroupByPayload<T extends LocalityGroupByArgs> = Prisma.PrismaPromise<
+  Array<
+    Prisma.PickEnumerable<LocalityGroupByOutputType, T['by']> &
+      {
+        [P in ((keyof T) & (keyof LocalityGroupByOutputType))]: P extends '_count'
           ? T[P] extends boolean
             ? number
             : Prisma.GetScalarType<T[P], LocalityGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], LocalityGroupByOutputType[P]>;
+          : Prisma.GetScalarType<T[P], LocalityGroupByOutputType[P]>
       }
     >
-  >;
+  >
+
+
 
 export type LocalityWhereInput = {
-  AND?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[];
-  OR?: Prisma.LocalityWhereInput[];
-  NOT?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[];
-  id?: Prisma.StringFilter<'Locality'> | string;
-  name?: Prisma.StringFilter<'Locality'> | string;
-  type?:
-    Prisma.EnumGeographicAreaTypeFilter<'Locality'> | $Enums.GeographicAreaType;
-  parentId?: Prisma.StringNullableFilter<'Locality'> | string | null;
-  city?: Prisma.StringFilter<'Locality'> | string;
-  state?: Prisma.StringFilter<'Locality'> | string;
-  country?: Prisma.StringFilter<'Locality'> | string;
-  createdAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-  updatedAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-  parent?: Prisma.XOR<
-    Prisma.LocalityNullableScalarRelationFilter,
-    Prisma.LocalityWhereInput
-  > | null;
-  children?: Prisma.LocalityListRelationFilter;
-  userLocations?: Prisma.UserLocationListRelationFilter;
-  posts?: Prisma.PostListRelationFilter;
-};
+  AND?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[]
+  OR?: Prisma.LocalityWhereInput[]
+  NOT?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[]
+  id?: Prisma.StringFilter<"Locality"> | string
+  name?: Prisma.StringFilter<"Locality"> | string
+  type?: Prisma.EnumGeographicAreaTypeFilter<"Locality"> | $Enums.GeographicAreaType
+  parentId?: Prisma.StringNullableFilter<"Locality"> | string | null
+  city?: Prisma.StringFilter<"Locality"> | string
+  state?: Prisma.StringFilter<"Locality"> | string
+  country?: Prisma.StringFilter<"Locality"> | string
+  createdAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+  parent?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
+  children?: Prisma.LocalityListRelationFilter
+  userLocations?: Prisma.UserLocationListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+}
 
 export type LocalityOrderByWithRelationInput = {
-  id?: Prisma.SortOrder;
-  name?: Prisma.SortOrder;
-  type?: Prisma.SortOrder;
-  parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
-  country?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-  parent?: Prisma.LocalityOrderByWithRelationInput;
-  children?: Prisma.LocalityOrderByRelationAggregateInput;
-  userLocations?: Prisma.UserLocationOrderByRelationAggregateInput;
-  posts?: Prisma.PostOrderByRelationAggregateInput;
-};
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrder
+  state?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  parent?: Prisma.LocalityOrderByWithRelationInput
+  children?: Prisma.LocalityOrderByRelationAggregateInput
+  userLocations?: Prisma.UserLocationOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
+}
 
-export type LocalityWhereUniqueInput = Prisma.AtLeast<
-  {
-    id?: string;
-    name_type_parentId?: Prisma.LocalityNameTypeParentIdCompoundUniqueInput;
-    AND?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[];
-    OR?: Prisma.LocalityWhereInput[];
-    NOT?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[];
-    name?: Prisma.StringFilter<'Locality'> | string;
-    type?:
-      | Prisma.EnumGeographicAreaTypeFilter<'Locality'>
-      | $Enums.GeographicAreaType;
-    parentId?: Prisma.StringNullableFilter<'Locality'> | string | null;
-    city?: Prisma.StringFilter<'Locality'> | string;
-    state?: Prisma.StringFilter<'Locality'> | string;
-    country?: Prisma.StringFilter<'Locality'> | string;
-    createdAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-    updatedAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-    parent?: Prisma.XOR<
-      Prisma.LocalityNullableScalarRelationFilter,
-      Prisma.LocalityWhereInput
-    > | null;
-    children?: Prisma.LocalityListRelationFilter;
-    userLocations?: Prisma.UserLocationListRelationFilter;
-    posts?: Prisma.PostListRelationFilter;
-  },
-  'id' | 'name_type_parentId'
->;
+export type LocalityWhereUniqueInput = Prisma.AtLeast<{
+  id?: string
+  name_type_parentId?: Prisma.LocalityNameTypeParentIdCompoundUniqueInput
+  AND?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[]
+  OR?: Prisma.LocalityWhereInput[]
+  NOT?: Prisma.LocalityWhereInput | Prisma.LocalityWhereInput[]
+  name?: Prisma.StringFilter<"Locality"> | string
+  type?: Prisma.EnumGeographicAreaTypeFilter<"Locality"> | $Enums.GeographicAreaType
+  parentId?: Prisma.StringNullableFilter<"Locality"> | string | null
+  city?: Prisma.StringFilter<"Locality"> | string
+  state?: Prisma.StringFilter<"Locality"> | string
+  country?: Prisma.StringFilter<"Locality"> | string
+  createdAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+  parent?: Prisma.XOR<Prisma.LocalityNullableScalarRelationFilter, Prisma.LocalityWhereInput> | null
+  children?: Prisma.LocalityListRelationFilter
+  userLocations?: Prisma.UserLocationListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+}, "id" | "name_type_parentId">
 
 export type LocalityOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder;
-  name?: Prisma.SortOrder;
-  type?: Prisma.SortOrder;
-  parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
-  country?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-  _count?: Prisma.LocalityCountOrderByAggregateInput;
-  _max?: Prisma.LocalityMaxOrderByAggregateInput;
-  _min?: Prisma.LocalityMinOrderByAggregateInput;
-};
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrder
+  state?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  _count?: Prisma.LocalityCountOrderByAggregateInput
+  _max?: Prisma.LocalityMaxOrderByAggregateInput
+  _min?: Prisma.LocalityMinOrderByAggregateInput
+}
 
 export type LocalityScalarWhereWithAggregatesInput = {
-  AND?:
-    | Prisma.LocalityScalarWhereWithAggregatesInput
-    | Prisma.LocalityScalarWhereWithAggregatesInput[];
-  OR?: Prisma.LocalityScalarWhereWithAggregatesInput[];
-  NOT?:
-    | Prisma.LocalityScalarWhereWithAggregatesInput
-    | Prisma.LocalityScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<'Locality'> | string;
-  name?: Prisma.StringWithAggregatesFilter<'Locality'> | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeWithAggregatesFilter<'Locality'>
-    | $Enums.GeographicAreaType;
-  parentId?:
-    Prisma.StringNullableWithAggregatesFilter<'Locality'> | string | null;
-  city?: Prisma.StringWithAggregatesFilter<'Locality'> | string;
-  state?: Prisma.StringWithAggregatesFilter<'Locality'> | string;
-  country?: Prisma.StringWithAggregatesFilter<'Locality'> | string;
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<'Locality'> | Date | string;
-  updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Locality'> | Date | string;
-};
+  AND?: Prisma.LocalityScalarWhereWithAggregatesInput | Prisma.LocalityScalarWhereWithAggregatesInput[]
+  OR?: Prisma.LocalityScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.LocalityScalarWhereWithAggregatesInput | Prisma.LocalityScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"Locality"> | string
+  name?: Prisma.StringWithAggregatesFilter<"Locality"> | string
+  type?: Prisma.EnumGeographicAreaTypeWithAggregatesFilter<"Locality"> | $Enums.GeographicAreaType
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"Locality"> | string | null
+  city?: Prisma.StringWithAggregatesFilter<"Locality"> | string
+  state?: Prisma.StringWithAggregatesFilter<"Locality"> | string
+  country?: Prisma.StringWithAggregatesFilter<"Locality"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Locality"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Locality"> | Date | string
+}
 
 export type LocalityCreateInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput;
-  children?: Prisma.LocalityCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUncheckedCreateInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  parentId?: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput;
-  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityCreateManyInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  parentId?: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type LocalityUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type LocalityUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
 
 export type LocalityNullableScalarRelationFilter = {
-  is?: Prisma.LocalityWhereInput | null;
-  isNot?: Prisma.LocalityWhereInput | null;
-};
+  is?: Prisma.LocalityWhereInput | null
+  isNot?: Prisma.LocalityWhereInput | null
+}
 
 export type LocalityListRelationFilter = {
-  every?: Prisma.LocalityWhereInput;
-  some?: Prisma.LocalityWhereInput;
-  none?: Prisma.LocalityWhereInput;
-};
+  every?: Prisma.LocalityWhereInput
+  some?: Prisma.LocalityWhereInput
+  none?: Prisma.LocalityWhereInput
+}
 
 export type LocalityOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder;
-};
+  _count?: Prisma.SortOrder
+}
 
 export type LocalityNameTypeParentIdCompoundUniqueInput = {
-  name: string;
-  type: $Enums.GeographicAreaType;
-  parentId: string;
-};
+  name: string
+  type: $Enums.GeographicAreaType
+  parentId: string
+}
 
 export type LocalityCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  name?: Prisma.SortOrder;
-  type?: Prisma.SortOrder;
-  parentId?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
-  country?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  state?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type LocalityMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  name?: Prisma.SortOrder;
-  type?: Prisma.SortOrder;
-  parentId?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
-  country?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  state?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type LocalityMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder;
-  name?: Prisma.SortOrder;
-  type?: Prisma.SortOrder;
-  parentId?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
-  country?: Prisma.SortOrder;
-  createdAt?: Prisma.SortOrder;
-  updatedAt?: Prisma.SortOrder;
-};
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  state?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
 
 export type LocalityCreateNestedOneWithoutUserLocationsInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedCreateWithoutUserLocationsInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput;
-  connect?: Prisma.LocalityWhereUniqueInput;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput
+  connect?: Prisma.LocalityWhereUniqueInput
+}
 
 export type LocalityUpdateOneWithoutUserLocationsNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedCreateWithoutUserLocationsInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput;
-  upsert?: Prisma.LocalityUpsertWithoutUserLocationsInput;
-  disconnect?: Prisma.LocalityWhereInput | boolean;
-  delete?: Prisma.LocalityWhereInput | boolean;
-  connect?: Prisma.LocalityWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.LocalityUpdateToOneWithWhereWithoutUserLocationsInput,
-      Prisma.LocalityUpdateWithoutUserLocationsInput
-    >,
-    Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput
-  >;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutUserLocationsInput
+  upsert?: Prisma.LocalityUpsertWithoutUserLocationsInput
+  disconnect?: Prisma.LocalityWhereInput | boolean
+  delete?: Prisma.LocalityWhereInput | boolean
+  connect?: Prisma.LocalityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocalityUpdateToOneWithWhereWithoutUserLocationsInput, Prisma.LocalityUpdateWithoutUserLocationsInput>, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+}
 
 export type LocalityCreateNestedOneWithoutChildrenInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutChildrenInput,
-    Prisma.LocalityUncheckedCreateWithoutChildrenInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutChildrenInput;
-  connect?: Prisma.LocalityWhereUniqueInput;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutChildrenInput, Prisma.LocalityUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutChildrenInput
+  connect?: Prisma.LocalityWhereUniqueInput
+}
 
 export type LocalityCreateNestedManyWithoutParentInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.LocalityCreateWithoutParentInput,
-        Prisma.LocalityUncheckedCreateWithoutParentInput
-      >
-    | Prisma.LocalityCreateWithoutParentInput[]
-    | Prisma.LocalityUncheckedCreateWithoutParentInput[];
-  connectOrCreate?:
-    | Prisma.LocalityCreateOrConnectWithoutParentInput
-    | Prisma.LocalityCreateOrConnectWithoutParentInput[];
-  createMany?: Prisma.LocalityCreateManyParentInputEnvelope;
-  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput> | Prisma.LocalityCreateWithoutParentInput[] | Prisma.LocalityUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutParentInput | Prisma.LocalityCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.LocalityCreateManyParentInputEnvelope
+  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+}
 
 export type LocalityUncheckedCreateNestedManyWithoutParentInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.LocalityCreateWithoutParentInput,
-        Prisma.LocalityUncheckedCreateWithoutParentInput
-      >
-    | Prisma.LocalityCreateWithoutParentInput[]
-    | Prisma.LocalityUncheckedCreateWithoutParentInput[];
-  connectOrCreate?:
-    | Prisma.LocalityCreateOrConnectWithoutParentInput
-    | Prisma.LocalityCreateOrConnectWithoutParentInput[];
-  createMany?: Prisma.LocalityCreateManyParentInputEnvelope;
-  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput> | Prisma.LocalityCreateWithoutParentInput[] | Prisma.LocalityUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutParentInput | Prisma.LocalityCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.LocalityCreateManyParentInputEnvelope
+  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+}
 
 export type EnumGeographicAreaTypeFieldUpdateOperationsInput = {
-  set?: $Enums.GeographicAreaType;
-};
+  set?: $Enums.GeographicAreaType
+}
 
 export type LocalityUpdateOneWithoutChildrenNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutChildrenInput,
-    Prisma.LocalityUncheckedCreateWithoutChildrenInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutChildrenInput;
-  upsert?: Prisma.LocalityUpsertWithoutChildrenInput;
-  disconnect?: Prisma.LocalityWhereInput | boolean;
-  delete?: Prisma.LocalityWhereInput | boolean;
-  connect?: Prisma.LocalityWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.LocalityUpdateToOneWithWhereWithoutChildrenInput,
-      Prisma.LocalityUpdateWithoutChildrenInput
-    >,
-    Prisma.LocalityUncheckedUpdateWithoutChildrenInput
-  >;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutChildrenInput, Prisma.LocalityUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutChildrenInput
+  upsert?: Prisma.LocalityUpsertWithoutChildrenInput
+  disconnect?: Prisma.LocalityWhereInput | boolean
+  delete?: Prisma.LocalityWhereInput | boolean
+  connect?: Prisma.LocalityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocalityUpdateToOneWithWhereWithoutChildrenInput, Prisma.LocalityUpdateWithoutChildrenInput>, Prisma.LocalityUncheckedUpdateWithoutChildrenInput>
+}
 
 export type LocalityUpdateManyWithoutParentNestedInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.LocalityCreateWithoutParentInput,
-        Prisma.LocalityUncheckedCreateWithoutParentInput
-      >
-    | Prisma.LocalityCreateWithoutParentInput[]
-    | Prisma.LocalityUncheckedCreateWithoutParentInput[];
-  connectOrCreate?:
-    | Prisma.LocalityCreateOrConnectWithoutParentInput
-    | Prisma.LocalityCreateOrConnectWithoutParentInput[];
-  upsert?:
-    | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput
-    | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput[];
-  createMany?: Prisma.LocalityCreateManyParentInputEnvelope;
-  set?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  disconnect?:
-    Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  delete?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  update?:
-    | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput
-    | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput[];
-  updateMany?:
-    | Prisma.LocalityUpdateManyWithWhereWithoutParentInput
-    | Prisma.LocalityUpdateManyWithWhereWithoutParentInput[];
-  deleteMany?:
-    Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[];
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput> | Prisma.LocalityCreateWithoutParentInput[] | Prisma.LocalityUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutParentInput | Prisma.LocalityCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.LocalityCreateManyParentInputEnvelope
+  set?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  disconnect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  delete?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  update?: Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.LocalityUpdateManyWithWhereWithoutParentInput | Prisma.LocalityUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[]
+}
 
 export type LocalityUncheckedUpdateManyWithoutParentNestedInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.LocalityCreateWithoutParentInput,
-        Prisma.LocalityUncheckedCreateWithoutParentInput
-      >
-    | Prisma.LocalityCreateWithoutParentInput[]
-    | Prisma.LocalityUncheckedCreateWithoutParentInput[];
-  connectOrCreate?:
-    | Prisma.LocalityCreateOrConnectWithoutParentInput
-    | Prisma.LocalityCreateOrConnectWithoutParentInput[];
-  upsert?:
-    | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput
-    | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput[];
-  createMany?: Prisma.LocalityCreateManyParentInputEnvelope;
-  set?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  disconnect?:
-    Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  delete?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[];
-  update?:
-    | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput
-    | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput[];
-  updateMany?:
-    | Prisma.LocalityUpdateManyWithWhereWithoutParentInput
-    | Prisma.LocalityUpdateManyWithWhereWithoutParentInput[];
-  deleteMany?:
-    Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[];
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput> | Prisma.LocalityCreateWithoutParentInput[] | Prisma.LocalityUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutParentInput | Prisma.LocalityCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput | Prisma.LocalityUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.LocalityCreateManyParentInputEnvelope
+  set?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  disconnect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  delete?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  connect?: Prisma.LocalityWhereUniqueInput | Prisma.LocalityWhereUniqueInput[]
+  update?: Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput | Prisma.LocalityUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.LocalityUpdateManyWithWhereWithoutParentInput | Prisma.LocalityUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[]
+}
 
 export type LocalityCreateNestedOneWithoutPostsInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutPostsInput,
-    Prisma.LocalityUncheckedCreateWithoutPostsInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput;
-  connect?: Prisma.LocalityWhereUniqueInput;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput
+  connect?: Prisma.LocalityWhereUniqueInput
+}
 
 export type LocalityUpdateOneWithoutPostsNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.LocalityCreateWithoutPostsInput,
-    Prisma.LocalityUncheckedCreateWithoutPostsInput
-  >;
-  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput;
-  upsert?: Prisma.LocalityUpsertWithoutPostsInput;
-  disconnect?: Prisma.LocalityWhereInput | boolean;
-  delete?: Prisma.LocalityWhereInput | boolean;
-  connect?: Prisma.LocalityWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.LocalityUpdateToOneWithWhereWithoutPostsInput,
-      Prisma.LocalityUpdateWithoutPostsInput
-    >,
-    Prisma.LocalityUncheckedUpdateWithoutPostsInput
-  >;
-};
+  create?: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.LocalityCreateOrConnectWithoutPostsInput
+  upsert?: Prisma.LocalityUpsertWithoutPostsInput
+  disconnect?: Prisma.LocalityWhereInput | boolean
+  delete?: Prisma.LocalityWhereInput | boolean
+  connect?: Prisma.LocalityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocalityUpdateToOneWithWhereWithoutPostsInput, Prisma.LocalityUpdateWithoutPostsInput>, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+}
 
 export type LocalityCreateWithoutUserLocationsInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput;
-  children?: Prisma.LocalityCreateNestedManyWithoutParentInput;
-  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUncheckedCreateWithoutUserLocationsInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  parentId?: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput;
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityCreateOrConnectWithoutUserLocationsInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedCreateWithoutUserLocationsInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+}
 
 export type LocalityUpsertWithoutUserLocationsInput = {
-  update: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput
-  >;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedCreateWithoutUserLocationsInput
-  >;
-  where?: Prisma.LocalityWhereInput;
-};
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutUserLocationsInput, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutUserLocationsInput, Prisma.LocalityUncheckedCreateWithoutUserLocationsInput>
+  where?: Prisma.LocalityWhereInput
+}
 
 export type LocalityUpdateToOneWithWhereWithoutUserLocationsInput = {
-  where?: Prisma.LocalityWhereInput;
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutUserLocationsInput,
-    Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput
-  >;
-};
+  where?: Prisma.LocalityWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutUserLocationsInput, Prisma.LocalityUncheckedUpdateWithoutUserLocationsInput>
+}
 
 export type LocalityUpdateWithoutUserLocationsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput;
-  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput;
-  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateWithoutUserLocationsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput;
-  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityCreateWithoutChildrenInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput;
-  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUncheckedCreateWithoutChildrenInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  parentId?: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityCreateOrConnectWithoutChildrenInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutChildrenInput,
-    Prisma.LocalityUncheckedCreateWithoutChildrenInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutChildrenInput, Prisma.LocalityUncheckedCreateWithoutChildrenInput>
+}
 
 export type LocalityCreateWithoutParentInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  children?: Prisma.LocalityCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUncheckedCreateWithoutParentInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput;
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityCreateOrConnectWithoutParentInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutParentInput,
-    Prisma.LocalityUncheckedCreateWithoutParentInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput>
+}
 
 export type LocalityCreateManyParentInputEnvelope = {
-  data:
-    | Prisma.LocalityCreateManyParentInput
-    | Prisma.LocalityCreateManyParentInput[];
-  skipDuplicates?: boolean;
-};
+  data: Prisma.LocalityCreateManyParentInput | Prisma.LocalityCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
 
 export type LocalityUpsertWithoutChildrenInput = {
-  update: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutChildrenInput,
-    Prisma.LocalityUncheckedUpdateWithoutChildrenInput
-  >;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutChildrenInput,
-    Prisma.LocalityUncheckedCreateWithoutChildrenInput
-  >;
-  where?: Prisma.LocalityWhereInput;
-};
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutChildrenInput, Prisma.LocalityUncheckedUpdateWithoutChildrenInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutChildrenInput, Prisma.LocalityUncheckedCreateWithoutChildrenInput>
+  where?: Prisma.LocalityWhereInput
+}
 
 export type LocalityUpdateToOneWithWhereWithoutChildrenInput = {
-  where?: Prisma.LocalityWhereInput;
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutChildrenInput,
-    Prisma.LocalityUncheckedUpdateWithoutChildrenInput
-  >;
-};
+  where?: Prisma.LocalityWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutChildrenInput, Prisma.LocalityUncheckedUpdateWithoutChildrenInput>
+}
 
 export type LocalityUpdateWithoutChildrenInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput;
-  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateWithoutChildrenInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUpsertWithWhereUniqueWithoutParentInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  update: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutParentInput,
-    Prisma.LocalityUncheckedUpdateWithoutParentInput
-  >;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutParentInput,
-    Prisma.LocalityUncheckedCreateWithoutParentInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutParentInput, Prisma.LocalityUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutParentInput, Prisma.LocalityUncheckedCreateWithoutParentInput>
+}
 
 export type LocalityUpdateWithWhereUniqueWithoutParentInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutParentInput,
-    Prisma.LocalityUncheckedUpdateWithoutParentInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutParentInput, Prisma.LocalityUncheckedUpdateWithoutParentInput>
+}
 
 export type LocalityUpdateManyWithWhereWithoutParentInput = {
-  where: Prisma.LocalityScalarWhereInput;
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateManyMutationInput,
-    Prisma.LocalityUncheckedUpdateManyWithoutParentInput
-  >;
-};
+  where: Prisma.LocalityScalarWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateManyMutationInput, Prisma.LocalityUncheckedUpdateManyWithoutParentInput>
+}
 
 export type LocalityScalarWhereInput = {
-  AND?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[];
-  OR?: Prisma.LocalityScalarWhereInput[];
-  NOT?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[];
-  id?: Prisma.StringFilter<'Locality'> | string;
-  name?: Prisma.StringFilter<'Locality'> | string;
-  type?:
-    Prisma.EnumGeographicAreaTypeFilter<'Locality'> | $Enums.GeographicAreaType;
-  parentId?: Prisma.StringNullableFilter<'Locality'> | string | null;
-  city?: Prisma.StringFilter<'Locality'> | string;
-  state?: Prisma.StringFilter<'Locality'> | string;
-  country?: Prisma.StringFilter<'Locality'> | string;
-  createdAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-  updatedAt?: Prisma.DateTimeFilter<'Locality'> | Date | string;
-};
+  AND?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[]
+  OR?: Prisma.LocalityScalarWhereInput[]
+  NOT?: Prisma.LocalityScalarWhereInput | Prisma.LocalityScalarWhereInput[]
+  id?: Prisma.StringFilter<"Locality"> | string
+  name?: Prisma.StringFilter<"Locality"> | string
+  type?: Prisma.EnumGeographicAreaTypeFilter<"Locality"> | $Enums.GeographicAreaType
+  parentId?: Prisma.StringNullableFilter<"Locality"> | string | null
+  city?: Prisma.StringFilter<"Locality"> | string
+  state?: Prisma.StringFilter<"Locality"> | string
+  country?: Prisma.StringFilter<"Locality"> | string
+  createdAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Locality"> | Date | string
+}
 
 export type LocalityCreateWithoutPostsInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput;
-  children?: Prisma.LocalityCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LocalityCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LocalityCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityUncheckedCreateWithoutPostsInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  parentId?: string | null;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput;
-  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  parentId?: string | null
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LocalityUncheckedCreateNestedManyWithoutParentInput
+  userLocations?: Prisma.UserLocationUncheckedCreateNestedManyWithoutLocalityInput
+}
 
 export type LocalityCreateOrConnectWithoutPostsInput = {
-  where: Prisma.LocalityWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutPostsInput,
-    Prisma.LocalityUncheckedCreateWithoutPostsInput
-  >;
-};
+  where: Prisma.LocalityWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+}
 
 export type LocalityUpsertWithoutPostsInput = {
-  update: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutPostsInput,
-    Prisma.LocalityUncheckedUpdateWithoutPostsInput
-  >;
-  create: Prisma.XOR<
-    Prisma.LocalityCreateWithoutPostsInput,
-    Prisma.LocalityUncheckedCreateWithoutPostsInput
-  >;
-  where?: Prisma.LocalityWhereInput;
-};
+  update: Prisma.XOR<Prisma.LocalityUpdateWithoutPostsInput, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+  create: Prisma.XOR<Prisma.LocalityCreateWithoutPostsInput, Prisma.LocalityUncheckedCreateWithoutPostsInput>
+  where?: Prisma.LocalityWhereInput
+}
 
 export type LocalityUpdateToOneWithWhereWithoutPostsInput = {
-  where?: Prisma.LocalityWhereInput;
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateWithoutPostsInput,
-    Prisma.LocalityUncheckedUpdateWithoutPostsInput
-  >;
-};
+  where?: Prisma.LocalityWhereInput
+  data: Prisma.XOR<Prisma.LocalityUpdateWithoutPostsInput, Prisma.LocalityUncheckedUpdateWithoutPostsInput>
+}
 
 export type LocalityUpdateWithoutPostsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput;
-  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LocalityUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateWithoutPostsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityCreateManyParentInput = {
-  id?: string;
-  name: string;
-  type?: $Enums.GeographicAreaType;
-  city: string;
-  state: string;
-  country: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-};
+  id?: string
+  name: string
+  type?: $Enums.GeographicAreaType
+  city: string
+  state: string
+  country: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
 
 export type LocalityUpdateWithoutParentInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateWithoutParentInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput;
-  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput;
-  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LocalityUncheckedUpdateManyWithoutParentNestedInput
+  userLocations?: Prisma.UserLocationUncheckedUpdateManyWithoutLocalityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutLocalityNestedInput
+}
 
 export type LocalityUncheckedUpdateManyWithoutParentInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  type?:
-    | Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput
-    | $Enums.GeographicAreaType;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.StringFieldUpdateOperationsInput | string;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-};
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumGeographicAreaTypeFieldUpdateOperationsInput | $Enums.GeographicAreaType
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 /**
  * Count Type LocalityCountOutputType
  */
 
 export type LocalityCountOutputType = {
-  children: number;
-  userLocations: number;
-  posts: number;
-};
+  children: number
+  userLocations: number
+  posts: number
+}
 
-export type LocalityCountOutputTypeSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  children?: boolean | LocalityCountOutputTypeCountChildrenArgs;
-  userLocations?: boolean | LocalityCountOutputTypeCountUserLocationsArgs;
-  posts?: boolean | LocalityCountOutputTypeCountPostsArgs;
-};
+export type LocalityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  children?: boolean | LocalityCountOutputTypeCountChildrenArgs
+  userLocations?: boolean | LocalityCountOutputTypeCountUserLocationsArgs
+  posts?: boolean | LocalityCountOutputTypeCountPostsArgs
+}
 
 /**
  * LocalityCountOutputType without action
  */
-export type LocalityCountOutputTypeDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the LocalityCountOutputType
    */
-  select?: Prisma.LocalityCountOutputTypeSelect<ExtArgs> | null;
-};
+  select?: Prisma.LocalityCountOutputTypeSelect<ExtArgs> | null
+}
 
 /**
  * LocalityCountOutputType without action
  */
-export type LocalityCountOutputTypeCountChildrenArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.LocalityWhereInput;
-};
+export type LocalityCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LocalityWhereInput
+}
 
 /**
  * LocalityCountOutputType without action
  */
-export type LocalityCountOutputTypeCountUserLocationsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.UserLocationWhereInput;
-};
+export type LocalityCountOutputTypeCountUserLocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserLocationWhereInput
+}
 
 /**
  * LocalityCountOutputType without action
  */
-export type LocalityCountOutputTypeCountPostsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.PostWhereInput;
-};
+export type LocalityCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
+}
 
-export type LocalitySelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    name?: boolean;
-    type?: boolean;
-    parentId?: boolean;
-    city?: boolean;
-    state?: boolean;
-    country?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-    children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>;
-    userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>;
-    posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>;
-    _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>;
-  },
-  ExtArgs['result']['locality']
->;
 
-export type LocalitySelectCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    name?: boolean;
-    type?: boolean;
-    parentId?: boolean;
-    city?: boolean;
-    state?: boolean;
-    country?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-  },
-  ExtArgs['result']['locality']
->;
+export type LocalitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  type?: boolean
+  parentId?: boolean
+  city?: boolean
+  state?: boolean
+  country?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+  children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>
+  userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>
+  posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>
+  _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["locality"]>
 
-export type LocalitySelectUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetSelect<
-  {
-    id?: boolean;
-    name?: boolean;
-    type?: boolean;
-    parentId?: boolean;
-    city?: boolean;
-    state?: boolean;
-    country?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
-    parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-  },
-  ExtArgs['result']['locality']
->;
+export type LocalitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  type?: boolean
+  parentId?: boolean
+  city?: boolean
+  state?: boolean
+  country?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+}, ExtArgs["result"]["locality"]>
+
+export type LocalitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  type?: boolean
+  parentId?: boolean
+  city?: boolean
+  state?: boolean
+  country?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+}, ExtArgs["result"]["locality"]>
 
 export type LocalitySelectScalar = {
-  id?: boolean;
-  name?: boolean;
-  type?: boolean;
-  parentId?: boolean;
-  city?: boolean;
-  state?: boolean;
-  country?: boolean;
-  createdAt?: boolean;
-  updatedAt?: boolean;
-};
+  id?: boolean
+  name?: boolean
+  type?: boolean
+  parentId?: boolean
+  city?: boolean
+  state?: boolean
+  country?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+}
 
-export type LocalityOmit<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetOmit<
-  | 'id'
-  | 'name'
-  | 'type'
-  | 'parentId'
-  | 'city'
-  | 'state'
-  | 'country'
-  | 'createdAt'
-  | 'updatedAt',
-  ExtArgs['result']['locality']
->;
-export type LocalityInclude<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-  children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>;
-  userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>;
-  posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>;
-  _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>;
-};
-export type LocalityIncludeCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-};
-export type LocalityIncludeUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>;
-};
+export type LocalityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "parentId" | "city" | "state" | "country" | "createdAt" | "updatedAt", ExtArgs["result"]["locality"]>
+export type LocalityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+  children?: boolean | Prisma.Locality$childrenArgs<ExtArgs>
+  userLocations?: boolean | Prisma.Locality$userLocationsArgs<ExtArgs>
+  posts?: boolean | Prisma.Locality$postsArgs<ExtArgs>
+  _count?: boolean | Prisma.LocalityCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type LocalityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+}
+export type LocalityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.Locality$parentArgs<ExtArgs>
+}
 
-export type $LocalityPayload<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  name: 'Locality';
+export type $LocalityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "Locality"
   objects: {
-    parent: Prisma.$LocalityPayload<ExtArgs> | null;
-    children: Prisma.$LocalityPayload<ExtArgs>[];
-    userLocations: Prisma.$UserLocationPayload<ExtArgs>[];
-    posts: Prisma.$PostPayload<ExtArgs>[];
-  };
-  scalars: runtime.Types.Extensions.GetPayloadResult<
-    {
-      id: string;
-      name: string;
-      type: $Enums.GeographicAreaType;
-      parentId: string | null;
-      city: string;
-      state: string;
-      country: string;
-      createdAt: Date;
-      updatedAt: Date;
-    },
-    ExtArgs['result']['locality']
-  >;
-  composites: {};
-};
+    parent: Prisma.$LocalityPayload<ExtArgs> | null
+    children: Prisma.$LocalityPayload<ExtArgs>[]
+    userLocations: Prisma.$UserLocationPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
+  }
+  scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: string
+    name: string
+    type: $Enums.GeographicAreaType
+    parentId: string | null
+    city: string
+    state: string
+    country: string
+    createdAt: Date
+    updatedAt: Date
+  }, ExtArgs["result"]["locality"]>
+  composites: {}
+}
 
-export type LocalityGetPayload<
-  S extends boolean | null | undefined | LocalityDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$LocalityPayload, S>;
+export type LocalityGetPayload<S extends boolean | null | undefined | LocalityDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$LocalityPayload, S>
 
-export type LocalityCountArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = Omit<LocalityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-  select?: LocalityCountAggregateInputType | true;
-};
+export type LocalityCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<LocalityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: LocalityCountAggregateInputType | true
+  }
 
-export interface LocalityDelegate<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-  GlobalOmitOptions = {},
-> {
-  [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>['model']['Locality'];
-    meta: { name: 'Locality' };
-  };
+export interface LocalityDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Locality'], meta: { name: 'Locality' } }
   /**
    * Find zero or one Locality that matches the filter.
    * @param {LocalityFindUniqueArgs} args - Arguments to find a Locality
@@ -1286,19 +1027,7 @@ export interface LocalityDelegate<
    *   }
    * })
    */
-  findUnique<T extends LocalityFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, LocalityFindUniqueArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findUnique',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findUnique<T extends LocalityFindUniqueArgs>(args: Prisma.SelectSubset<T, LocalityFindUniqueArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one Locality that matches the filter or throw an error with `error.code='P2025'`
@@ -1312,19 +1041,7 @@ export interface LocalityDelegate<
    *   }
    * })
    */
-  findUniqueOrThrow<T extends LocalityFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, LocalityFindUniqueOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findUniqueOrThrow',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findUniqueOrThrow<T extends LocalityFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, LocalityFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Locality that matches the filter.
@@ -1339,19 +1056,7 @@ export interface LocalityDelegate<
    *   }
    * })
    */
-  findFirst<T extends LocalityFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, LocalityFindFirstArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findFirst',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findFirst<T extends LocalityFindFirstArgs>(args?: Prisma.SelectSubset<T, LocalityFindFirstArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Locality that matches the filter or
@@ -1367,19 +1072,7 @@ export interface LocalityDelegate<
    *   }
    * })
    */
-  findFirstOrThrow<T extends LocalityFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, LocalityFindFirstOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findFirstOrThrow',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  findFirstOrThrow<T extends LocalityFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, LocalityFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more Localities that matches the filter.
@@ -1397,16 +1090,7 @@ export interface LocalityDelegate<
    * const localityWithIdOnly = await prisma.locality.findMany({ select: { id: true } })
    *
    */
-  findMany<T extends LocalityFindManyArgs>(
-    args?: Prisma.SelectSubset<T, LocalityFindManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findMany',
-      GlobalOmitOptions
-    >
-  >;
+  findMany<T extends LocalityFindManyArgs>(args?: Prisma.SelectSubset<T, LocalityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a Locality.
@@ -1420,19 +1104,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  create<T extends LocalityCreateArgs>(
-    args: Prisma.SelectSubset<T, LocalityCreateArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'create',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  create<T extends LocalityCreateArgs>(args: Prisma.SelectSubset<T, LocalityCreateArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many Localities.
@@ -1446,9 +1118,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  createMany<T extends LocalityCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, LocalityCreateManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  createMany<T extends LocalityCreateManyArgs>(args?: Prisma.SelectSubset<T, LocalityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create many Localities and returns the data saved in the database.
@@ -1472,16 +1142,7 @@ export interface LocalityDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  createManyAndReturn<T extends LocalityCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<T, LocalityCreateManyAndReturnArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'createManyAndReturn',
-      GlobalOmitOptions
-    >
-  >;
+  createManyAndReturn<T extends LocalityCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, LocalityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a Locality.
@@ -1495,19 +1156,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  delete<T extends LocalityDeleteArgs>(
-    args: Prisma.SelectSubset<T, LocalityDeleteArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'delete',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  delete<T extends LocalityDeleteArgs>(args: Prisma.SelectSubset<T, LocalityDeleteArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one Locality.
@@ -1524,19 +1173,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  update<T extends LocalityUpdateArgs>(
-    args: Prisma.SelectSubset<T, LocalityUpdateArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'update',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  update<T extends LocalityUpdateArgs>(args: Prisma.SelectSubset<T, LocalityUpdateArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more Localities.
@@ -1550,9 +1187,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  deleteMany<T extends LocalityDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, LocalityDeleteManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  deleteMany<T extends LocalityDeleteManyArgs>(args?: Prisma.SelectSubset<T, LocalityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Localities.
@@ -1571,9 +1206,7 @@ export interface LocalityDelegate<
    * })
    *
    */
-  updateMany<T extends LocalityUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, LocalityUpdateManyArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<Prisma.BatchPayload>;
+  updateMany<T extends LocalityUpdateManyArgs>(args: Prisma.SelectSubset<T, LocalityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Localities and returns the data updated in the database.
@@ -1603,16 +1236,7 @@ export interface LocalityDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  updateManyAndReturn<T extends LocalityUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<T, LocalityUpdateManyAndReturnArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'updateManyAndReturn',
-      GlobalOmitOptions
-    >
-  >;
+  updateManyAndReturn<T extends LocalityUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, LocalityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Locality.
@@ -1631,19 +1255,8 @@ export interface LocalityDelegate<
    *   }
    * })
    */
-  upsert<T extends LocalityUpsertArgs>(
-    args: Prisma.SelectSubset<T, LocalityUpsertArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'upsert',
-      GlobalOmitOptions
-    >,
-    never,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
+  upsert<T extends LocalityUpsertArgs>(args: Prisma.SelectSubset<T, LocalityUpsertArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
 
   /**
    * Count the number of Localities.
@@ -1657,7 +1270,7 @@ export interface LocalityDelegate<
    *     // ... the filter for the Localities we want to count
    *   }
    * })
-   **/
+  **/
   count<T extends LocalityCountArgs>(
     args?: Prisma.Subset<T, LocalityCountArgs>,
   ): Prisma.PrismaPromise<
@@ -1666,7 +1279,7 @@ export interface LocalityDelegate<
         ? number
         : Prisma.GetScalarType<T['select'], LocalityCountAggregateOutputType>
       : number
-  >;
+  >
 
   /**
    * Allows you to perform aggregations operations on a Locality.
@@ -1691,10 +1304,8 @@ export interface LocalityDelegate<
    *   },
    *   take: 10,
    * })
-   **/
-  aggregate<T extends LocalityAggregateArgs>(
-    args: Prisma.Subset<T, LocalityAggregateArgs>,
-  ): Prisma.PrismaPromise<GetLocalityAggregateType<T>>;
+  **/
+  aggregate<T extends LocalityAggregateArgs>(args: Prisma.Subset<T, LocalityAggregateArgs>): Prisma.PrismaPromise<GetLocalityAggregateType<T>>
 
   /**
    * Group by Locality.
@@ -1713,76 +1324,69 @@ export interface LocalityDelegate<
    *   },
    * })
    *
-   **/
+  **/
   groupBy<
     T extends LocalityGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
-    OrderByArg extends (Prisma.True extends HasSelectOrTake
+    OrderByArg extends Prisma.True extends HasSelectOrTake
       ? { orderBy: LocalityGroupByArgs['orderBy'] }
-      : { orderBy?: LocalityGroupByArgs['orderBy'] }),
-    OrderFields extends Prisma.ExcludeUnderscoreKeys<
-      Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
-    >,
+      : { orderBy?: LocalityGroupByArgs['orderBy'] },
+    OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
     HavingFields extends Prisma.GetHavingFields<T['having']>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends (T['by'] extends never[] ? Prisma.True : Prisma.False),
-    InputErrors extends (ByEmpty extends Prisma.True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends Prisma.False
-        ? {
-            [P in HavingFields]: P extends ByFields
+    ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False,
+    InputErrors extends ByEmpty extends Prisma.True
+    ? `Error: "by" must not be empty.`
+    : HavingValid extends Prisma.False
+    ? {
+        [P in HavingFields]: P extends ByFields
+          ? never
+          : P extends string
+          ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+          : [
+              Error,
+              'Field ',
+              P,
+              ` in "having" needs to be provided in "by"`,
+            ]
+      }[HavingFields]
+    : 'take' extends Prisma.Keys<T>
+    ? 'orderBy' extends Prisma.Keys<T>
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
               ? never
-              : P extends string
-                ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                : [
-                    Error,
-                    'Field ',
-                    P,
-                    ` in "having" needs to be provided in "by"`,
-                  ];
-          }[HavingFields]
-        : 'take' extends Prisma.Keys<T>
-          ? 'orderBy' extends Prisma.Keys<T>
-            ? ByValid extends Prisma.True
-              ? {}
-              : {
-                  [P in OrderFields]: P extends ByFields
-                    ? never
-                    : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                }[OrderFields]
-            : 'Error: If you provide "take", you also need to provide "orderBy"'
-          : 'skip' extends Prisma.Keys<T>
-            ? 'orderBy' extends Prisma.Keys<T>
-              ? ByValid extends Prisma.True
-                ? {}
-                : {
-                    [P in OrderFields]: P extends ByFields
-                      ? never
-                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                  }[OrderFields]
-              : 'Error: If you provide "skip", you also need to provide "orderBy"'
-            : ByValid extends Prisma.True
-              ? {}
-              : {
-                  [P in OrderFields]: P extends ByFields
-                    ? never
-                    : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                }[OrderFields]),
-  >(
-    args: Prisma.SubsetIntersection<T, LocalityGroupByArgs, OrderByArg> &
-      InputErrors,
-  ): {} extends InputErrors
-    ? GetLocalityGroupByPayload<T>
-    : Prisma.PrismaPromise<InputErrors>;
-  /**
-   * Fields of the Locality model
-   */
-  readonly fields: LocalityFieldRefs;
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "take", you also need to provide "orderBy"'
+    : 'skip' extends Prisma.Keys<T>
+    ? 'orderBy' extends Prisma.Keys<T>
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
+              ? never
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "skip", you also need to provide "orderBy"'
+    : ByValid extends Prisma.True
+    ? {}
+    : {
+        [P in OrderFields]: P extends ByFields
+          ? never
+          : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+      }[OrderFields]
+  >(args: Prisma.SubsetIntersection<T, LocalityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocalityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+/**
+ * Fields of the Locality model
+ */
+readonly fields: LocalityFieldRefs;
 }
 
 /**
@@ -1791,696 +1395,555 @@ export interface LocalityDelegate<
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__LocalityClient<
-  T,
-  Null = never,
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-  GlobalOmitOptions = {},
-> extends Prisma.PrismaPromise<T> {
-  readonly [Symbol.toStringTag]: 'PrismaPromise';
-  parent<T extends Prisma.Locality$parentArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Locality$parentArgs<ExtArgs>>,
-  ): Prisma.Prisma__LocalityClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$LocalityPayload<ExtArgs>,
-      T,
-      'findUniqueOrThrow',
-      GlobalOmitOptions
-    > | null,
-    null,
-    ExtArgs,
-    GlobalOmitOptions
-  >;
-  children<T extends Prisma.Locality$childrenArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Locality$childrenArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$LocalityPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  userLocations<T extends Prisma.Locality$userLocationsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Locality$userLocationsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$UserLocationPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  posts<T extends Prisma.Locality$postsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Locality$postsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$PostPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
+export interface Prisma__LocalityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  readonly [Symbol.toStringTag]: "PrismaPromise"
+  parent<T extends Prisma.Locality$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$parentArgs<ExtArgs>>): Prisma.Prisma__LocalityClient<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  children<T extends Prisma.Locality$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocalityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userLocations<T extends Prisma.Locality$userLocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$userLocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Locality$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Locality$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
    * @param onrejected The callback to execute when the Promise is rejected.
    * @returns A Promise for the completion of which ever callback is executed.
    */
-  then<TResult1 = T, TResult2 = never>(
-    onfulfilled?:
-      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?:
-      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+  then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>
   /**
    * Attaches a callback for only the rejection of the Promise.
    * @param onrejected The callback to execute when the Promise is rejected.
    * @returns A Promise for the completion of the callback.
    */
-  catch<TResult = never>(
-    onrejected?:
-      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T | TResult>;
+  catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
    * resolved value cannot be modified from the callback.
    * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
    * @returns A Promise for the completion of the callback.
    */
-  finally(
-    onfinally?: (() => void) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T>;
+  finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>
 }
+
+
+
 
 /**
  * Fields of the Locality model
  */
 export interface LocalityFieldRefs {
-  readonly id: Prisma.FieldRef<'Locality', 'String'>;
-  readonly name: Prisma.FieldRef<'Locality', 'String'>;
-  readonly type: Prisma.FieldRef<'Locality', 'GeographicAreaType'>;
-  readonly parentId: Prisma.FieldRef<'Locality', 'String'>;
-  readonly city: Prisma.FieldRef<'Locality', 'String'>;
-  readonly state: Prisma.FieldRef<'Locality', 'String'>;
-  readonly country: Prisma.FieldRef<'Locality', 'String'>;
-  readonly createdAt: Prisma.FieldRef<'Locality', 'DateTime'>;
-  readonly updatedAt: Prisma.FieldRef<'Locality', 'DateTime'>;
+  readonly id: Prisma.FieldRef<"Locality", 'String'>
+  readonly name: Prisma.FieldRef<"Locality", 'String'>
+  readonly type: Prisma.FieldRef<"Locality", 'GeographicAreaType'>
+  readonly parentId: Prisma.FieldRef<"Locality", 'String'>
+  readonly city: Prisma.FieldRef<"Locality", 'String'>
+  readonly state: Prisma.FieldRef<"Locality", 'String'>
+  readonly country: Prisma.FieldRef<"Locality", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Locality", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Locality", 'DateTime'>
 }
+
 
 // Custom InputTypes
 /**
  * Locality findUnique
  */
-export type LocalityFindUniqueArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter, which Locality to fetch.
    */
-  where: Prisma.LocalityWhereUniqueInput;
-};
+  where: Prisma.LocalityWhereUniqueInput
+}
 
 /**
  * Locality findUniqueOrThrow
  */
-export type LocalityFindUniqueOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter, which Locality to fetch.
    */
-  where: Prisma.LocalityWhereUniqueInput;
-};
+  where: Prisma.LocalityWhereUniqueInput
+}
 
 /**
  * Locality findFirst
  */
-export type LocalityFindFirstArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter, which Locality to fetch.
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of Localities to fetch.
    */
-  orderBy?:
-    | Prisma.LocalityOrderByWithRelationInput
-    | Prisma.LocalityOrderByWithRelationInput[];
+  orderBy?: Prisma.LocalityOrderByWithRelationInput | Prisma.LocalityOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for searching for Localities.
    */
-  cursor?: Prisma.LocalityWhereUniqueInput;
+  cursor?: Prisma.LocalityWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` Localities from the position of the cursor.
+   * Take `Â±n` Localities from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` Localities.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of Localities.
    */
-  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[];
-};
+  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[]
+}
 
 /**
  * Locality findFirstOrThrow
  */
-export type LocalityFindFirstOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter, which Locality to fetch.
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of Localities to fetch.
    */
-  orderBy?:
-    | Prisma.LocalityOrderByWithRelationInput
-    | Prisma.LocalityOrderByWithRelationInput[];
+  orderBy?: Prisma.LocalityOrderByWithRelationInput | Prisma.LocalityOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for searching for Localities.
    */
-  cursor?: Prisma.LocalityWhereUniqueInput;
+  cursor?: Prisma.LocalityWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` Localities from the position of the cursor.
+   * Take `Â±n` Localities from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` Localities.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of Localities.
    */
-  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[];
-};
+  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[]
+}
 
 /**
  * Locality findMany
  */
-export type LocalityFindManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter, which Localities to fetch.
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
    * Determine the order of Localities to fetch.
    */
-  orderBy?:
-    | Prisma.LocalityOrderByWithRelationInput
-    | Prisma.LocalityOrderByWithRelationInput[];
+  orderBy?: Prisma.LocalityOrderByWithRelationInput | Prisma.LocalityOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the position for listing Localities.
    */
-  cursor?: Prisma.LocalityWhereUniqueInput;
+  cursor?: Prisma.LocalityWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` Localities from the position of the cursor.
+   * Take `Â±n` Localities from the position of the cursor.
    */
-  take?: number;
+  take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
    * Skip the first `n` Localities.
    */
-  skip?: number;
+  skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
    * Filter by unique combinations of Localities.
    */
-  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[];
-};
+  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[]
+}
 
 /**
  * Locality create
  */
-export type LocalityCreateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * The data needed to create a Locality.
    */
-  data: Prisma.XOR<
-    Prisma.LocalityCreateInput,
-    Prisma.LocalityUncheckedCreateInput
-  >;
-};
+  data: Prisma.XOR<Prisma.LocalityCreateInput, Prisma.LocalityUncheckedCreateInput>
+}
 
 /**
  * Locality createMany
  */
-export type LocalityCreateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * The data used to create many Localities.
    */
-  data: Prisma.LocalityCreateManyInput | Prisma.LocalityCreateManyInput[];
-  skipDuplicates?: boolean;
-};
+  data: Prisma.LocalityCreateManyInput | Prisma.LocalityCreateManyInput[]
+  skipDuplicates?: boolean
+}
 
 /**
  * Locality createManyAndReturn
  */
-export type LocalityCreateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelectCreateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.LocalitySelectCreateManyAndReturn<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * The data used to create many Localities.
    */
-  data: Prisma.LocalityCreateManyInput | Prisma.LocalityCreateManyInput[];
-  skipDuplicates?: boolean;
+  data: Prisma.LocalityCreateManyInput | Prisma.LocalityCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityIncludeCreateManyAndReturn<ExtArgs> | null;
-};
+  include?: Prisma.LocalityIncludeCreateManyAndReturn<ExtArgs> | null
+}
 
 /**
  * Locality update
  */
-export type LocalityUpdateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * The data needed to update a Locality.
    */
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateInput,
-    Prisma.LocalityUncheckedUpdateInput
-  >;
+  data: Prisma.XOR<Prisma.LocalityUpdateInput, Prisma.LocalityUncheckedUpdateInput>
   /**
    * Choose, which Locality to update.
    */
-  where: Prisma.LocalityWhereUniqueInput;
-};
+  where: Prisma.LocalityWhereUniqueInput
+}
 
 /**
  * Locality updateMany
  */
-export type LocalityUpdateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * The data used to update Localities.
    */
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateManyMutationInput,
-    Prisma.LocalityUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.LocalityUpdateManyMutationInput, Prisma.LocalityUncheckedUpdateManyInput>
   /**
    * Filter which Localities to update
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * Limit how many Localities to update.
    */
-  limit?: number;
-};
+  limit?: number
+}
 
 /**
  * Locality updateManyAndReturn
  */
-export type LocalityUpdateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelectUpdateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.LocalitySelectUpdateManyAndReturn<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * The data used to update Localities.
    */
-  data: Prisma.XOR<
-    Prisma.LocalityUpdateManyMutationInput,
-    Prisma.LocalityUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.LocalityUpdateManyMutationInput, Prisma.LocalityUncheckedUpdateManyInput>
   /**
    * Filter which Localities to update
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * Limit how many Localities to update.
    */
-  limit?: number;
+  limit?: number
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityIncludeUpdateManyAndReturn<ExtArgs> | null;
-};
+  include?: Prisma.LocalityIncludeUpdateManyAndReturn<ExtArgs> | null
+}
 
 /**
  * Locality upsert
  */
-export type LocalityUpsertArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * The filter to search for the Locality to update in case it exists.
    */
-  where: Prisma.LocalityWhereUniqueInput;
+  where: Prisma.LocalityWhereUniqueInput
   /**
    * In case the Locality found by the `where` argument doesn't exist, create a new Locality with this data.
    */
-  create: Prisma.XOR<
-    Prisma.LocalityCreateInput,
-    Prisma.LocalityUncheckedCreateInput
-  >;
+  create: Prisma.XOR<Prisma.LocalityCreateInput, Prisma.LocalityUncheckedCreateInput>
   /**
    * In case the Locality was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<
-    Prisma.LocalityUpdateInput,
-    Prisma.LocalityUncheckedUpdateInput
-  >;
-};
+  update: Prisma.XOR<Prisma.LocalityUpdateInput, Prisma.LocalityUncheckedUpdateInput>
+}
 
 /**
  * Locality delete
  */
-export type LocalityDeleteArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
+  include?: Prisma.LocalityInclude<ExtArgs> | null
   /**
    * Filter which Locality to delete.
    */
-  where: Prisma.LocalityWhereUniqueInput;
-};
+  where: Prisma.LocalityWhereUniqueInput
+}
 
 /**
  * Locality deleteMany
  */
-export type LocalityDeleteManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Filter which Localities to delete
    */
-  where?: Prisma.LocalityWhereInput;
+  where?: Prisma.LocalityWhereInput
   /**
    * Limit how many Localities to delete.
    */
-  limit?: number;
-};
+  limit?: number
+}
 
 /**
  * Locality.parent
  */
-export type Locality$parentArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type Locality$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
-  where?: Prisma.LocalityWhereInput;
-};
+  include?: Prisma.LocalityInclude<ExtArgs> | null
+  where?: Prisma.LocalityWhereInput
+}
 
 /**
  * Locality.children
  */
-export type Locality$childrenArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type Locality$childrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
-  where?: Prisma.LocalityWhereInput;
-  orderBy?:
-    | Prisma.LocalityOrderByWithRelationInput
-    | Prisma.LocalityOrderByWithRelationInput[];
-  cursor?: Prisma.LocalityWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[];
-};
+  include?: Prisma.LocalityInclude<ExtArgs> | null
+  where?: Prisma.LocalityWhereInput
+  orderBy?: Prisma.LocalityOrderByWithRelationInput | Prisma.LocalityOrderByWithRelationInput[]
+  cursor?: Prisma.LocalityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LocalityScalarFieldEnum | Prisma.LocalityScalarFieldEnum[]
+}
 
 /**
  * Locality.userLocations
  */
-export type Locality$userLocationsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type Locality$userLocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserLocation
    */
-  select?: Prisma.UserLocationSelect<ExtArgs> | null;
+  select?: Prisma.UserLocationSelect<ExtArgs> | null
   /**
    * Omit specific fields from the UserLocation
    */
-  omit?: Prisma.UserLocationOmit<ExtArgs> | null;
+  omit?: Prisma.UserLocationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserLocationInclude<ExtArgs> | null;
-  where?: Prisma.UserLocationWhereInput;
-  orderBy?:
-    | Prisma.UserLocationOrderByWithRelationInput
-    | Prisma.UserLocationOrderByWithRelationInput[];
-  cursor?: Prisma.UserLocationWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[];
-};
+  include?: Prisma.UserLocationInclude<ExtArgs> | null
+  where?: Prisma.UserLocationWhereInput
+  orderBy?: Prisma.UserLocationOrderByWithRelationInput | Prisma.UserLocationOrderByWithRelationInput[]
+  cursor?: Prisma.UserLocationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserLocationScalarFieldEnum | Prisma.UserLocationScalarFieldEnum[]
+}
 
 /**
  * Locality.posts
  */
-export type Locality$postsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type Locality$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Post
    */
-  select?: Prisma.PostSelect<ExtArgs> | null;
+  select?: Prisma.PostSelect<ExtArgs> | null
   /**
    * Omit specific fields from the Post
    */
-  omit?: Prisma.PostOmit<ExtArgs> | null;
+  omit?: Prisma.PostOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostInclude<ExtArgs> | null;
-  where?: Prisma.PostWhereInput;
-  orderBy?:
-    Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[];
-  cursor?: Prisma.PostWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[];
-};
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
 
 /**
  * Locality without action
  */
-export type LocalityDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
+export type LocalityDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Locality
    */
-  select?: Prisma.LocalitySelect<ExtArgs> | null;
+  select?: Prisma.LocalitySelect<ExtArgs> | null
   /**
    * Omit specific fields from the Locality
    */
-  omit?: Prisma.LocalityOmit<ExtArgs> | null;
+  omit?: Prisma.LocalityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LocalityInclude<ExtArgs> | null;
-};
+  include?: Prisma.LocalityInclude<ExtArgs> | null
+}
