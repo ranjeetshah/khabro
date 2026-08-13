@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
+import 'package:mobile/features/chat/data/chat_service.dart';
+import 'package:mobile/features/chat/data/conversation_model.dart';
+import 'package:mobile/features/chat/data/message_model.dart';
+import 'package:mobile/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
 import 'package:mobile/features/users/presentation/public_author_profile_screen.dart';
@@ -33,6 +37,39 @@ class FakePublicUserService extends PublicUserService {
     reportUserId = id;
     reportReason = reason;
   }
+}
+
+class FakeChatService extends ChatService {
+  FakeChatService() : super(apiClient: null, tokenStorage: null);
+
+  int createConversationCalls = 0;
+
+  @override
+  Future<StartedConversation> createConversation(String userId) async {
+    createConversationCalls++;
+    return StartedConversation(
+      id: 'conversation-1',
+      participant: const ConversationParticipant(id: 'author-1', name: 'Test User'),
+    );
+  }
+
+  @override
+  Future<MessageListResult> getMessages(
+    String conversationId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
+    return MessageListResult(
+      items: const [],
+      page: 1,
+      limit: 20,
+      total: 0,
+      hasMore: false,
+    );
+  }
+
+  @override
+  Future<void> markAsRead(String conversationId) async {}
 }
 
 void main() {
@@ -141,5 +178,48 @@ void main() {
     expect(find.text('author-1'), findsNothing);
     expect(find.text('report-1'), findsNothing);
     expect(find.text('JWT'), findsNothing);
+  });
+
+  testWidgets('Message button starts a conversation and opens the chat', (
+    tester,
+  ) async {
+    final chatService = FakeChatService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PublicAuthorProfileScreen(
+          userId: 'author-1',
+          currentUserId: 'me-1',
+          publicUserService: FakePublicUserService(
+            user: const PublicUserModel(id: 'author-1', name: 'Test User'),
+          ),
+          chatService: chatService,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Message'), findsOneWidget);
+    await tester.tap(find.text('Message'));
+    await tester.pumpAndSettle();
+
+    expect(chatService.createConversationCalls, 1);
+    expect(find.byType(ChatDetailScreen), findsOneWidget);
+  });
+
+  testWidgets('Message button is hidden when viewing oneself', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PublicAuthorProfileScreen(
+          userId: 'author-1',
+          currentUserId: 'author-1',
+          publicUserService: FakePublicUserService(
+            user: const PublicUserModel(id: 'author-1', name: 'Test User'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Message'), findsNothing);
   });
 }

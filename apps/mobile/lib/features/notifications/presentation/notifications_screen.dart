@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import '../data/notification_model.dart';
 import '../data/notifications_service.dart';
+import '../../chat/data/chat_service.dart';
+import '../../chat/presentation/chat_detail_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({super.key, this.notificationsService});
+  const NotificationsScreen({super.key, this.notificationsService, this.chatService});
 
   final NotificationsService? notificationsService;
+  final ChatService? chatService;
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -75,6 +78,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       try {
         await _service.markNotificationAsRead(notification.id);
       } catch (_) {}
+    }
+
+    if (notification.referenceType == 'CONVERSATION' &&
+        notification.referenceId.isNotEmpty) {
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatDetailScreen(
+            conversationId: notification.referenceId,
+            chatService: widget.chatService,
+          ),
+        ),
+      );
     }
   }
 

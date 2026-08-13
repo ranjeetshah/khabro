@@ -15,6 +15,8 @@ import '../../feedback/data/feedback_service.dart';
 import 'followers_screen.dart';
 import 'following_screen.dart';
 import 'account_suggestions_screen.dart';
+import '../../chat/data/chat_service.dart';
+import '../../chat/presentation/conversations_screen.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
@@ -30,6 +32,7 @@ class ProfileScreen extends StatefulWidget {
     this.postsService,
     this.apiClient,
     this.tokenStorage,
+    this.chatService,
     this.onUserUpdated,
     this.onSessionExpired,
   });
@@ -39,6 +42,7 @@ class ProfileScreen extends StatefulWidget {
   final PostsService? postsService;
   final ApiClient? apiClient;
   final TokenStorage? tokenStorage;
+  final ChatService? chatService;
   final ValueChanged<UserModel>? onUserUpdated;
   final VoidCallback? onSessionExpired;
 
@@ -48,9 +52,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final UsersService _usersService;
+  late final ChatService _chatService;
   late UserModel _user;
   ProfileModel? _profile;
   late TextEditingController _nameController;
+
+  int _unreadChatCount = 0;
 
   List<PostModel> _userPosts = [];
   bool _isPostsLoading = false;
@@ -63,6 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _usersService = widget.usersService ?? UsersService();
+    _chatService = widget.chatService ?? ChatService();
     _user = widget.user;
     _nameController = TextEditingController(text: _user.name ?? '');
     final isTesting = WidgetsBinding.instance.runtimeType.toString().contains('Test');
@@ -71,6 +79,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       _isLoading = false;
     }
+    if (widget.chatService != null || !isTesting) {
+      _loadUnreadChatCount();
+    }
+  }
+
+  Future<void> _loadUnreadChatCount() async {
+    try {
+      final count = await _chatService.getUnreadCount();
+      if (!mounted) return;
+      setState(() {
+        _unreadChatCount = count;
+      });
+    } on AuthException catch (e) {
+      if (e.statusCode == 401) widget.onSessionExpired?.call();
+    } catch (_) {}
   }
 
   Future<void> _loadProfile() async {
@@ -584,6 +607,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _buildSocialStatsRow(),
                       const SizedBox(height: 20),
 
+                      // Messages Entry Card
+                      _buildMessagesEntryCard(),
+                      const SizedBox(height: 20),
+
                       // People You May Know Discovery Card
                       _buildSuggestionsEntryCard(),
                       const SizedBox(height: 20),
@@ -813,6 +840,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
       width: 1,
       height: 24,
       color: const Color(0xFFE5E7EB),
+    );
+  }
+
+  Widget _buildMessagesEntryCard() {
+    return Card(
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFFE5E7EB)),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1565C0).withAlpha(10),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.chat_bubble_outline,
+            color: Color(0xFF1565C0),
+          ),
+        ),
+        title: const Text(
+          'Messages',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Color(0xFF111827),
+          ),
+        ),
+        subtitle: const Text(
+          'Chat 1-on-1 with citizens in your community',
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF6B7280),
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_unreadChatCount > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1565C0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '$_unreadChatCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            const SizedBox(width: 8),
+            const Icon(
+              Icons.chevron_right,
+              color: Color(0xFF9CA3AF),
+            ),
+          ],
+        ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ConversationsScreen(
+                chatService: widget.chatService,
+                onSessionExpired: widget.onSessionExpired,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

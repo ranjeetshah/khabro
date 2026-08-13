@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/features/chat/data/chat_service.dart';
+import 'package:mobile/features/chat/data/conversation_model.dart';
+import 'package:mobile/features/chat/data/message_model.dart';
+import 'package:mobile/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/features/notifications/data/notification_model.dart';
 import 'package:mobile/features/notifications/data/notifications_service.dart';
 import 'package:mobile/features/notifications/presentation/notifications_screen.dart';
@@ -40,6 +44,36 @@ class FakeNotificationsService extends NotificationsService {
     markAllReadCalls++;
     return notifications.length;
   }
+}
+
+class FakeChatService extends ChatService {
+  FakeChatService() : super(apiClient: null, tokenStorage: null);
+
+  @override
+  Future<MessageListResult> getMessages(
+    String conversationId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
+    return MessageListResult(
+      items: const [],
+      page: 1,
+      limit: 20,
+      total: 0,
+      hasMore: false,
+    );
+  }
+
+  @override
+  Future<ConversationDetail> getConversationDetail(String conversationId) async {
+    return const ConversationDetail(
+      id: 'conversation-1',
+      participant: ConversationParticipant(id: 'user-2', name: 'Jane Doe'),
+    );
+  }
+
+  @override
+  Future<void> markAsRead(String conversationId) async {}
 }
 
 void main() {
@@ -170,5 +204,39 @@ void main() {
 
     expect(service.markAllReadCalls, equals(1));
     expect(find.text('Mark all read'), findsNothing);
+  });
+
+  testWidgets('tapping a message notification opens the conversation', (
+    tester,
+  ) async {
+    final service = FakeNotificationsService();
+    service.notifications = [
+      NotificationModel(
+        id: 'n-chat-1',
+        type: 'MESSAGE_RECEIVED',
+        title: 'New message',
+        body: 'Jane Doe sent you a message.',
+        referenceType: 'CONVERSATION',
+        referenceId: 'conversation-1',
+        isRead: false,
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: NotificationsScreen(
+          notificationsService: service,
+          chatService: FakeChatService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('New message'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ChatDetailScreen), findsOneWidget);
+    expect(find.text('Jane Doe'), findsOneWidget);
   });
 }

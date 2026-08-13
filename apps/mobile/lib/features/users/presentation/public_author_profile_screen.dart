@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
+import '../../chat/data/chat_service.dart';
+import '../../chat/presentation/chat_detail_screen.dart';
 import '../../reports/presentation/report_dialog.dart';
 import '../data/public_user_model.dart';
 import '../data/public_user_service.dart';
@@ -17,6 +19,7 @@ class PublicAuthorProfileScreen extends StatefulWidget {
     this.currentUserId,
     this.publicUserService,
     this.usersService,
+    this.chatService,
     this.onSessionExpired,
   });
 
@@ -24,6 +27,7 @@ class PublicAuthorProfileScreen extends StatefulWidget {
   final String? currentUserId;
   final PublicUserService? publicUserService;
   final UsersService? usersService;
+  final ChatService? chatService;
   final VoidCallback? onSessionExpired;
 
   @override
@@ -190,6 +194,39 @@ class _PublicAuthorProfileScreenState extends State<PublicAuthorProfileScreen> {
     );
   }
 
+  Future<void> _openChat() async {
+    final chatService = widget.chatService ?? ChatService();
+    try {
+      final conversation = await chatService.createConversation(widget.userId);
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatDetailScreen(
+            conversationId: conversation.id,
+            participantName: conversation.participant.name,
+            currentUserId: _currentUserId,
+            chatService: widget.chatService,
+            onSessionExpired: widget.onSessionExpired,
+          ),
+        ),
+      );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) {
+        widget.onSessionExpired?.call();
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to start chat.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isSelf = _currentUserId != null && _currentUserId == widget.userId;
@@ -308,44 +345,70 @@ class _PublicAuthorProfileScreenState extends State<PublicAuthorProfileScreen> {
 
                           const SizedBox(height: 24),
 
-                          // Follow / Following Action Button (only if not viewing oneself)
+                          // Message / Follow Actions (only if not viewing oneself)
                           if (!isSelf) ...[
-                            SizedBox(
-                              width: double.infinity,
-                              height: 48,
-                              child: ElevatedButton(
-                                onPressed: _isFollowActionLoading ? null : _toggleFollow,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _isFollowing
-                                      ? Colors.white
-                                      : const Color(0xFF1565C0),
-                                  foregroundColor: _isFollowing
-                                      ? const Color(0xFF374151)
-                                      : Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side: _isFollowing
-                                        ? const BorderSide(color: Color(0xFFD1D5DB))
-                                        : BorderSide.none,
-                                  ),
-                                ),
-                                child: _isFollowActionLoading
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation(Colors.grey),
-                                        ),
-                                      )
-                                    : Text(
-                                        _isFollowing ? 'Following' : 'Follow',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 48,
+                                    child: OutlinedButton.icon(
+                                      onPressed: _openChat,
+                                      icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                                      label: const Text(
+                                        'Message',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: const Color(0xFF374151),
+                                        side: const BorderSide(color: Color(0xFFD1D5DB)),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                       ),
-                              ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 48,
+                                    child: ElevatedButton(
+                                      onPressed: _isFollowActionLoading ? null : _toggleFollow,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _isFollowing
+                                            ? Colors.white
+                                            : const Color(0xFF1565C0),
+                                        foregroundColor: _isFollowing
+                                            ? const Color(0xFF374151)
+                                            : Colors.white,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                          side: _isFollowing
+                                              ? const BorderSide(color: Color(0xFFD1D5DB))
+                                              : BorderSide.none,
+                                        ),
+                                      ),
+                                      child: _isFollowActionLoading
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor: AlwaysStoppedAnimation(Colors.grey),
+                                              ),
+                                            )
+                                          : Text(
+                                              _isFollowing ? 'Following' : 'Follow',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ],

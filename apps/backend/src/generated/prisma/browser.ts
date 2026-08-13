@@ -117,3 +117,18 @@ export type CommentReport = Prisma.CommentReportModel
  * 
  */
 export type Follow = Prisma.FollowModel
+/**
+ * Model Conversation
+ * 
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model ConversationParticipant
+ * 
+ */
+export type ConversationParticipant = Prisma.ConversationParticipantModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
