@@ -29,41 +29,56 @@ class VerificationStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (icon, color) = switch (status) {
-      VerificationStatus.locallyVerified => (
-        Icons.verified_outlined,
-        Colors.green,
-      ),
-      VerificationStatus.underVerification => (
-        Icons.hourglass_top,
-        Colors.orange,
-      ),
-      VerificationStatus.reported => (Icons.info_outline, Colors.blueGrey),
-      VerificationStatus.unknown => (Icons.info_outline, Colors.blueGrey),
-    };
-
     if (compact && (status.isReported || status.isUnknown)) {
       return const SizedBox.shrink();
     }
 
+    final (icon, color, bgColor) = switch (status) {
+      VerificationStatus.locallyVerified => (
+        Icons.check_circle_outline,
+        Colors.green.shade700,
+        Colors.green.shade50,
+      ),
+      VerificationStatus.underVerification => (
+        Icons.hourglass_empty,
+        Colors.amber.shade800,
+        Colors.amber.shade50,
+      ),
+      VerificationStatus.reported => (
+        Icons.info_outline,
+        Colors.grey.shade700,
+        Colors.grey.shade100,
+      ),
+      VerificationStatus.unknown => (
+        Icons.info_outline,
+        Colors.grey.shade700,
+        Colors.grey.shade100,
+      ),
+    };
+
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: color),
+            const SizedBox(width: 4),
+            Text(
               verificationStatusLabel(status),
               style: TextStyle(
                 color: color,
-                fontSize: compact ? 12 : 13,
-                fontWeight: FontWeight.w500,
+                fontSize: compact ? 11 : 12,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

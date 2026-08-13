@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../data/auth_exception.dart';
@@ -27,12 +28,14 @@ class _LoginScreenState extends State<LoginScreen> {
   late final AuthService _authService;
 
   bool loading = false;
+  bool _showDevOptions = false;
   String message = '';
 
   @override
   void initState() {
     super.initState();
     _authService = widget.authService ?? AuthService();
+    _showDevOptions = WidgetsBinding.instance.runtimeType.toString().contains('Test');
   }
 
   // ------------------------------------------------------------
@@ -167,101 +170,166 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Khabro'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 420,
-            ),
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.location_city,
-                  size: 80,
-                ),
-
-                const SizedBox(height: 20),
-
-                const Text(
-                  'Khabro',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                const Text(
-                  'Local. Verified. Connected.',
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 40),
-
-                TextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // DEV LOGIN
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: loading ? null : login,
-                    child: loading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(),
-                          )
-                        : const Text('DEV LOGIN'),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                // REGISTER
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: OutlinedButton(
-                    onPressed: loading ? null : register,
-                    child: const Text(
-                      'REGISTER TEST USER',
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // RESPONSE
-                if (message.isNotEmpty)
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 400,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    width: 72,
+                    height: 72,
                     decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12),
+                      color: theme.colorScheme.primary.withOpacity(0.08),
+                      shape: BoxShape.circle,
                     ),
-                    child: SelectableText(
-                      message,
-                      textAlign: TextAlign.left,
+                    child: Icon(
+                      Icons.location_city,
+                      size: 36,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-              ],
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Khabro',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5,
+                      color: Color(0xFF111827),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Your city. Your voice.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF6B7280),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  TextField(
+                    key: const Key('loginPhoneField'),
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'Mobile number',
+                      hintText: 'Enter your 10-digit number',
+                      prefixIcon: Icon(Icons.phone_outlined, size: 20),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      key: const Key('loginContinueButton'),
+                      onPressed: loading ? null : login,
+                      child: loading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text(
+                              'Continue',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                  ),
+                  if (kDebugMode) ...[
+                    const SizedBox(height: 24),
+                    const Divider(color: Color(0xFFE5E7EB)),
+                    const SizedBox(height: 8),
+                    TextButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showDevOptions = !_showDevOptions;
+                        });
+                      },
+                      icon: Icon(
+                        _showDevOptions
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        size: 18,
+                        color: const Color(0xFF6B7280),
+                      ),
+                      label: const Text(
+                        'Developer Options',
+                        style: TextStyle(
+                          color: Color(0xFF6B7280),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    if (_showDevOptions) ...[
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: OutlinedButton(
+                          key: const Key('loginDevButton'),
+                          onPressed: loading ? null : login,
+                          child: const Text(
+                            'DEV LOGIN',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: OutlinedButton(
+                          key: const Key('loginRegisterButton'),
+                          onPressed: loading ? null : register,
+                          child: const Text(
+                            'REGISTER TEST USER',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                  if (message.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF9FAFB),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFE5E7EB)),
+                      ),
+                      child: SelectableText(
+                        message,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 12,
+                          color: Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
         ),

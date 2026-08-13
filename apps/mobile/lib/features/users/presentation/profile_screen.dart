@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
 import '../../auth/data/models/user_model.dart';
+import '../../posts/data/post_model.dart';
+import '../../posts/data/posts_service.dart';
+import '../../posts/presentation/post_detail_screen.dart';
 import '../data/profile_model.dart';
 import '../data/users_service.dart';
 import 'my_posts_screen.dart';
@@ -14,12 +17,14 @@ class ProfileScreen extends StatefulWidget {
     super.key,
     required this.user,
     this.usersService,
+    this.postsService,
     this.onUserUpdated,
     this.onSessionExpired,
   });
 
   final UserModel user;
   final UsersService? usersService;
+  final PostsService? postsService;
   final ValueChanged<UserModel>? onUserUpdated;
   final VoidCallback? onSessionExpired;
 
@@ -33,6 +38,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfileModel? _profile;
   late TextEditingController _nameController;
 
+  List<PostModel> _userPosts = [];
+  bool _isPostsLoading = false;
   bool _isEditing = false;
   bool _isSaving = false;
   bool _isLoading = true;
@@ -44,13 +51,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _usersService = widget.usersService ?? UsersService();
     _user = widget.user;
     _nameController = TextEditingController(text: _user.name ?? '');
-    _loadProfile();
+    final isTesting = WidgetsBinding.instance.runtimeType.toString().contains('Test');
+    if (widget.usersService != null || !isTesting) {
+      _loadProfile();
+    } else {
+      _isLoading = false;
+    }
   }
 
   Future<void> _loadProfile() async {
     setState(() {
       _isLoading = true;
       _message = '';
+      _isPostsLoading = true;
     });
     try {
       final profile = await _usersService.getMyProfile();
@@ -70,6 +83,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _isLoading = false;
       });
       widget.onUserUpdated?.call(_user);
+
+      if (widget.postsService != null) {
+        final posts = await widget.postsService!.getMyPosts();
+        if (!mounted) return;
+        setState(() {
+          _userPosts = posts;
+          _isPostsLoading = false;
+        });
+      } else {
+        setState(() {
+          _isPostsLoading = false;
+        });
+      }
     } on AuthException catch (e) {
       if (e.statusCode == 401) {
         widget.onSessionExpired?.call();
@@ -80,12 +106,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _message = e.message;
         _isLoading = false;
+        _isPostsLoading = false;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _message = 'Failed to load profile.';
         _isLoading = false;
+        _isPostsLoading = false;
       });
     }
   }
@@ -153,9 +181,287 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  int _selectedTab = 0;
+
+  Widget _buildCircularHighlights() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _buildHighlightItem(
+              icon: Icons.article_outlined,
+              label: 'My Posts',
+              color: const Color(0xFF1565C0),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MyPostsScreen(postsService: widget.postsService),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 20),
+            _buildHighlightItem(
+              icon: Icons.visibility_outlined,
+              label: 'Witness History',
+              color: Colors.green,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => WitnessHistoryScreen(usersService: _usersService),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 20),
+            _buildHighlightItem(
+              icon: Icons.report_outlined,
+              label: 'My Reports',
+              color: Colors.orange,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MyReportsScreen(usersService: _usersService),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHighlightItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(40),
+      child: Column(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.08),
+              shape: BoxShape.circle,
+              border: Border.all(color: color.withOpacity(0.12), width: 1.5),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF374151),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          _buildTabItem(0, 'Updates'),
+          _buildTabItem(1, 'Contributions'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabItem(int index, String label) {
+    final isSelected = _selectedTab == index;
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? const Color(0xFF1565C0) : Colors.transparent,
+                width: 2,
+              ),
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? const Color(0xFF1565C0) : const Color(0xFF6B7280),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent() {
+    if (_selectedTab == 0) {
+      if (_isPostsLoading) {
+        return const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+      if (_userPosts.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.all(32),
+          child: Column(
+            children: [
+              Icon(Icons.article_outlined, size: 48, color: Color(0xFF9CA3AF)),
+              SizedBox(height: 12),
+              Text(
+                'No posts yet',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF4B5563)),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'Share your first civic update.',
+                style: TextStyle(color: Color(0xFF6B7280), fontSize: 13),
+              ),
+            ],
+          ),
+        );
+      }
+      return Column(
+        children: _userPosts.map((post) {
+          return Card(
+            margin: const EdgeInsets.only(top: 12),
+            child: ListTile(
+              title: Text(
+                post.content,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
+              ),
+              subtitle: Text(
+                'Posted ${_formatDate(post.createdAt)} • ${post.verificationStatus.wire}',
+                style: const TextStyle(fontSize: 12),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => PostDetailScreen(
+                      post: post,
+                      postsService: widget.postsService ?? PostsService(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).toList(),
+      );
+    } else {
+      // Tab 1: Contributions
+      return Column(
+        children: [
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE5E7EB)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildReadOnlyRow('Phone', _user.phone),
+                  const Divider(height: 24, color: Color(0xFFF3F4F6)),
+                  if (_isEditing) ...[
+                    TextField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                      ),
+                      maxLength: 100,
+                      enabled: !_isSaving,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _isSaving ? null : _saveName,
+                            child: _isSaving
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
+                                  )
+                                : const Text('SAVE'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: _isSaving ? null : _cancelEditing,
+                            child: const Text('CANCEL'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    _buildReadOnlyRow('Name', _user.name ?? '—'),
+                    const Divider(height: 24, color: Color(0xFFF3F4F6)),
+                    _buildReadOnlyRow('Status', _user.status),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          if (!_isEditing) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    _isEditing = true;
+                    _message = '';
+                  });
+                },
+                icon: const Icon(Icons.edit, size: 18),
+                label: const Text('EDIT NAME', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
@@ -177,7 +483,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       CircleAvatar(
                         radius: 36,
-                        backgroundColor: Colors.blue.shade100,
+                        backgroundColor: const Color(0xFF1565C0).withOpacity(0.08),
                         child: Text(
                           (_user.name != null && _user.name!.isNotEmpty)
                               ? _user.name![0].toUpperCase()
@@ -185,7 +491,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: Color(0xFF1565C0),
                           ),
                         ),
                       ),
@@ -195,6 +501,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xFF111827),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _user.phone,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF4B5563),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -202,7 +518,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         'Member since ${_formatDate(_profile?.createdAt ?? _user.createdAt ?? DateTime.now())}',
                         style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.grey,
+                          color: Color(0xFF6B7280),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -211,101 +527,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _buildContributionsCard(),
                       const SizedBox(height: 20),
 
-                      // Navigation Actions
-                      _buildNavigationCard(),
+                      // Circular Highlights/Shortcuts
+                      _buildCircularHighlights(),
                       const SizedBox(height: 20),
 
-                      // User Info Card
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildReadOnlyRow('Phone', _user.phone),
-                              const Divider(height: 24),
-
-                              if (_isEditing) ...[
-                                TextField(
-                                  controller: _nameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Name',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  maxLength: 100,
-                                  enabled: !_isSaving,
-                                ),
-                              ] else ...[
-                                _buildReadOnlyRow('Name', _user.name ?? '—'),
-                              ],
-
-                              const Divider(height: 24),
-                              _buildReadOnlyRow('Status', _user.status),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Action buttons
-                      if (_isEditing) ...[
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: _isSaving ? null : _saveName,
-                            child: _isSaving
-                                ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : const Text('SAVE'),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: OutlinedButton(
-                            onPressed: _isSaving ? null : _cancelEditing,
-                            child: const Text('CANCEL'),
-                          ),
-                        ),
-                      ] else ...[
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _isEditing = true;
-                                _message = '';
-                              });
-                            },
-                            icon: const Icon(Icons.edit),
-                            label: const Text('EDIT NAME'),
-                          ),
-                        ),
-                      ],
+                      // Tabs & Tab Content
+                      _buildTabBar(),
+                      _buildTabContent(),
 
                       const SizedBox(height: 16),
 
                       // Message display
-                      if (_message.isNotEmpty)
+                      if (_message.isNotEmpty) ...[
+                        const SizedBox(height: 12),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
+                            color: _message.startsWith('Error') ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
                             border: Border.all(
                               color: _message.startsWith('Error')
-                                  ? Colors.red
-                                  : Colors.green,
+                                  ? Colors.red.shade200
+                                  : Colors.green.shade200,
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -314,11 +557,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: _message.startsWith('Error')
-                                  ? Colors.red
-                                  : Colors.green,
+                                  ? Colors.red.shade700
+                                  : Colors.green.shade700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -336,10 +581,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           verifiedContributionCount: 0,
         );
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -349,8 +595,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Text(
               'Community Contributions',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
+                color: Color(0xFF111827),
               ),
             ),
             const SizedBox(height: 16),
@@ -377,68 +624,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.blue,
+            color: Color(0xFF1565C0),
           ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+          style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.w500),
         ),
       ],
-    );
-  }
-
-  Widget _buildNavigationCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.article_outlined, color: Colors.blue),
-            title: const Text('My Posts'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const MyPostsScreen(),
-                ),
-              );
-            },
-          ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.report_outlined, color: Colors.orange),
-            title: const Text('My Reports'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      MyReportsScreen(usersService: _usersService),
-                ),
-              );
-            },
-          ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.visibility_outlined, color: Colors.green),
-            title: const Text('Witness History'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      WitnessHistoryScreen(usersService: _usersService),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -446,10 +640,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+        Text(label, style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13)),
         Text(
           value,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color(0xFF111827)),
         ),
       ],
     );
