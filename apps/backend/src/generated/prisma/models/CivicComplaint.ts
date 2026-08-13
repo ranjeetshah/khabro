@@ -265,6 +265,7 @@ export type CivicComplaintWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"CivicComplaint"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CivicComplaint"> | Date | string
   post?: Prisma.XOR<Prisma.PostScalarRelationFilter, Prisma.PostWhereInput>
+  statusHistory?: Prisma.CivicComplaintStatusHistoryListRelationFilter
 }
 
 export type CivicComplaintOrderByWithRelationInput = {
@@ -280,6 +281,7 @@ export type CivicComplaintOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   post?: Prisma.PostOrderByWithRelationInput
+  statusHistory?: Prisma.CivicComplaintStatusHistoryOrderByRelationAggregateInput
 }
 
 export type CivicComplaintWhereUniqueInput = Prisma.AtLeast<{
@@ -298,6 +300,7 @@ export type CivicComplaintWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"CivicComplaint"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CivicComplaint"> | Date | string
   post?: Prisma.XOR<Prisma.PostScalarRelationFilter, Prisma.PostWhereInput>
+  statusHistory?: Prisma.CivicComplaintStatusHistoryListRelationFilter
 }, "id" | "postId" | "referenceCode">
 
 export type CivicComplaintOrderByWithAggregationInput = {
@@ -348,6 +351,7 @@ export type CivicComplaintCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   post: Prisma.PostCreateNestedOneWithoutCivicComplaintInput
+  statusHistory?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutComplaintInput
 }
 
 export type CivicComplaintUncheckedCreateInput = {
@@ -362,6 +366,7 @@ export type CivicComplaintUncheckedCreateInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutComplaintInput
 }
 
 export type CivicComplaintUpdateInput = {
@@ -376,6 +381,7 @@ export type CivicComplaintUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.PostUpdateOneRequiredWithoutCivicComplaintNestedInput
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutComplaintNestedInput
 }
 
 export type CivicComplaintUncheckedUpdateInput = {
@@ -390,6 +396,7 @@ export type CivicComplaintUncheckedUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutComplaintNestedInput
 }
 
 export type CivicComplaintCreateManyInput = {
@@ -488,6 +495,11 @@ export type CivicComplaintSumOrderByAggregateInput = {
   witnessCount?: Prisma.SortOrder
 }
 
+export type CivicComplaintScalarRelationFilter = {
+  is?: Prisma.CivicComplaintWhereInput
+  isNot?: Prisma.CivicComplaintWhereInput
+}
+
 export type CivicComplaintCreateNestedOneWithoutPostInput = {
   create?: Prisma.XOR<Prisma.CivicComplaintCreateWithoutPostInput, Prisma.CivicComplaintUncheckedCreateWithoutPostInput>
   connectOrCreate?: Prisma.CivicComplaintCreateOrConnectWithoutPostInput
@@ -524,6 +536,20 @@ export type EnumCivicComplaintStatusFieldUpdateOperationsInput = {
   set?: $Enums.CivicComplaintStatus
 }
 
+export type CivicComplaintCreateNestedOneWithoutStatusHistoryInput = {
+  create?: Prisma.XOR<Prisma.CivicComplaintCreateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedCreateWithoutStatusHistoryInput>
+  connectOrCreate?: Prisma.CivicComplaintCreateOrConnectWithoutStatusHistoryInput
+  connect?: Prisma.CivicComplaintWhereUniqueInput
+}
+
+export type CivicComplaintUpdateOneRequiredWithoutStatusHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.CivicComplaintCreateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedCreateWithoutStatusHistoryInput>
+  connectOrCreate?: Prisma.CivicComplaintCreateOrConnectWithoutStatusHistoryInput
+  upsert?: Prisma.CivicComplaintUpsertWithoutStatusHistoryInput
+  connect?: Prisma.CivicComplaintWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CivicComplaintUpdateToOneWithWhereWithoutStatusHistoryInput, Prisma.CivicComplaintUpdateWithoutStatusHistoryInput>, Prisma.CivicComplaintUncheckedUpdateWithoutStatusHistoryInput>
+}
+
 export type CivicComplaintCreateWithoutPostInput = {
   id?: string
   referenceCode: string
@@ -535,6 +561,7 @@ export type CivicComplaintCreateWithoutPostInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutComplaintInput
 }
 
 export type CivicComplaintUncheckedCreateWithoutPostInput = {
@@ -548,6 +575,7 @@ export type CivicComplaintUncheckedCreateWithoutPostInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutComplaintInput
 }
 
 export type CivicComplaintCreateOrConnectWithoutPostInput = {
@@ -577,6 +605,7 @@ export type CivicComplaintUpdateWithoutPostInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutComplaintNestedInput
 }
 
 export type CivicComplaintUncheckedUpdateWithoutPostInput = {
@@ -590,8 +619,110 @@ export type CivicComplaintUncheckedUpdateWithoutPostInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  statusHistory?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutComplaintNestedInput
 }
 
+export type CivicComplaintCreateWithoutStatusHistoryInput = {
+  id?: string
+  referenceCode: string
+  authorityEmail: string
+  subject: string
+  body: string
+  witnessCount: number
+  status?: $Enums.CivicComplaintStatus
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  post: Prisma.PostCreateNestedOneWithoutCivicComplaintInput
+}
+
+export type CivicComplaintUncheckedCreateWithoutStatusHistoryInput = {
+  id?: string
+  postId: string
+  referenceCode: string
+  authorityEmail: string
+  subject: string
+  body: string
+  witnessCount: number
+  status?: $Enums.CivicComplaintStatus
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CivicComplaintCreateOrConnectWithoutStatusHistoryInput = {
+  where: Prisma.CivicComplaintWhereUniqueInput
+  create: Prisma.XOR<Prisma.CivicComplaintCreateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedCreateWithoutStatusHistoryInput>
+}
+
+export type CivicComplaintUpsertWithoutStatusHistoryInput = {
+  update: Prisma.XOR<Prisma.CivicComplaintUpdateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedUpdateWithoutStatusHistoryInput>
+  create: Prisma.XOR<Prisma.CivicComplaintCreateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedCreateWithoutStatusHistoryInput>
+  where?: Prisma.CivicComplaintWhereInput
+}
+
+export type CivicComplaintUpdateToOneWithWhereWithoutStatusHistoryInput = {
+  where?: Prisma.CivicComplaintWhereInput
+  data: Prisma.XOR<Prisma.CivicComplaintUpdateWithoutStatusHistoryInput, Prisma.CivicComplaintUncheckedUpdateWithoutStatusHistoryInput>
+}
+
+export type CivicComplaintUpdateWithoutStatusHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceCode?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  witnessCount?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumCivicComplaintStatusFieldUpdateOperationsInput | $Enums.CivicComplaintStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  post?: Prisma.PostUpdateOneRequiredWithoutCivicComplaintNestedInput
+}
+
+export type CivicComplaintUncheckedUpdateWithoutStatusHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceCode?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  witnessCount?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumCivicComplaintStatusFieldUpdateOperationsInput | $Enums.CivicComplaintStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type CivicComplaintCountOutputType
+ */
+
+export type CivicComplaintCountOutputType = {
+  statusHistory: number
+}
+
+export type CivicComplaintCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  statusHistory?: boolean | CivicComplaintCountOutputTypeCountStatusHistoryArgs
+}
+
+/**
+ * CivicComplaintCountOutputType without action
+ */
+export type CivicComplaintCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CivicComplaintCountOutputType
+   */
+  select?: Prisma.CivicComplaintCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CivicComplaintCountOutputType without action
+ */
+export type CivicComplaintCountOutputTypeCountStatusHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CivicComplaintStatusHistoryWhereInput
+}
 
 
 export type CivicComplaintSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -607,6 +738,8 @@ export type CivicComplaintSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   updatedAt?: boolean
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
+  statusHistory?: boolean | Prisma.CivicComplaint$statusHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.CivicComplaintCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["civicComplaint"]>
 
 export type CivicComplaintSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -656,6 +789,8 @@ export type CivicComplaintSelectScalar = {
 export type CivicComplaintOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "referenceCode" | "authorityEmail" | "subject" | "body" | "witnessCount" | "status" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["civicComplaint"]>
 export type CivicComplaintInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
+  statusHistory?: boolean | Prisma.CivicComplaint$statusHistoryArgs<ExtArgs>
+  _count?: boolean | Prisma.CivicComplaintCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CivicComplaintIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
@@ -668,6 +803,7 @@ export type $CivicComplaintPayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "CivicComplaint"
   objects: {
     post: Prisma.$PostPayload<ExtArgs>
+    statusHistory: Prisma.$CivicComplaintStatusHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1076,6 +1212,7 @@ readonly fields: CivicComplaintFieldRefs;
 export interface Prisma__CivicComplaintClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   post<T extends Prisma.PostDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostDefaultArgs<ExtArgs>>): Prisma.Prisma__PostClient<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  statusHistory<T extends Prisma.CivicComplaint$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CivicComplaint$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CivicComplaintStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1514,6 +1651,30 @@ export type CivicComplaintDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many CivicComplaints to delete.
    */
   limit?: number
+}
+
+/**
+ * CivicComplaint.statusHistory
+ */
+export type CivicComplaint$statusHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CivicComplaintStatusHistory
+   */
+  select?: Prisma.CivicComplaintStatusHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CivicComplaintStatusHistory
+   */
+  omit?: Prisma.CivicComplaintStatusHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CivicComplaintStatusHistoryInclude<ExtArgs> | null
+  where?: Prisma.CivicComplaintStatusHistoryWhereInput
+  orderBy?: Prisma.CivicComplaintStatusHistoryOrderByWithRelationInput | Prisma.CivicComplaintStatusHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.CivicComplaintStatusHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CivicComplaintStatusHistoryScalarFieldEnum | Prisma.CivicComplaintStatusHistoryScalarFieldEnum[]
 }
 
 /**

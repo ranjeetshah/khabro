@@ -62,6 +62,13 @@ export type EnumUserStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
 }
 
+export type EnumUserRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+}
+
 export type BoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
@@ -143,6 +150,16 @@ export type EnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumUserStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumUserStatusFilter<$PrismaModel>
+}
+
+export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -450,6 +467,23 @@ export type EnumCivicComplaintStatusWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumCivicComplaintStatusFilter<$PrismaModel>
 }
 
+export type EnumCivicComplaintStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.CivicComplaintStatus | Prisma.EnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel> | $Enums.CivicComplaintStatus | null
+}
+
+export type EnumCivicComplaintStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CivicComplaintStatus | Prisma.EnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCivicComplaintStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.CivicComplaintStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -494,6 +528,13 @@ export type NestedEnumUserStatusFilter<$PrismaModel = never> = {
   in?: $Enums.UserStatus[] | Prisma.ListEnumUserStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.UserStatus[] | Prisma.ListEnumUserStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
+}
+
+export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
 }
 
 export type NestedBoolFilter<$PrismaModel = never> = {
@@ -592,6 +633,16 @@ export type NestedEnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumUserStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumUserStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -886,6 +937,23 @@ export type NestedEnumCivicComplaintStatusWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCivicComplaintStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCivicComplaintStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.CivicComplaintStatus | Prisma.EnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel> | $Enums.CivicComplaintStatus | null
+}
+
+export type NestedEnumCivicComplaintStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CivicComplaintStatus | Prisma.EnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CivicComplaintStatus[] | Prisma.ListEnumCivicComplaintStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCivicComplaintStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.CivicComplaintStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCivicComplaintStatusNullableFilter<$PrismaModel>
 }
 
 

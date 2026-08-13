@@ -1,12 +1,13 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../database/database.service';
-import { CivicComplaintStatus, VerificationStatus } from '../generated/prisma/enums';
+import { CivicComplaintStatus, UserRole, VerificationStatus } from '../generated/prisma/enums';
 import { MailService } from '../mail/mail.service';
 
 export interface SafeCivicComplaintResponse {
@@ -14,6 +15,21 @@ export interface SafeCivicComplaintResponse {
   status: CivicComplaintStatus;
   witnessCount: number;
   sentAt: Date | null;
+}
+
+export interface SafePublicComplaintDetail {
+  referenceCode: string;
+  status: CivicComplaintStatus;
+  createdAt: Date;
+  sentAt: Date | null;
+  updatedAt: Date;
+}
+
+export interface SafeCivicComplaintHistoryItem {
+  fromStatus: CivicComplaintStatus | null;
+  toStatus: CivicComplaintStatus;
+  note: string | null;
+  createdAt: Date;
 }
 
 @Injectable()
@@ -246,6 +262,241 @@ export class CivicComplaintService {
 
     if (!complaint) {
       throw new NotFoundException('No civic complaint found for this post');
+    }
+
+    return complaint;
+  }
+
+  async getPublicComplaintById(id: string): Promise<SafePublicComplaintDetail> {
+    const complaint = await this.database.civicComplaint.findFirst({
+      where: {
+        OR: [{ id }, { postId: id }, { referenceCode: id }],
+        post: { deletedAt: null },
+      },
+      select: {
+        referenceCode: true,
+        status: true,
+        createdAt: true,
+        sentAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!complaint) {
+      throw new NotFoundException('Civic complaint not found');
+    }
+
+    return complaint;
+  }
+
+  async getStatusHistory(id: string): Promise<SafeCivicComplaintHistoryItem[]> {
+    const complaint = await this.database.civicComplaint.findFirst({
+      where: {
+        OR: [{ id }, { postId: id }, { referenceCode: id }],
+        post: { deletedAt: null },
+      },
+      select: { id: true },
+    });
+
+    if (!complaint) {
+      throw new NotFoundException('Civic complaint not found');
+    }
+
+    const history = await this.database.civicComplaintStatusHistory.findMany({
+      where: { complaintId: complaint.id },
+      select: {
+        fromStatus: true,
+        toStatus: true,
+        note: true,
+        createdAt: true,
+      },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+    });
+
+    return history;
+  }
+
+  async updateStatusByAuthority(
+    actorId: string,
+    actorRole: string | undefined,
+    id: string,
+    targetStatus: CivicComplaintStatus,
+    note?: string,
+  ): Promise<SafePublicComplaintDetail> {
+    await this.assertModeratorRole(actorId, actorRole);
+
+    const complaint = await this.findComplaintOrThrow(id);
+
+    this.validateStatusTransition(complaint.status, targetStatus);
+
+    return this.database.$transaction(async (tx) => {
+      const updated = await tx.civicComplaint.update({
+        where: { id: complaint.id },
+        data: { status: targetStatus },
+        select: {
+          referenceCode: true,
+          status: true,
+          createdAt: true,
+          sentAt: true,
+          updatedAt: true,
+        },
+      });
+
+      await tx.civicComplaintStatusHistory.create({
+        data: {
+          complaintId: complaint.id,
+          fromStatus: complaint.status,
+          toStatus: targetStatus,
+          actorId,
+          note: note?.trim() || null,
+        },
+      });
+
+      return updated;
+    });
+  }
+
+  async confirmResolutionByCitizen(
+    citizenId: string,
+    id: string,
+  ): Promise<SafePublicComplaintDetail> {
+    const complaint = await this.findComplaintOrThrow(id);
+
+    if (complaint.status !== CivicComplaintStatus.RESOLVED) {
+      throw new BadRequestException(
+        'Complaint can only be confirmed when status is RESOLVED',
+      );
+    }
+
+    return this.database.$transaction(async (tx) => {
+      const updated = await tx.civicComplaint.update({
+        where: { id: complaint.id },
+        data: { status: CivicComplaintStatus.CITIZEN_CONFIRMED },
+        select: {
+          referenceCode: true,
+          status: true,
+          createdAt: true,
+          sentAt: true,
+          updatedAt: true,
+        },
+      });
+
+      await tx.civicComplaintStatusHistory.create({
+        data: {
+          complaintId: complaint.id,
+          fromStatus: CivicComplaintStatus.RESOLVED,
+          toStatus: CivicComplaintStatus.CITIZEN_CONFIRMED,
+          actorId: citizenId,
+          note: 'Citizen confirmed resolution',
+        },
+      });
+
+      return updated;
+    });
+  }
+
+  async reopenComplaintByCitizen(
+    citizenId: string,
+    id: string,
+    reason: string,
+  ): Promise<SafePublicComplaintDetail> {
+    const complaint = await this.findComplaintOrThrow(id);
+
+    if (complaint.status !== CivicComplaintStatus.RESOLVED) {
+      throw new BadRequestException(
+        'Complaint can only be reopened when status is RESOLVED',
+      );
+    }
+
+    const trimmedReason = reason?.trim();
+    if (!trimmedReason || trimmedReason.length === 0) {
+      throw new BadRequestException('Reason for reopening is required');
+    }
+
+    return this.database.$transaction(async (tx) => {
+      const updated = await tx.civicComplaint.update({
+        where: { id: complaint.id },
+        data: { status: CivicComplaintStatus.REOPENED },
+        select: {
+          referenceCode: true,
+          status: true,
+          createdAt: true,
+          sentAt: true,
+          updatedAt: true,
+        },
+      });
+
+      await tx.civicComplaintStatusHistory.create({
+        data: {
+          complaintId: complaint.id,
+          fromStatus: CivicComplaintStatus.RESOLVED,
+          toStatus: CivicComplaintStatus.REOPENED,
+          actorId: citizenId,
+          note: trimmedReason,
+        },
+      });
+
+      return updated;
+    });
+  }
+
+  validateStatusTransition(
+    currentStatus: CivicComplaintStatus,
+    targetStatus: CivicComplaintStatus,
+  ) {
+    const allowedMap: Record<CivicComplaintStatus, CivicComplaintStatus[]> = {
+      [CivicComplaintStatus.DRAFT]: [],
+      [CivicComplaintStatus.SENT]: [CivicComplaintStatus.ACKNOWLEDGED],
+      [CivicComplaintStatus.FAILED]: [],
+      [CivicComplaintStatus.ACKNOWLEDGED]: [CivicComplaintStatus.IN_PROGRESS],
+      [CivicComplaintStatus.IN_PROGRESS]: [CivicComplaintStatus.RESOLVED],
+      [CivicComplaintStatus.RESOLVED]: [
+        CivicComplaintStatus.CITIZEN_CONFIRMED,
+        CivicComplaintStatus.REOPENED,
+      ],
+      [CivicComplaintStatus.CITIZEN_CONFIRMED]: [],
+      [CivicComplaintStatus.REOPENED]: [CivicComplaintStatus.ACKNOWLEDGED],
+    };
+
+    const allowed = allowedMap[currentStatus] || [];
+    if (!allowed.includes(targetStatus)) {
+      throw new BadRequestException(
+        `Invalid status transition from ${currentStatus} to ${targetStatus}`,
+      );
+    }
+  }
+
+  private async assertModeratorRole(
+    actorId: string,
+    actorRole?: string,
+  ) {
+    if (actorRole === UserRole.MODERATOR) {
+      return;
+    }
+
+    const user = await this.database.user.findUnique({
+      where: { id: actorId },
+      select: { role: true },
+    });
+
+    if (!user || user.role !== UserRole.MODERATOR) {
+      throw new ForbiddenException(
+        'Only moderators can perform authority status transitions',
+      );
+    }
+  }
+
+  private async findComplaintOrThrow(id: string) {
+    const complaint = await this.database.civicComplaint.findFirst({
+      where: {
+        OR: [{ id }, { postId: id }, { referenceCode: id }],
+        post: { deletedAt: null },
+      },
+      select: { id: true, status: true, referenceCode: true },
+    });
+
+    if (!complaint) {
+      throw new NotFoundException('Civic complaint not found');
     }
 
     return complaint;

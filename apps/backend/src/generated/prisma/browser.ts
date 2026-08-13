@@ -87,3 +87,8 @@ export type ComplaintStatusHistory = Prisma.ComplaintStatusHistoryModel
  * 
  */
 export type CivicComplaint = Prisma.CivicComplaintModel
+/**
+ * Model CivicComplaintStatusHistory
+ * 
+ */
+export type CivicComplaintStatusHistory = Prisma.CivicComplaintStatusHistoryModel

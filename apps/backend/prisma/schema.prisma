@@ -16,6 +16,7 @@ model User {
   profileImage  String?
   trustScore    Int        @default(0)
   status        UserStatus @default(ACTIVE)
+  role          UserRole   @default(CITIZEN)
   allowCivicComplaintContactSharing Boolean @default(false)
 
   createdAt     DateTime   @default(now())
@@ -29,6 +30,7 @@ model User {
   userReports   UserReport[]   @relation("ReporterUser")
   reportedUsers UserReport[]   @relation("ReportedUser")
   complaints    Complaint[]
+  civicStatusHistories CivicComplaintStatusHistory[] @relation("StatusHistoryActor")
 
   @@index([status])
 }
@@ -170,6 +172,11 @@ enum UserStatus {
   SUSPENDED
   BANNED
   DELETED
+}
+
+enum UserRole {
+  CITIZEN
+  MODERATOR
 }
 
 enum VerificationStatus {
@@ -314,6 +321,11 @@ enum CivicComplaintStatus {
   DRAFT
   SENT
   FAILED
+  ACKNOWLEDGED
+  IN_PROGRESS
+  RESOLVED
+  CITIZEN_CONFIRMED
+  REOPENED
 }
 
 model CivicComplaint {
@@ -330,8 +342,25 @@ model CivicComplaint {
   updatedAt      DateTime             @updatedAt
 
   post           Post                 @relation(fields: [postId], references: [id], onDelete: Cascade)
+  statusHistory  CivicComplaintStatusHistory[]
 
   @@index([postId])
   @@index([status])
   @@index([referenceCode])
+}
+
+model CivicComplaintStatusHistory {
+  id          String               @id @default(uuid())
+  complaintId String
+  fromStatus  CivicComplaintStatus?
+  toStatus    CivicComplaintStatus
+  actorId     String
+  note        String?
+  createdAt   DateTime             @default(now())
+
+  complaint   CivicComplaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  actor       User                 @relation("StatusHistoryActor", fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId, createdAt, id])
+  @@index([actorId])
 }

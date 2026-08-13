@@ -48,6 +48,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   VerificationStatus _verificationStatus = VerificationStatus.reported;
   VerificationHistoryModel? _history;
   CivicComplaintModel? _civicComplaint;
+  bool _isActionInProgress = false;
   bool _isHistoryLoading = false;
   String? _historyError;
   String? _errorMessage;
@@ -67,6 +68,76 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _loadVerification();
     _loadHistory();
     _loadCivicComplaint();
+  }
+
+  Future<void> _confirmResolution() async {
+    if (_civicComplaint == null || _isActionInProgress) return;
+    setState(() => _isActionInProgress = true);
+    try {
+      final updated = await _postsService.confirmCivicComplaintResolution(
+        _civicComplaint!.referenceCode,
+      );
+      if (!mounted) return;
+      setState(() {
+        _civicComplaint = updated;
+        _isActionInProgress = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isActionInProgress = false);
+    }
+  }
+
+  Future<void> _showReopenDialog() async {
+    if (_civicComplaint == null || _isActionInProgress) return;
+    final controller = TextEditingController();
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Reopen Complaint'),
+        content: TextField(
+          controller: controller,
+          maxLines: 3,
+          maxLength: 1000,
+          decoration: const InputDecoration(
+            labelText: 'Reason for reopening',
+            hintText: 'Describe why the issue is not resolved',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(null),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final text = controller.text.trim();
+              if (text.isNotEmpty) Navigator.of(dialogContext).pop(text);
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+
+    if (reason != null && reason.isNotEmpty) {
+      setState(() => _isActionInProgress = true);
+      try {
+        final updated = await _postsService.reopenCivicComplaint(
+          _civicComplaint!.referenceCode,
+          reason,
+        );
+        if (!mounted) return;
+        setState(() {
+          _civicComplaint = updated;
+          _isActionInProgress = false;
+        });
+      } catch (_) {
+        if (!mounted) return;
+        setState(() => _isActionInProgress = false);
+      }
+    }
   }
 
   Future<void> _loadVerification() async {
@@ -420,32 +491,77 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Community Action',
+                      'Community Complaint',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    if (_civicComplaint != null &&
-                        _civicComplaint!.status == 'SENT') ...[
-                      Text(
-                        '${_civicComplaint!.witnessCount} local eyewitnesses have confirmed they personally witnessed this issue.',
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Complaint sent to the concerned authority.',
-                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 4),
+                    if (_civicComplaint != null) ...[
                       Text(
                         'Reference: ${_civicComplaint!.referenceCode}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ] else if (_civicComplaint != null &&
-                        _civicComplaint!.status == 'FAILED') ...[
-                      const Text(
-                        'Complaint could not be sent.',
-                        style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Status: ${_formatComplaintStatus(_civicComplaint!.status)}',
+                        style: TextStyle(
+                          color: _statusColor(_civicComplaint!.status),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
+                      const SizedBox(height: 8),
+                      if (_civicComplaint!.status == 'SENT')
+                        const Text(
+                          'Complaint sent to the concerned authority.',
+                          style: TextStyle(color: Colors.green, fontSize: 13),
+                        )
+                      else if (_civicComplaint!.status == 'ACKNOWLEDGED')
+                        const Text(
+                          'Complaint acknowledged by authority.',
+                          style: TextStyle(color: Colors.blue, fontSize: 13),
+                        )
+                      else if (_civicComplaint!.status == 'IN_PROGRESS')
+                        const Text(
+                          'Authority work is currently in progress.',
+                          style: TextStyle(color: Colors.orange, fontSize: 13),
+                        )
+                      else if (_civicComplaint!.status == 'RESOLVED') ...[
+                        const Text(
+                          'Has this issue actually been resolved?',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FilledButton(
+                                onPressed: _isActionInProgress ? null : _confirmResolution,
+                                child: const Text('Confirm Resolution'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: _isActionInProgress ? null : _showReopenDialog,
+                                child: const Text('Reopen Complaint'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else if (_civicComplaint!.status == 'CITIZEN_CONFIRMED')
+                        const Text(
+                          'Resolution confirmed by community.',
+                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        )
+                      else if (_civicComplaint!.status == 'REOPENED')
+                        const Text(
+                          'Complaint reopened.',
+                          style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                        )
+                      else if (_civicComplaint!.status == 'FAILED')
+                        const Text(
+                          'Complaint could not be sent.',
+                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                        ),
                     ] else ...[
                       const Text(
                         'Community verification complete.',
@@ -620,4 +736,30 @@ class _VerificationHistorySection extends StatelessWidget {
         '${local.hour.toString().padLeft(2, '0')}:'
         '${local.minute.toString().padLeft(2, '0')}';
   }
+}
+
+String _formatComplaintStatus(String status) {
+  return switch (status) {
+    'DRAFT' => 'Draft',
+    'SENT' => 'Sent',
+    'FAILED' => 'Failed',
+    'ACKNOWLEDGED' => 'Acknowledged',
+    'IN_PROGRESS' => 'In Progress',
+    'RESOLVED' => 'Resolved',
+    'CITIZEN_CONFIRMED' => 'Confirmed',
+    'REOPENED' => 'Reopened',
+    _ => status,
+  };
+}
+
+Color _statusColor(String status) {
+  return switch (status) {
+    'SENT' || 'CITIZEN_CONFIRMED' => Colors.green,
+    'ACKNOWLEDGED' => Colors.blue,
+    'IN_PROGRESS' => Colors.orange,
+    'RESOLVED' => Colors.teal,
+    'REOPENED' => Colors.deepOrange,
+    'FAILED' => Colors.red,
+    _ => Colors.grey,
+  };
 }

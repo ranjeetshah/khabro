@@ -137,10 +137,34 @@ class FakeDeletePostsService extends PostsService {
   }
 
   CivicComplaintModel? civicComplaint;
+  var confirmCalls = 0;
+  var reopenCalls = 0;
+  String? reopenReason;
 
   @override
   Future<CivicComplaintModel?> getCivicComplaint(String id) async {
     return civicComplaint;
+  }
+
+  @override
+  Future<CivicComplaintModel> confirmCivicComplaintResolution(String id) async {
+    confirmCalls++;
+    return CivicComplaintModel(
+      referenceCode: civicComplaint?.referenceCode ?? 'KH-2026-000123',
+      status: 'CITIZEN_CONFIRMED',
+      witnessCount: 20,
+    );
+  }
+
+  @override
+  Future<CivicComplaintModel> reopenCivicComplaint(String id, String reason) async {
+    reopenCalls++;
+    reopenReason = reason;
+    return CivicComplaintModel(
+      referenceCode: civicComplaint?.referenceCode ?? 'KH-2026-000123',
+      status: 'REOPENED',
+      witnessCount: 20,
+    );
   }
 
   @override
@@ -883,7 +907,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Community Action'), findsOneWidget);
+    expect(find.text('Community Complaint'), findsOneWidget);
     expect(
       find.text('Complaint sent to the concerned authority.'),
       findsOneWidget,
@@ -915,7 +939,88 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Community Action'), findsOneWidget);
+    expect(find.text('Community Complaint'), findsOneWidget);
     expect(find.text('Complaint could not be sent.'), findsOneWidget);
+  });
+
+  testWidgets('displays RESOLVED civic complaint status with action buttons', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    service.civicComplaint = const CivicComplaintModel(
+      referenceCode: 'KH-2026-000123',
+      status: 'RESOLVED',
+      witnessCount: 20,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Community Complaint'), findsOneWidget);
+    expect(
+      find.text('Has this issue actually been resolved?'),
+      findsOneWidget,
+    );
+    expect(find.text('Confirm Resolution'), findsOneWidget);
+    expect(find.text('Reopen Complaint'), findsOneWidget);
+
+    await tester.tap(find.text('Confirm Resolution'));
+    await tester.pumpAndSettle();
+
+    expect(service.confirmCalls, equals(1));
+    expect(find.text('Resolution confirmed by community.'), findsOneWidget);
+  });
+
+  testWidgets('reopens RESOLVED civic complaint with reason dialog', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    service.civicComplaint = const CivicComplaintModel(
+      referenceCode: 'KH-2026-000123',
+      status: 'RESOLVED',
+      witnessCount: 20,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Reopen Complaint'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Reopen Complaint'), findsWidgets);
+    expect(find.text('Reason for reopening'), findsOneWidget);
+
+    await tester.enterText(
+      find.byType(TextField).last,
+      'The road is still blocked.',
+    );
+    await tester.tap(find.text('Submit'));
+    await tester.pumpAndSettle();
+
+    expect(service.reopenCalls, equals(1));
+    expect(service.reopenReason, equals('The road is still blocked.'));
+    expect(find.text('Complaint reopened.'), findsOneWidget);
   });
 }

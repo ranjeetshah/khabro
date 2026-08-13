@@ -64,7 +64,8 @@ export const ModelName = {
   ModerationAuditEvent: 'ModerationAuditEvent',
   Complaint: 'Complaint',
   ComplaintStatusHistory: 'ComplaintStatusHistory',
-  CivicComplaint: 'CivicComplaint'
+  CivicComplaint: 'CivicComplaint',
+  CivicComplaintStatusHistory: 'CivicComplaintStatusHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -91,6 +92,7 @@ export const UserScalarFieldEnum = {
   profileImage: 'profileImage',
   trustScore: 'trustScore',
   status: 'status',
+  role: 'role',
   allowCivicComplaintContactSharing: 'allowCivicComplaintContactSharing',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -262,6 +264,19 @@ export const CivicComplaintScalarFieldEnum = {
 } as const
 
 export type CivicComplaintScalarFieldEnum = (typeof CivicComplaintScalarFieldEnum)[keyof typeof CivicComplaintScalarFieldEnum]
+
+
+export const CivicComplaintStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  complaintId: 'complaintId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  actorId: 'actorId',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type CivicComplaintStatusHistoryScalarFieldEnum = (typeof CivicComplaintStatusHistoryScalarFieldEnum)[keyof typeof CivicComplaintStatusHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

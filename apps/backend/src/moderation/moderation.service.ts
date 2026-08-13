@@ -253,7 +253,7 @@ export class ModerationService {
             where: {
               postId: targetId,
               reporterId,
-              reason,
+              reason: reason as PostReportReason,
               status: { in: [ReportStatus.OPEN, ReportStatus.REVIEWED] },
             },
             select: { id: true },
@@ -262,7 +262,7 @@ export class ModerationService {
             where: {
               reportedUserId: targetId,
               reporterId,
-              reason,
+              reason: reason as UserReportReason,
               status: { in: [ReportStatus.OPEN, ReportStatus.REVIEWED] },
             },
             select: { id: true },

@@ -239,4 +239,219 @@ describe('CivicComplaintService', () => {
       NotFoundException,
     );
   });
-});
+
+  describe('State Machine & Transitions', () => {
+    it('validates allowed transitions correctly', () => {
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.SENT,
+          CivicComplaintStatus.ACKNOWLEDGED,
+        ),
+      ).not.toThrow();
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.ACKNOWLEDGED,
+          CivicComplaintStatus.IN_PROGRESS,
+        ),
+      ).not.toThrow();
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.IN_PROGRESS,
+          CivicComplaintStatus.RESOLVED,
+        ),
+      ).not.toThrow();
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.RESOLVED,
+          CivicComplaintStatus.CITIZEN_CONFIRMED,
+        ),
+      ).not.toThrow();
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.RESOLVED,
+          CivicComplaintStatus.REOPENED,
+        ),
+      ).not.toThrow();
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.REOPENED,
+          CivicComplaintStatus.ACKNOWLEDGED,
+        ),
+      ).not.toThrow();
+    });
+
+    it('rejects invalid transitions', () => {
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.SENT,
+          CivicComplaintStatus.RESOLVED,
+        ),
+      ).toThrow(BadRequestException);
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.SENT,
+          CivicComplaintStatus.CITIZEN_CONFIRMED,
+        ),
+      ).toThrow(BadRequestException);
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.ACKNOWLEDGED,
+          CivicComplaintStatus.CITIZEN_CONFIRMED,
+        ),
+      ).toThrow(BadRequestException);
+
+      expect(() =>
+        service.validateStatusTransition(
+          CivicComplaintStatus.REOPENED,
+          CivicComplaintStatus.CITIZEN_CONFIRMED,
+        ),
+      ).toThrow(BadRequestException);
+    });
+
+    it('rejects non-moderator from performing authority status updates', async () => {
+      database.user = {
+        findUnique: jest.fn().mockResolvedValue({ role: 'CITIZEN' }),
+      };
+
+      await expect(
+        service.updateStatusByAuthority(
+          'user-1',
+          'CITIZEN',
+          'comp-1',
+          CivicComplaintStatus.ACKNOWLEDGED,
+        ),
+      ).rejects.toThrow();
+    });
+
+    it('allows moderator to perform valid authority status updates and records history', async () => {
+      database.user = {
+        findUnique: jest.fn().mockResolvedValue({ role: 'MODERATOR' }),
+      };
+      database.civicComplaint.findFirst = jest.fn().mockResolvedValue({
+        id: 'comp-1',
+        status: CivicComplaintStatus.SENT,
+        referenceCode: 'KH-2026-000123',
+      });
+      database.civicComplaint.update = jest.fn().mockResolvedValue({
+        referenceCode: 'KH-2026-000123',
+        status: CivicComplaintStatus.ACKNOWLEDGED,
+        createdAt: new Date(),
+        sentAt: new Date(),
+        updatedAt: new Date(),
+      });
+      database.civicComplaintStatusHistory = { create: jest.fn() };
+      database.$transaction = jest.fn((cb) => cb(database));
+
+      const res = await service.updateStatusByAuthority(
+        'mod-1',
+        'MODERATOR',
+        'comp-1',
+        CivicComplaintStatus.ACKNOWLEDGED,
+        'Received',
+      );
+
+      expect(res.status).toBe(CivicComplaintStatus.ACKNOWLEDGED);
+      expect(database.civicComplaintStatusHistory.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            complaintId: 'comp-1',
+            fromStatus: CivicComplaintStatus.SENT,
+            toStatus: CivicComplaintStatus.ACKNOWLEDGED,
+            actorId: 'mod-1',
+            note: 'Received',
+          }),
+        }),
+      );
+    });
+
+    it('citizen can confirm a RESOLVED complaint', async () => {
+      database.civicComplaint.findFirst = jest.fn().mockResolvedValue({
+        id: 'comp-1',
+        status: CivicComplaintStatus.RESOLVED,
+        referenceCode: 'KH-2026-000123',
+      });
+      database.civicComplaint.update = jest.fn().mockResolvedValue({
+        referenceCode: 'KH-2026-000123',
+        status: CivicComplaintStatus.CITIZEN_CONFIRMED,
+        createdAt: new Date(),
+        sentAt: new Date(),
+        updatedAt: new Date(),
+      });
+      database.civicComplaintStatusHistory = { create: jest.fn() };
+      database.$transaction = jest.fn((cb) => cb(database));
+
+      const res = await service.confirmResolutionByCitizen('citizen-1', 'comp-1');
+
+      expect(res.status).toBe(CivicComplaintStatus.CITIZEN_CONFIRMED);
+      expect(database.civicComplaintStatusHistory.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            toStatus: CivicComplaintStatus.CITIZEN_CONFIRMED,
+            actorId: 'citizen-1',
+          }),
+        }),
+      );
+    });
+
+    it('citizen can reopen a RESOLVED complaint with a reason', async () => {
+      database.civicComplaint.findFirst = jest.fn().mockResolvedValue({
+        id: 'comp-1',
+        status: CivicComplaintStatus.RESOLVED,
+        referenceCode: 'KH-2026-000123',
+      });
+      database.civicComplaint.update = jest.fn().mockResolvedValue({
+        referenceCode: 'KH-2026-000123',
+        status: CivicComplaintStatus.REOPENED,
+        createdAt: new Date(),
+        sentAt: new Date(),
+        updatedAt: new Date(),
+      });
+      database.civicComplaintStatusHistory = { create: jest.fn() };
+      database.$transaction = jest.fn((cb) => cb(database));
+
+      const res = await service.reopenComplaintByCitizen(
+        'citizen-1',
+        'comp-1',
+        'The road is still blocked.',
+      );
+
+      expect(res.status).toBe(CivicComplaintStatus.REOPENED);
+      expect(database.civicComplaintStatusHistory.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            toStatus: CivicComplaintStatus.REOPENED,
+            actorId: 'citizen-1',
+            note: 'The road is still blocked.',
+          }),
+        }),
+      );
+    });
+
+    it('getStatusHistory returns history items without exposing actorId', async () => {
+      database.civicComplaint.findFirst = jest.fn().mockResolvedValue({ id: 'comp-1' });
+      database.civicComplaintStatusHistory = {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            fromStatus: CivicComplaintStatus.SENT,
+            toStatus: CivicComplaintStatus.ACKNOWLEDGED,
+            note: 'Assigned',
+            createdAt: new Date(),
+          },
+        ]),
+      };
+
+      const history = await service.getStatusHistory('comp-1');
+
+      expect(history.length).toBe(1);
+      expect(history[0]).not.toHaveProperty('actorId');
+      expect(history[0].toStatus).toBe(CivicComplaintStatus.ACKNOWLEDGED);
+    });
+  });
+}

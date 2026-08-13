@@ -14,6 +14,7 @@ const USER_SAFE_SELECT = {
   name: true,
   trustScore: true,
   status: true,
+  role: true,
 } as const;
 
 @Injectable()
@@ -66,7 +67,7 @@ export class AuthService {
       throw new UnauthorizedException('User account is not active');
     }
 
-    const payload = { sub: user.id };
+    const payload = { sub: user.id, role: user.role };
 
     return {
       accessToken: await this.jwtService.signAsync(payload),
@@ -76,6 +77,7 @@ export class AuthService {
         name: user.name,
         trustScore: user.trustScore,
         status: user.status,
+        role: user.role,
       },
     };
   }

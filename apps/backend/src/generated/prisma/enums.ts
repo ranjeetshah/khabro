@@ -29,6 +29,14 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const UserRole = {
+  CITIZEN: 'CITIZEN',
+  MODERATOR: 'MODERATOR'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
 export const VerificationStatus = {
   REPORTED: 'REPORTED',
   UNDER_VERIFICATION: 'UNDER_VERIFICATION',
@@ -118,7 +126,12 @@ export type ComplaintStatus = (typeof ComplaintStatus)[keyof typeof ComplaintSta
 export const CivicComplaintStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
-  FAILED: 'FAILED'
+  FAILED: 'FAILED',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED',
+  CITIZEN_CONFIRMED: 'CITIZEN_CONFIRMED',
+  REOPENED: 'REOPENED'
 } as const
 
 export type CivicComplaintStatus = (typeof CivicComplaintStatus)[keyof typeof CivicComplaintStatus]

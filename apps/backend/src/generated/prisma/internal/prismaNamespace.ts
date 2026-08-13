@@ -410,7 +410,8 @@ export const ModelName = {
   ModerationAuditEvent: 'ModerationAuditEvent',
   Complaint: 'Complaint',
   ComplaintStatusHistory: 'ComplaintStatusHistory',
-  CivicComplaint: 'CivicComplaint'
+  CivicComplaint: 'CivicComplaint',
+  CivicComplaintStatusHistory: 'CivicComplaintStatusHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -426,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint"
+    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1466,6 +1467,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CivicComplaintStatusHistory: {
+      payload: Prisma.$CivicComplaintStatusHistoryPayload<ExtArgs>
+      fields: Prisma.CivicComplaintStatusHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CivicComplaintStatusHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CivicComplaintStatusHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.CivicComplaintStatusHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CivicComplaintStatusHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.CivicComplaintStatusHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.CivicComplaintStatusHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.CivicComplaintStatusHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CivicComplaintStatusHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.CivicComplaintStatusHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        update: {
+          args: Prisma.CivicComplaintStatusHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.CivicComplaintStatusHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CivicComplaintStatusHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CivicComplaintStatusHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.CivicComplaintStatusHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CivicComplaintStatusHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.CivicComplaintStatusHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCivicComplaintStatusHistory>
+        }
+        groupBy: {
+          args: Prisma.CivicComplaintStatusHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CivicComplaintStatusHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CivicComplaintStatusHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CivicComplaintStatusHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1513,6 +1588,7 @@ export const UserScalarFieldEnum = {
   profileImage: 'profileImage',
   trustScore: 'trustScore',
   status: 'status',
+  role: 'role',
   allowCivicComplaintContactSharing: 'allowCivicComplaintContactSharing',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1686,6 +1762,19 @@ export const CivicComplaintScalarFieldEnum = {
 export type CivicComplaintScalarFieldEnum = (typeof CivicComplaintScalarFieldEnum)[keyof typeof CivicComplaintScalarFieldEnum]
 
 
+export const CivicComplaintStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  complaintId: 'complaintId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  actorId: 'actorId',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type CivicComplaintStatusHistoryScalarFieldEnum = (typeof CivicComplaintStatusHistoryScalarFieldEnum)[keyof typeof CivicComplaintStatusHistoryScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1755,6 +1844,20 @@ export type EnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'UserStatus[]'
  */
 export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole'
+ */
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole[]'
+ */
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
     
 
 
@@ -2097,6 +2200,7 @@ export type GlobalOmitConfig = {
   complaint?: Prisma.ComplaintOmit
   complaintStatusHistory?: Prisma.ComplaintStatusHistoryOmit
   civicComplaint?: Prisma.CivicComplaintOmit
+  civicComplaintStatusHistory?: Prisma.CivicComplaintStatusHistoryOmit
 }
 
 /* Types for Logging */

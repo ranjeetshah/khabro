@@ -42,6 +42,7 @@ export type UserMinAggregateOutputType = {
   profileImage: string | null
   trustScore: number | null
   status: $Enums.UserStatus | null
+  role: $Enums.UserRole | null
   allowCivicComplaintContactSharing: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +56,7 @@ export type UserMaxAggregateOutputType = {
   profileImage: string | null
   trustScore: number | null
   status: $Enums.UserStatus | null
+  role: $Enums.UserRole | null
   allowCivicComplaintContactSharing: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -68,6 +70,7 @@ export type UserCountAggregateOutputType = {
   profileImage: number
   trustScore: number
   status: number
+  role: number
   allowCivicComplaintContactSharing: number
   createdAt: number
   updatedAt: number
@@ -91,6 +94,7 @@ export type UserMinAggregateInputType = {
   profileImage?: true
   trustScore?: true
   status?: true
+  role?: true
   allowCivicComplaintContactSharing?: true
   createdAt?: true
   updatedAt?: true
@@ -104,6 +108,7 @@ export type UserMaxAggregateInputType = {
   profileImage?: true
   trustScore?: true
   status?: true
+  role?: true
   allowCivicComplaintContactSharing?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +122,7 @@ export type UserCountAggregateInputType = {
   profileImage?: true
   trustScore?: true
   status?: true
+  role?: true
   allowCivicComplaintContactSharing?: true
   createdAt?: true
   updatedAt?: true
@@ -217,6 +223,7 @@ export type UserGroupByOutputType = {
   profileImage: string | null
   trustScore: number
   status: $Enums.UserStatus
+  role: $Enums.UserRole
   allowCivicComplaintContactSharing: boolean
   createdAt: Date
   updatedAt: Date
@@ -253,6 +260,7 @@ export type UserWhereInput = {
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   trustScore?: Prisma.IntFilter<"User"> | number
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -264,6 +272,7 @@ export type UserWhereInput = {
   userReports?: Prisma.UserReportListRelationFilter
   reportedUsers?: Prisma.UserReportListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -274,6 +283,7 @@ export type UserOrderByWithRelationInput = {
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   trustScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   allowCivicComplaintContactSharing?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -285,6 +295,7 @@ export type UserOrderByWithRelationInput = {
   userReports?: Prisma.UserReportOrderByRelationAggregateInput
   reportedUsers?: Prisma.UserReportOrderByRelationAggregateInput
   complaints?: Prisma.ComplaintOrderByRelationAggregateInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -298,6 +309,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   trustScore?: Prisma.IntFilter<"User"> | number
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -309,6 +321,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   userReports?: Prisma.UserReportListRelationFilter
   reportedUsers?: Prisma.UserReportListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryListRelationFilter
 }, "id" | "phone" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -319,6 +332,7 @@ export type UserOrderByWithAggregationInput = {
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   trustScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   allowCivicComplaintContactSharing?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -340,6 +354,7 @@ export type UserScalarWhereWithAggregatesInput = {
   profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   trustScore?: Prisma.IntWithAggregatesFilter<"User"> | number
   status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -353,6 +368,7 @@ export type UserCreateInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -364,6 +380,7 @@ export type UserCreateInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -374,6 +391,7 @@ export type UserUncheckedCreateInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -385,6 +403,7 @@ export type UserUncheckedCreateInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserUpdateInput = {
@@ -395,6 +414,7 @@ export type UserUpdateInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,6 +426,7 @@ export type UserUpdateInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -416,6 +437,7 @@ export type UserUncheckedUpdateInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -427,6 +449,7 @@ export type UserUncheckedUpdateInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -437,6 +460,7 @@ export type UserCreateManyInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -450,6 +474,7 @@ export type UserUpdateManyMutationInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -463,6 +488,7 @@ export type UserUncheckedUpdateManyInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -476,6 +502,7 @@ export type UserCountOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   trustScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   allowCivicComplaintContactSharing?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -493,6 +520,7 @@ export type UserMaxOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   trustScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   allowCivicComplaintContactSharing?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -506,6 +534,7 @@ export type UserMinOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   trustScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   allowCivicComplaintContactSharing?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -538,6 +567,10 @@ export type IntFieldUpdateOperationsInput = {
 
 export type EnumUserStatusFieldUpdateOperationsInput = {
   set?: $Enums.UserStatus
+}
+
+export type EnumUserRoleFieldUpdateOperationsInput = {
+  set?: $Enums.UserRole
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -660,6 +693,20 @@ export type UserUpdateOneRequiredWithoutComplaintsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutComplaintsInput, Prisma.UserUpdateWithoutComplaintsInput>, Prisma.UserUncheckedUpdateWithoutComplaintsInput>
 }
 
+export type UserCreateNestedOneWithoutCivicStatusHistoriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedCreateWithoutCivicStatusHistoriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCivicStatusHistoriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCivicStatusHistoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedCreateWithoutCivicStatusHistoriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCivicStatusHistoriesInput
+  upsert?: Prisma.UserUpsertWithoutCivicStatusHistoriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCivicStatusHistoriesInput, Prisma.UserUpdateWithoutCivicStatusHistoriesInput>, Prisma.UserUncheckedUpdateWithoutCivicStatusHistoriesInput>
+}
+
 export type UserCreateWithoutLocationInput = {
   id?: string
   phone: string
@@ -668,6 +715,7 @@ export type UserCreateWithoutLocationInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -678,6 +726,7 @@ export type UserCreateWithoutLocationInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutLocationInput = {
@@ -688,6 +737,7 @@ export type UserUncheckedCreateWithoutLocationInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -698,6 +748,7 @@ export type UserUncheckedCreateWithoutLocationInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutLocationInput = {
@@ -724,6 +775,7 @@ export type UserUpdateWithoutLocationInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +786,7 @@ export type UserUpdateWithoutLocationInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLocationInput = {
@@ -744,6 +797,7 @@ export type UserUncheckedUpdateWithoutLocationInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -754,6 +808,7 @@ export type UserUncheckedUpdateWithoutLocationInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -764,6 +819,7 @@ export type UserCreateWithoutPostsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -774,6 +830,7 @@ export type UserCreateWithoutPostsInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -784,6 +841,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -794,6 +852,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -820,6 +879,7 @@ export type UserUpdateWithoutPostsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -830,6 +890,7 @@ export type UserUpdateWithoutPostsInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -840,6 +901,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -850,6 +912,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutLikesInput = {
@@ -860,6 +923,7 @@ export type UserCreateWithoutLikesInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -870,6 +934,7 @@ export type UserCreateWithoutLikesInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -880,6 +945,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -890,6 +956,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -916,6 +983,7 @@ export type UserUpdateWithoutLikesInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -926,6 +994,7 @@ export type UserUpdateWithoutLikesInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -936,6 +1005,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -946,6 +1016,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutWitnessesInput = {
@@ -956,6 +1027,7 @@ export type UserCreateWithoutWitnessesInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -966,6 +1038,7 @@ export type UserCreateWithoutWitnessesInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutWitnessesInput = {
@@ -976,6 +1049,7 @@ export type UserUncheckedCreateWithoutWitnessesInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -986,6 +1060,7 @@ export type UserUncheckedCreateWithoutWitnessesInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutWitnessesInput = {
@@ -1012,6 +1087,7 @@ export type UserUpdateWithoutWitnessesInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1022,6 +1098,7 @@ export type UserUpdateWithoutWitnessesInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWitnessesInput = {
@@ -1032,6 +1109,7 @@ export type UserUncheckedUpdateWithoutWitnessesInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1042,6 +1120,7 @@ export type UserUncheckedUpdateWithoutWitnessesInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutPostReportsInput = {
@@ -1052,6 +1131,7 @@ export type UserCreateWithoutPostReportsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1062,6 +1142,7 @@ export type UserCreateWithoutPostReportsInput = {
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutPostReportsInput = {
@@ -1072,6 +1153,7 @@ export type UserUncheckedCreateWithoutPostReportsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1082,6 +1164,7 @@ export type UserUncheckedCreateWithoutPostReportsInput = {
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutPostReportsInput = {
@@ -1108,6 +1191,7 @@ export type UserUpdateWithoutPostReportsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1118,6 +1202,7 @@ export type UserUpdateWithoutPostReportsInput = {
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostReportsInput = {
@@ -1128,6 +1213,7 @@ export type UserUncheckedUpdateWithoutPostReportsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1138,6 +1224,7 @@ export type UserUncheckedUpdateWithoutPostReportsInput = {
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutReportedUsersInput = {
@@ -1148,6 +1235,7 @@ export type UserCreateWithoutReportedUsersInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1158,6 +1246,7 @@ export type UserCreateWithoutReportedUsersInput = {
   postReports?: Prisma.PostReportCreateNestedManyWithoutReporterInput
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutReportedUsersInput = {
@@ -1168,6 +1257,7 @@ export type UserUncheckedCreateWithoutReportedUsersInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1178,6 +1268,7 @@ export type UserUncheckedCreateWithoutReportedUsersInput = {
   postReports?: Prisma.PostReportUncheckedCreateNestedManyWithoutReporterInput
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutReportedUsersInput = {
@@ -1193,6 +1284,7 @@ export type UserCreateWithoutUserReportsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1203,6 +1295,7 @@ export type UserCreateWithoutUserReportsInput = {
   postReports?: Prisma.PostReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutUserReportsInput = {
@@ -1213,6 +1306,7 @@ export type UserUncheckedCreateWithoutUserReportsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1223,6 +1317,7 @@ export type UserUncheckedCreateWithoutUserReportsInput = {
   postReports?: Prisma.PostReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutUserReportsInput = {
@@ -1249,6 +1344,7 @@ export type UserUpdateWithoutReportedUsersInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1259,6 +1355,7 @@ export type UserUpdateWithoutReportedUsersInput = {
   postReports?: Prisma.PostReportUpdateManyWithoutReporterNestedInput
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedUsersInput = {
@@ -1269,6 +1366,7 @@ export type UserUncheckedUpdateWithoutReportedUsersInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1279,6 +1377,7 @@ export type UserUncheckedUpdateWithoutReportedUsersInput = {
   postReports?: Prisma.PostReportUncheckedUpdateManyWithoutReporterNestedInput
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserUpsertWithoutUserReportsInput = {
@@ -1300,6 +1399,7 @@ export type UserUpdateWithoutUserReportsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1310,6 +1410,7 @@ export type UserUpdateWithoutUserReportsInput = {
   postReports?: Prisma.PostReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserReportsInput = {
@@ -1320,6 +1421,7 @@ export type UserUncheckedUpdateWithoutUserReportsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1330,6 +1432,7 @@ export type UserUncheckedUpdateWithoutUserReportsInput = {
   postReports?: Prisma.PostReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutComplaintsInput = {
@@ -1340,6 +1443,7 @@ export type UserCreateWithoutComplaintsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1350,6 +1454,7 @@ export type UserCreateWithoutComplaintsInput = {
   postReports?: Prisma.PostReportCreateNestedManyWithoutReporterInput
   userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutComplaintsInput = {
@@ -1360,6 +1465,7 @@ export type UserUncheckedCreateWithoutComplaintsInput = {
   profileImage?: string | null
   trustScore?: number
   status?: $Enums.UserStatus
+  role?: $Enums.UserRole
   allowCivicComplaintContactSharing?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1370,6 +1476,7 @@ export type UserUncheckedCreateWithoutComplaintsInput = {
   postReports?: Prisma.PostReportUncheckedCreateNestedManyWithoutReporterInput
   userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
   reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutComplaintsInput = {
@@ -1396,6 +1503,7 @@ export type UserUpdateWithoutComplaintsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1406,6 +1514,7 @@ export type UserUpdateWithoutComplaintsInput = {
   postReports?: Prisma.PostReportUpdateManyWithoutReporterNestedInput
   userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutComplaintsInput = {
@@ -1416,6 +1525,7 @@ export type UserUncheckedUpdateWithoutComplaintsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trustScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1426,6 +1536,111 @@ export type UserUncheckedUpdateWithoutComplaintsInput = {
   postReports?: Prisma.PostReportUncheckedUpdateManyWithoutReporterNestedInput
   userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
   reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutCivicStatusHistoriesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  username?: string | null
+  profileImage?: string | null
+  trustScore?: number
+  status?: $Enums.UserStatus
+  role?: $Enums.UserRole
+  allowCivicComplaintContactSharing?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  location?: Prisma.UserLocationCreateNestedOneWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  witnesses?: Prisma.WitnessCreateNestedManyWithoutUserInput
+  postReports?: Prisma.PostReportCreateNestedManyWithoutReporterInput
+  userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
+  reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCivicStatusHistoriesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  username?: string | null
+  profileImage?: string | null
+  trustScore?: number
+  status?: $Enums.UserStatus
+  role?: $Enums.UserRole
+  allowCivicComplaintContactSharing?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  location?: Prisma.UserLocationUncheckedCreateNestedOneWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  witnesses?: Prisma.WitnessUncheckedCreateNestedManyWithoutUserInput
+  postReports?: Prisma.PostReportUncheckedCreateNestedManyWithoutReporterInput
+  userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
+  reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCivicStatusHistoriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedCreateWithoutCivicStatusHistoriesInput>
+}
+
+export type UserUpsertWithoutCivicStatusHistoriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedUpdateWithoutCivicStatusHistoriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedCreateWithoutCivicStatusHistoriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCivicStatusHistoriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCivicStatusHistoriesInput, Prisma.UserUncheckedUpdateWithoutCivicStatusHistoriesInput>
+}
+
+export type UserUpdateWithoutCivicStatusHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trustScore?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.UserLocationUpdateOneWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  witnesses?: Prisma.WitnessUpdateManyWithoutUserNestedInput
+  postReports?: Prisma.PostReportUpdateManyWithoutReporterNestedInput
+  userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
+  reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCivicStatusHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trustScore?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.UserLocationUncheckedUpdateOneWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  witnesses?: Prisma.WitnessUncheckedUpdateManyWithoutUserNestedInput
+  postReports?: Prisma.PostReportUncheckedUpdateManyWithoutReporterNestedInput
+  userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
+  reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -1441,6 +1656,7 @@ export type UserCountOutputType = {
   userReports: number
   reportedUsers: number
   complaints: number
+  civicStatusHistories: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1451,6 +1667,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   userReports?: boolean | UserCountOutputTypeCountUserReportsArgs
   reportedUsers?: boolean | UserCountOutputTypeCountReportedUsersArgs
   complaints?: boolean | UserCountOutputTypeCountComplaintsArgs
+  civicStatusHistories?: boolean | UserCountOutputTypeCountCivicStatusHistoriesArgs
 }
 
 /**
@@ -1512,6 +1729,13 @@ export type UserCountOutputTypeCountComplaintsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ComplaintWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCivicStatusHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CivicComplaintStatusHistoryWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1521,6 +1745,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profileImage?: boolean
   trustScore?: boolean
   status?: boolean
+  role?: boolean
   allowCivicComplaintContactSharing?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1532,6 +1757,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userReports?: boolean | Prisma.User$userReportsArgs<ExtArgs>
   reportedUsers?: boolean | Prisma.User$reportedUsersArgs<ExtArgs>
   complaints?: boolean | Prisma.User$complaintsArgs<ExtArgs>
+  civicStatusHistories?: boolean | Prisma.User$civicStatusHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1543,6 +1769,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileImage?: boolean
   trustScore?: boolean
   status?: boolean
+  role?: boolean
   allowCivicComplaintContactSharing?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1556,6 +1783,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileImage?: boolean
   trustScore?: boolean
   status?: boolean
+  role?: boolean
   allowCivicComplaintContactSharing?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1569,12 +1797,13 @@ export type UserSelectScalar = {
   profileImage?: boolean
   trustScore?: boolean
   status?: boolean
+  role?: boolean
   allowCivicComplaintContactSharing?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone" | "name" | "username" | "profileImage" | "trustScore" | "status" | "allowCivicComplaintContactSharing" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone" | "name" | "username" | "profileImage" | "trustScore" | "status" | "role" | "allowCivicComplaintContactSharing" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.User$locationArgs<ExtArgs>
   posts?: boolean | Prisma.User$postsArgs<ExtArgs>
@@ -1584,6 +1813,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   userReports?: boolean | Prisma.User$userReportsArgs<ExtArgs>
   reportedUsers?: boolean | Prisma.User$reportedUsersArgs<ExtArgs>
   complaints?: boolean | Prisma.User$complaintsArgs<ExtArgs>
+  civicStatusHistories?: boolean | Prisma.User$civicStatusHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1600,6 +1830,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     userReports: Prisma.$UserReportPayload<ExtArgs>[]
     reportedUsers: Prisma.$UserReportPayload<ExtArgs>[]
     complaints: Prisma.$ComplaintPayload<ExtArgs>[]
+    civicStatusHistories: Prisma.$CivicComplaintStatusHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1609,6 +1840,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     profileImage: string | null
     trustScore: number
     status: $Enums.UserStatus
+    role: $Enums.UserRole
     allowCivicComplaintContactSharing: boolean
     createdAt: Date
     updatedAt: Date
@@ -2014,6 +2246,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   userReports<T extends Prisma.User$userReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportedUsers<T extends Prisma.User$reportedUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   complaints<T extends Prisma.User$complaintsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$complaintsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  civicStatusHistories<T extends Prisma.User$civicStatusHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$civicStatusHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CivicComplaintStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2050,6 +2283,7 @@ export interface UserFieldRefs {
   readonly profileImage: Prisma.FieldRef<"User", 'String'>
   readonly trustScore: Prisma.FieldRef<"User", 'Int'>
   readonly status: Prisma.FieldRef<"User", 'UserStatus'>
+  readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly allowCivicComplaintContactSharing: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -2630,6 +2864,30 @@ export type User$complaintsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ComplaintScalarFieldEnum | Prisma.ComplaintScalarFieldEnum[]
+}
+
+/**
+ * User.civicStatusHistories
+ */
+export type User$civicStatusHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CivicComplaintStatusHistory
+   */
+  select?: Prisma.CivicComplaintStatusHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CivicComplaintStatusHistory
+   */
+  omit?: Prisma.CivicComplaintStatusHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CivicComplaintStatusHistoryInclude<ExtArgs> | null
+  where?: Prisma.CivicComplaintStatusHistoryWhereInput
+  orderBy?: Prisma.CivicComplaintStatusHistoryOrderByWithRelationInput | Prisma.CivicComplaintStatusHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.CivicComplaintStatusHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CivicComplaintStatusHistoryScalarFieldEnum | Prisma.CivicComplaintStatusHistoryScalarFieldEnum[]
 }
 
 /**

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
+import 'civic_complaint_history_model.dart';
 import 'civic_complaint_model.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
@@ -118,6 +119,53 @@ class PostsService {
     );
     if (response.statusCode == 404) return null;
     _checkStatus(response, 'Failed to fetch civic complaint');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return CivicComplaintModel.fromJson(data);
+  }
+
+  Future<List<CivicComplaintHistoryItem>> getCivicComplaintHistory(
+    String id,
+  ) async {
+    final response = await _request(
+      (headers) =>
+          _apiClient.get('/civic-complaints/$id/history', headers: headers),
+    );
+    _checkStatus(response, 'Failed to fetch complaint history');
+    final list = jsonDecode(response.body) as List<dynamic>;
+    return list
+        .map(
+          (item) =>
+              CivicComplaintHistoryItem.fromJson(item as Map<String, dynamic>),
+        )
+        .toList();
+  }
+
+  Future<CivicComplaintModel> confirmCivicComplaintResolution(
+    String id,
+  ) async {
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/civic-complaints/$id/confirm',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to confirm resolution');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return CivicComplaintModel.fromJson(data);
+  }
+
+  Future<CivicComplaintModel> reopenCivicComplaint(
+    String id,
+    String reason,
+  ) async {
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/civic-complaints/$id/reopen',
+        headers: headers,
+        body: {'reason': reason},
+      ),
+    );
+    _checkStatus(response, 'Failed to reopen complaint');
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     return CivicComplaintModel.fromJson(data);
   }
