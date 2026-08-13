@@ -12,6 +12,9 @@ import 'my_reports_screen.dart';
 import 'witness_history_screen.dart';
 import '../../feedback/presentation/feedback_screen.dart';
 import '../../feedback/data/feedback_service.dart';
+import 'followers_screen.dart';
+import 'following_screen.dart';
+import 'account_suggestions_screen.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
@@ -577,6 +580,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 24),
 
+                      // Social Stats Card
+                      _buildSocialStatsRow(),
+                      const SizedBox(height: 20),
+
+                      // People You May Know Discovery Card
+                      _buildSuggestionsEntryCard(),
+                      const SizedBox(height: 20),
+
                       // Community Contributions Card
                       _buildContributionsCard(),
                       const SizedBox(height: 20),
@@ -707,5 +718,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final local = dt.toLocal();
     return '${local.day.toString().padLeft(2, '0')}/'
         '${local.month.toString().padLeft(2, '0')}/${local.year}';
+  }
+
+  Widget _buildSocialStatsRow() {
+    final stats = _profile?.stats;
+    final postCount = stats?.postCount ?? 0;
+    final followerCount = stats?.followerCount ?? 0;
+    final followingCount = stats?.followingCount ?? 0;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildSocialStatItem('Posts', '$postCount', null),
+          _buildVerticalDivider(),
+          _buildSocialStatItem('Followers', '$followerCount', () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => FollowersScreen(
+                  userId: _user.id,
+                  currentUserId: _user.id,
+                  usersService: _usersService,
+                  onSessionExpired: widget.onSessionExpired,
+                ),
+              ),
+            );
+          }),
+          _buildVerticalDivider(),
+          _buildSocialStatItem('Following', '$followingCount', () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => FollowingScreen(
+                  userId: _user.id,
+                  currentUserId: _user.id,
+                  usersService: _usersService,
+                  onSessionExpired: widget.onSessionExpired,
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialStatItem(String label, String value, VoidCallback? onTap) {
+    final content = Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF111827),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF6B7280),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+
+    if (onTap == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: content,
+      );
+    }
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: content,
+      ),
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      width: 1,
+      height: 24,
+      color: const Color(0xFFE5E7EB),
+    );
+  }
+
+  Widget _buildSuggestionsEntryCard() {
+    return Card(
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFFE5E7EB)),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1565C0).withAlpha(10),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.people_outline,
+            color: Color(0xFF1565C0),
+          ),
+        ),
+        title: const Text(
+          'People you may know',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Color(0xFF111827),
+          ),
+        ),
+        subtitle: const Text(
+          'Discover active citizens in your community',
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF6B7280),
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+          color: Color(0xFF9CA3AF),
+        ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => AccountSuggestionsScreen(
+                usersService: _usersService,
+                currentUserId: _user.id,
+                onSessionExpired: widget.onSessionExpired,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -80,8 +80,8 @@ void main() {
     expect(find.text('Test User'), findsWidgets);
     expect(find.text('+919876543210'), findsOneWidget);
     expect(find.text('Community Contributions'), findsOneWidget);
-    expect(find.text('Posts'), findsOneWidget);
-    expect(find.text('5'), findsOneWidget);
+    expect(find.text('Posts'), findsNWidgets(2));
+    expect(find.text('5'), findsNWidgets(2));
     expect(find.text('My Reports'), findsOneWidget);
     expect(find.text('Witness History'), findsOneWidget);
   });

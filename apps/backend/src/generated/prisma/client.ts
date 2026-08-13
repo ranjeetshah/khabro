@@ -134,3 +134,8 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type CommentReport = Prisma.CommentReportModel
+/**
+ * Model Follow
+ * 
+ */
+export type Follow = Prisma.FollowModel

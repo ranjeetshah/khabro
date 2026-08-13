@@ -35,6 +35,9 @@ describe('UsersService', () => {
       count: jest.fn(),
       findMany: jest.fn(),
     },
+    follow: {
+      count: jest.fn(),
+    },
   };
 
   beforeEach(async () => {
@@ -64,6 +67,7 @@ describe('UsersService', () => {
       mockDatabaseService.postReport.count.mockResolvedValue(2);
       mockDatabaseService.userReport.count.mockResolvedValue(1);
       mockDatabaseService.witness.count.mockResolvedValue(3);
+      mockDatabaseService.follow.count.mockResolvedValue(10);
 
       const result = await service.findMe('user-123');
 
@@ -74,6 +78,8 @@ describe('UsersService', () => {
           reportCount: 3,
           witnessCount: 3,
           verifiedContributionCount: 3,
+          followerCount: 10,
+          followingCount: 10,
         },
       });
       expect(mockDatabaseService.user.findUnique).toHaveBeenCalledWith({
@@ -160,10 +166,15 @@ describe('UsersService', () => {
     it('selects only id and name', async () => {
       const publicUser = { id: 'user-123', name: 'Test User' };
       mockDatabaseService.user.findUnique.mockResolvedValue(publicUser);
+      mockDatabaseService.follow.count.mockResolvedValue(10);
 
-      await expect(service.findPublic('user-123')).resolves.toEqual(publicUser);
+      await expect(service.findPublic('user-123')).resolves.toEqual({
+        ...publicUser,
+        followerCount: 10,
+        followingCount: 10,
+      });
       expect(mockDatabaseService.user.findUnique).toHaveBeenCalledWith({
-        where: { id: 'user-123' },
+        where: { id: 'user-123', status: { not: 'DELETED' } },
         select: { id: true, name: true },
       });
       expect(JSON.stringify(publicUser)).not.toMatch(

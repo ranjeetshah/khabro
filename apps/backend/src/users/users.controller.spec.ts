@@ -4,6 +4,8 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { ModerationService } from '../moderation/moderation.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { FollowService } from './follow.service';
+import { SuggestionService } from './suggestion.service';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -31,6 +33,18 @@ describe('UsersController', () => {
     createUserReport: jest.fn(),
   };
 
+  const mockFollowService = {
+    followUser: jest.fn(),
+    unfollowUser: jest.fn(),
+    getFollowStatus: jest.fn(),
+    getFollowers: jest.fn(),
+    getFollowing: jest.fn(),
+  };
+
+  const mockSuggestionService = {
+    getSuggestions: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -44,6 +58,14 @@ describe('UsersController', () => {
         {
           provide: ModerationService,
           useValue: mockModerationService,
+        },
+        {
+          provide: FollowService,
+          useValue: mockFollowService,
+        },
+        {
+          provide: SuggestionService,
+          useValue: mockSuggestionService,
         },
       ],
     })

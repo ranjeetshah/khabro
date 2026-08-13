@@ -329,6 +329,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Switch to settings/contributions tab
+    await tester.ensureVisible(find.text('Contributions'));
     await tester.tap(find.text('Contributions'));
     await tester.pumpAndSettle();
 
@@ -356,9 +357,11 @@ void main() {
     await tester.pumpAndSettle();
 
     // Switch to settings/contributions tab
+    await tester.ensureVisible(find.text('Contributions'));
     await tester.tap(find.text('Contributions'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('MODERATOR CONSOLE'));
     expect(find.text('MODERATOR CONSOLE'), findsOneWidget);
   });
 }

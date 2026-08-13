@@ -69,7 +69,8 @@ export const ModelName = {
   CivicComplaintStatusHistory: 'CivicComplaintStatusHistory',
   Notification: 'Notification',
   Comment: 'Comment',
-  CommentReport: 'CommentReport'
+  CommentReport: 'CommentReport',
+  Follow: 'Follow'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -344,6 +345,16 @@ export const CommentReportScalarFieldEnum = {
 } as const
 
 export type CommentReportScalarFieldEnum = (typeof CommentReportScalarFieldEnum)[keyof typeof CommentReportScalarFieldEnum]
+
+
+export const FollowScalarFieldEnum = {
+  id: 'id',
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
+} as const
+
+export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
 export const SortOrder = {

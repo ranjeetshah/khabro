@@ -16,9 +16,11 @@ export interface SafeNotificationResponse {
   createdAt: Date;
 }
 
-const CIVIC_COMPLAINT_TEMPLATES: Record<
-  NotificationType,
-  { title: string; body: (ref: string) => string }
+const CIVIC_COMPLAINT_TEMPLATES: Partial<
+  Record<
+    NotificationType,
+    { title: string; body: (ref: string) => string }
+  >
 > = {
   [NotificationType.CIVIC_COMPLAINT_SENT]: {
     title: 'Civic complaint sent',

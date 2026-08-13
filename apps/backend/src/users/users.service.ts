@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { postSelect, toPostResponse } from '../posts/post.select';
 import { PUBLIC_USER_SELECT } from './public-user.select';
+import { UserStatus } from '../generated/prisma/enums';
 
 /** Profile fields safe to expose in API responses. */
 const USER_PROFILE_SELECT = {
@@ -39,6 +40,8 @@ export class UsersService {
       userReportCount,
       witnessCount,
       verifiedContributionCount,
+      followerCount,
+      followingCount,
     ] = await Promise.all([
       this.database.post.count({
         where: { authorId: userId, deletedAt: null },
@@ -61,6 +64,12 @@ export class UsersService {
           },
         },
       }),
+      this.database.follow.count({
+        where: { followingId: userId },
+      }),
+      this.database.follow.count({
+        where: { followerId: userId },
+      }),
     ]);
 
     return {
@@ -70,15 +79,29 @@ export class UsersService {
         reportCount: postReportCount + userReportCount,
         witnessCount,
         verifiedContributionCount,
+        followerCount,
+        followingCount,
       },
     };
   }
 
   async findPublic(userId: string) {
-    return this.database.user.findUnique({
-      where: { id: userId },
+    const user = await this.database.user.findUnique({
+      where: { id: userId, status: { not: UserStatus.DELETED } },
       select: PUBLIC_USER_SELECT,
     });
+    if (!user) return null;
+
+    const [followerCount, followingCount] = await Promise.all([
+      this.database.follow.count({ where: { followingId: userId } }),
+      this.database.follow.count({ where: { followerId: userId } }),
+    ]);
+
+    return {
+      ...user,
+      followerCount,
+      followingCount,
+    };
   }
 
   /**

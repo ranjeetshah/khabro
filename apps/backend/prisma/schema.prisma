@@ -35,6 +35,8 @@ model User {
   comments      Comment[]
   commentReports CommentReport[] @relation("CommentReporterUser")
   feedbacks      Feedback[]
+  following      Follow[]       @relation("UserFollower")
+  followers      Follow[]       @relation("UserFollowing")
 
   @@index([status])
 }
@@ -423,6 +425,7 @@ enum NotificationType {
   CIVIC_COMPLAINT_RESOLVED
   CIVIC_COMPLAINT_CONFIRMED
   CIVIC_COMPLAINT_REOPENED
+  USER_FOLLOWED
 }
 
 model Notification {
@@ -497,4 +500,18 @@ model CommentReport {
   @@index([commentId, createdAt])
   @@index([reporterId, createdAt])
   @@index([status])
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User     @relation("UserFollower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId, createdAt])
+  @@index([followingId, createdAt])
 }

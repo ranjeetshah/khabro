@@ -4,6 +4,8 @@ class ProfileStatsModel {
     required this.reportCount,
     required this.witnessCount,
     required this.verifiedContributionCount,
+    this.followerCount = 0,
+    this.followingCount = 0,
   });
 
   factory ProfileStatsModel.fromJson(Map<String, dynamic>? json) {
@@ -13,6 +15,8 @@ class ProfileStatsModel {
         reportCount: 0,
         witnessCount: 0,
         verifiedContributionCount: 0,
+        followerCount: 0,
+        followingCount: 0,
       );
     }
     return ProfileStatsModel(
@@ -21,6 +25,8 @@ class ProfileStatsModel {
       witnessCount: (json['witnessCount'] as num?)?.toInt() ?? 0,
       verifiedContributionCount:
           (json['verifiedContributionCount'] as num?)?.toInt() ?? 0,
+      followerCount: (json['followerCount'] as num?)?.toInt() ?? 0,
+      followingCount: (json['followingCount'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -28,6 +34,8 @@ class ProfileStatsModel {
   final int reportCount;
   final int witnessCount;
   final int verifiedContributionCount;
+  final int followerCount;
+  final int followingCount;
 }
 
 class ProfileModel {

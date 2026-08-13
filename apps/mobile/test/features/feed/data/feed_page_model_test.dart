@@ -10,7 +10,12 @@ const feedJson = {
       'content': 'Local post',
       'createdAt': '2026-08-09T08:00:00.000Z',
       'updatedAt': '2026-08-09T08:00:01.000Z',
-      'author': {'id': 'user-1', 'name': 'Test User'},
+      'author': {
+        'id': 'user-1',
+        'name': 'Test User',
+        'followerCount': 0,
+        'followingCount': 0,
+      },
     },
   ],
   'nextCursor': 'cursor-1',

@@ -7,6 +7,9 @@ import '../../auth/data/models/user_model.dart';
 import 'my_report_model.dart';
 import 'profile_model.dart';
 import 'witness_history_model.dart';
+import 'follow_status_model.dart';
+import 'public_user_model.dart';
+import 'account_suggestion_model.dart';
 
 /// Service for user profile operations against the Khabro backend.
 class UsersService {
@@ -100,6 +103,89 @@ class UsersService {
     _checkStatus(response, 'Failed to update profile');
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     return UserModel.fromJson(data['user'] as Map<String, dynamic>);
+  }
+
+  Future<FollowStatusModel> followUser(String userId) async {
+    final response = await _request(
+      (headers) => _apiClient.post('/users/$userId/follow', headers: headers),
+    );
+    _checkStatus(response, 'Failed to follow user');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return FollowStatusModel.fromJson(data);
+  }
+
+  Future<FollowStatusModel> unfollowUser(String userId) async {
+    final response = await _request(
+      (headers) => _apiClient.delete('/users/$userId/follow', headers: headers),
+    );
+    _checkStatus(response, 'Failed to unfollow user');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return FollowStatusModel.fromJson(data);
+  }
+
+  Future<FollowStatusModel> getFollowStatus(String userId) async {
+    final response = await _request(
+      (headers) => _apiClient.get('/users/$userId/follow-status', headers: headers),
+    );
+    _checkStatus(response, 'Failed to get follow status');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return FollowStatusModel.fromJson(data);
+  }
+
+  Future<List<PublicUserModel>> getFollowers({
+    required String userId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.get(
+        '/users/$userId/followers?page=$page&limit=$limit',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to fetch followers');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = data['items'] as List<dynamic>? ?? [];
+    return list
+        .map((item) => PublicUserModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<PublicUserModel>> getFollowing({
+    required String userId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.get(
+        '/users/$userId/following?page=$page&limit=$limit',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to fetch following');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = data['items'] as List<dynamic>? ?? [];
+    return list
+        .map((item) => PublicUserModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<AccountSuggestionModel>> getAccountSuggestions({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.get(
+        '/users/suggestions?page=$page&limit=$limit',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to fetch suggestions');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = data['items'] as List<dynamic>? ?? [];
+    return list
+        .map((item) => AccountSuggestionModel.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<http.Response> _request(
