@@ -22,6 +22,8 @@ describe('UsersController', () => {
     findMe: jest.fn(),
     findPublic: jest.fn(),
     updateMe: jest.fn(),
+    getMyReports: jest.fn(),
+    getMyWitnessHistory: jest.fn(),
   };
 
   const mockModerationService = {
@@ -219,6 +221,30 @@ describe('UsersController', () => {
         'SPAM',
         undefined,
       );
+    });
+  });
+
+  describe('GET /users/me/reports', () => {
+    it('delegates to getMyReports using JWT sub', async () => {
+      const mockRequest = { user: { sub: 'user-123' } } as any;
+      mockUsersService.getMyReports.mockResolvedValue({ items: [], page: 1, limit: 20, hasNextPage: false });
+
+      const result = await controller.getMyReports(mockRequest, '1', '20');
+
+      expect(mockUsersService.getMyReports).toHaveBeenCalledWith('user-123', 1, 20);
+      expect(result).toEqual({ items: [], page: 1, limit: 20, hasNextPage: false });
+    });
+  });
+
+  describe('GET /users/me/witnesses', () => {
+    it('delegates to getMyWitnessHistory using JWT sub', async () => {
+      const mockRequest = { user: { sub: 'user-123' } } as any;
+      mockUsersService.getMyWitnessHistory.mockResolvedValue({ items: [], page: 1, limit: 20, hasNextPage: false });
+
+      const result = await controller.getMyWitnesses(mockRequest, '1', '20');
+
+      expect(mockUsersService.getMyWitnessHistory).toHaveBeenCalledWith('user-123', 1, 20);
+      expect(result).toEqual({ items: [], page: 1, limit: 20, hasNextPage: false });
     });
   });
 });

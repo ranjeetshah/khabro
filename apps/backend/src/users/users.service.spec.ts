@@ -20,6 +20,21 @@ describe('UsersService', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
     },
+    post: {
+      count: jest.fn(),
+    },
+    postReport: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+    },
+    userReport: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+    },
+    witness: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+    },
   };
 
   beforeEach(async () => {
@@ -43,12 +58,24 @@ describe('UsersService', () => {
   });
 
   describe('findMe', () => {
-    it('should return user profile when found', async () => {
+    it('should return user profile with contribution stats when found', async () => {
       mockDatabaseService.user.findUnique.mockResolvedValue(mockUser);
+      mockDatabaseService.post.count.mockResolvedValue(5);
+      mockDatabaseService.postReport.count.mockResolvedValue(2);
+      mockDatabaseService.userReport.count.mockResolvedValue(1);
+      mockDatabaseService.witness.count.mockResolvedValue(3);
 
       const result = await service.findMe('user-123');
 
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual({
+        ...mockUser,
+        stats: {
+          postCount: 5,
+          reportCount: 3,
+          witnessCount: 3,
+          verifiedContributionCount: 3,
+        },
+      });
       expect(mockDatabaseService.user.findUnique).toHaveBeenCalledWith({
         where: { id: 'user-123' },
         select: expect.objectContaining({
@@ -142,6 +169,40 @@ describe('UsersService', () => {
       expect(JSON.stringify(publicUser)).not.toMatch(
         /phone|trustScore|status|location|latitude|longitude/,
       );
+    });
+  });
+
+  describe('getMyReports', () => {
+    it('returns combined paginated post and user reports for user', async () => {
+      mockDatabaseService.postReport.findMany.mockResolvedValue([
+        { id: 'pr1', reason: 'SPAM', description: 'spammy', status: 'OPEN', createdAt: new Date('2026-08-13T10:00:00Z'), postId: 'p1', post: { content: 'Post content' } },
+      ]);
+      mockDatabaseService.userReport.findMany.mockResolvedValue([]);
+
+      const result = await service.getMyReports('user-123', 1, 20);
+
+      expect(result.items.length).toBe(1);
+      expect(result.items[0]).toEqual(
+        expect.objectContaining({
+          id: 'pr1',
+          type: 'POST',
+          reason: 'SPAM',
+        }),
+      );
+    });
+  });
+
+  describe('getMyWitnessHistory', () => {
+    it('returns paginated witness history for user', async () => {
+      mockDatabaseService.witness.findMany.mockResolvedValue([
+        { id: 'w1', createdAt: new Date('2026-08-13T10:00:00Z'), post: { id: 'p1', authorId: 'u2', content: 'Witnessed post' } },
+      ]);
+
+      const result = await service.getMyWitnessHistory('user-123', 1, 20);
+
+      expect(result.items.length).toBe(1);
+      expect(result.items[0].id).toBe('w1');
+      expect(result.items[0].post.id).toBe('p1');
     });
   });
 });

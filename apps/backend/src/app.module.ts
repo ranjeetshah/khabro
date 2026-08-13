@@ -10,6 +10,8 @@ import { FeedModule } from './feed/feed.module';
 import { ComplaintsModule } from './complaints/complaints.module';
 import { MailModule } from './mail/mail.module';
 import { CivicComplaintModule } from './civic-complaint/civic-complaint.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { CivicComplaintModule } from './civic-complaint/civic-complaint.module';
     ComplaintsModule,
     MailModule,
     CivicComplaintModule,
+    NotificationsModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

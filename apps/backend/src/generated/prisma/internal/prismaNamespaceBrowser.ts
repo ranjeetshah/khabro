@@ -65,7 +65,10 @@ export const ModelName = {
   Complaint: 'Complaint',
   ComplaintStatusHistory: 'ComplaintStatusHistory',
   CivicComplaint: 'CivicComplaint',
-  CivicComplaintStatusHistory: 'CivicComplaintStatusHistory'
+  CivicComplaintStatusHistory: 'CivicComplaintStatusHistory',
+  Notification: 'Notification',
+  Comment: 'Comment',
+  CommentReport: 'CommentReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -136,6 +139,7 @@ export const PostScalarFieldEnum = {
   authorId: 'authorId',
   localityId: 'localityId',
   content: 'content',
+  category: 'category',
   verificationStatus: 'verificationStatus',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
@@ -277,6 +281,50 @@ export const CivicComplaintStatusHistoryScalarFieldEnum = {
 } as const
 
 export type CivicComplaintStatusHistoryScalarFieldEnum = (typeof CivicComplaintStatusHistoryScalarFieldEnum)[keyof typeof CivicComplaintStatusHistoryScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  parentId: 'parentId',
+  content: 'content',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentReportScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  reporterId: 'reporterId',
+  reason: 'reason',
+  description: 'description',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentReportScalarFieldEnum = (typeof CommentReportScalarFieldEnum)[keyof typeof CommentReportScalarFieldEnum]
 
 
 export const SortOrder = {

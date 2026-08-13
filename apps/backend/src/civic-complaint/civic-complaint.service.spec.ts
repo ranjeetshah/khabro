@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
 import { CivicComplaintStatus, VerificationStatus } from '../generated/prisma/enums';
 import { MailService } from '../mail/mail.service';
+import { NotificationService } from '../notifications/notification.service';
 import { CivicComplaintService } from './civic-complaint.service';
 
 describe('CivicComplaintService', () => {
@@ -30,6 +31,7 @@ describe('CivicComplaintService', () => {
     database = {
       post: {
         findFirst: jest.fn(),
+        findUnique: jest.fn(),
       },
       witness: {
         count: jest.fn(),
@@ -61,12 +63,17 @@ describe('CivicComplaintService', () => {
       }),
     };
 
+    const notificationService = {
+      createCivicComplaintNotification: jest.fn().mockResolvedValue(null),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CivicComplaintService,
         { provide: DatabaseService, useValue: database },
         { provide: MailService, useValue: mailService },
         { provide: ConfigService, useValue: configService },
+        { provide: NotificationService, useValue: notificationService },
       ],
     }).compile();
 
@@ -454,4 +461,4 @@ describe('CivicComplaintService', () => {
       expect(history[0].toStatus).toBe(CivicComplaintStatus.ACKNOWLEDGED);
     });
   });
-}
+});

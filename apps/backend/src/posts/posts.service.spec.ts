@@ -61,6 +61,7 @@ describe('PostsService', () => {
           authorId: 'user-1',
           localityId: 'locality-1',
           content: 'Hello',
+          category: 'GENERAL',
         },
         select: expect.objectContaining({
           author: { select: { id: true, name: true } },
@@ -118,6 +119,7 @@ describe('PostsService', () => {
     await expect(service.findOne('post-1')).resolves.toEqual({
       id: 'post-1',
       likeCount: 0,
+      commentCount: 0,
       likedByMe: false,
     });
     expect(database.post.findFirst).toHaveBeenCalledWith(
@@ -153,5 +155,50 @@ describe('PostsService', () => {
     await expect(service.delete('user-1', 'post-1')).rejects.toThrow(
       NotFoundException,
     );
+  });
+
+  describe('search', () => {
+    it('searches posts with keyword, category, verified, recent, and pagination', async () => {
+      database.post.findMany.mockResolvedValue([
+        { id: 'post-1', content: 'Pothole on Road', category: 'INFRASTRUCTURE', verificationStatus: 'LOCALLY_VERIFIED', createdAt: new Date() },
+      ]);
+
+      const res = await service.search('user-1', {
+        q: ' road ',
+        category: 'INFRASTRUCTURE' as any,
+        verified: true,
+        recent: true,
+        page: 1,
+        limit: 20,
+      });
+
+      expect(res.items.length).toBe(1);
+      expect(database.post.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            deletedAt: null,
+            content: { contains: 'road', mode: 'insensitive' },
+            category: 'INFRASTRUCTURE',
+            verificationStatus: 'LOCALLY_VERIFIED',
+            createdAt: expect.objectContaining({ gte: expect.any(Date) }),
+          }),
+          skip: 0,
+          take: 21,
+        }),
+      );
+    });
+
+    it('excludes deleted posts and handles empty query', async () => {
+      database.post.findMany.mockResolvedValue([]);
+
+      const res = await service.search('user-1', { q: '   ' });
+
+      expect(res.items).toEqual([]);
+      expect(database.post.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { deletedAt: null },
+        }),
+      );
+    });
   });
 });

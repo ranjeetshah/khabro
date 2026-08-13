@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -47,6 +48,34 @@ export class UsersController {
     }
 
     return { user };
+  }
+
+  @Get('me/reports')
+  async getMyReports(
+    @Req() request: Request,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const userId = this.userId(request);
+    return this.usersService.getMyReports(
+      userId,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+    );
+  }
+
+  @Get('me/witnesses')
+  async getMyWitnesses(
+    @Req() request: Request,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const userId = this.userId(request);
+    return this.usersService.getMyWitnessHistory(
+      userId,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+    );
   }
 
   @Patch('me')

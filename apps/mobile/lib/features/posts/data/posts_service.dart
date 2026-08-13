@@ -5,6 +5,8 @@ import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
 import 'civic_complaint_history_model.dart';
 import 'civic_complaint_model.dart';
+import 'comment_model.dart';
+import 'comment_report_reason.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
 import 'verification_history_model.dart';
@@ -192,6 +194,43 @@ class PostsService {
     _checkStatus(response, 'Failed to report post');
   }
 
+  Future<SearchPostsResponse> searchPosts({
+    String? query,
+    String? category,
+    bool? verified,
+    bool? recent,
+    double? radiusKm,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final queryParams = <String, String>{
+      if (query != null && query.trim().isNotEmpty) 'q': query.trim(),
+      if (category != null && category.isNotEmpty) 'category': category,
+      if (verified != null) 'verified': '$verified',
+      if (recent != null) 'recent': '$recent',
+      if (radiusKm != null && radiusKm > 0) 'radiusKm': '$radiusKm',
+      'page': '$page',
+      'limit': '$limit',
+    };
+
+    final uri = Uri(path: '/posts/search', queryParameters: queryParams);
+    final response = await _request(
+      (headers) => _apiClient.get(uri.toString(), headers: headers),
+    );
+    _checkStatus(response, 'Failed to search posts');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final items = (data['items'] as List<dynamic>)
+        .map((post) => PostModel.fromJson(post as Map<String, dynamic>))
+        .toList();
+
+    return SearchPostsResponse(
+      items: items,
+      page: (data['page'] as num?)?.toInt() ?? page,
+      limit: (data['limit'] as num?)?.toInt() ?? limit,
+      hasNextPage: data['hasNextPage'] as bool? ?? false,
+    );
+  }
+
   Future<LikeStatusModel> _updateLike(String path, String fallback) async {
     final response = await _request(
       (headers) => _apiClient.post(path, headers: headers),
@@ -214,6 +253,69 @@ class PostsService {
     );
     _checkStatus(response, fallback);
     return _parseWitnessStatus(response.body);
+  }
+
+  Future<List<CommentModel>> getComments(
+    String postId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.get(
+        '/posts/$postId/comments?page=$page&limit=$limit',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to fetch comments');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = data['items'] as List<dynamic>? ?? [];
+    return list
+        .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<CommentModel> addComment(String postId, String content) async {
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/posts/$postId/comments',
+        headers: headers,
+        body: {'content': content},
+      ),
+    );
+    _checkStatus(response, 'Failed to add comment');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return CommentModel.fromJson(data);
+  }
+
+  Future<void> deleteComment(String postId, String commentId) async {
+    final response = await _request(
+      (headers) => _apiClient.delete(
+        '/posts/$postId/comments/$commentId',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to delete comment');
+  }
+
+  Future<void> reportComment(
+    String postId,
+    String commentId,
+    CommentReportReason reason, {
+    String? description,
+  }) async {
+    final body = <String, dynamic>{
+      'reason': reason.wire,
+      if (description != null && description.isNotEmpty)
+        'description': description,
+    };
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/posts/$postId/comments/$commentId/report',
+        headers: headers,
+        body: body,
+      ),
+    );
+    _checkStatus(response, 'Failed to report comment');
   }
 
   WitnessStatusModel _parseWitnessStatus(String body) {
@@ -262,4 +364,18 @@ class PostsService {
       return fallback;
     }
   }
+}
+
+class SearchPostsResponse {
+  const SearchPostsResponse({
+    required this.items,
+    required this.page,
+    required this.limit,
+    required this.hasNextPage,
+  });
+
+  final List<PostModel> items;
+  final int page;
+  final int limit;
+  final bool hasNextPage;
 }

@@ -4,11 +4,22 @@ export const postSelect = (userId: string) => ({
   id: true,
   authorId: true,
   content: true,
+  category: true,
   verificationStatus: true,
   createdAt: true,
   updatedAt: true,
   author: { select: PUBLIC_USER_SELECT },
-  _count: { select: { likes: true } },
+  _count: {
+    select: {
+      likes: true,
+      comments: {
+        where: {
+          status: 'ACTIVE' as const,
+          deletedAt: null,
+        },
+      },
+    },
+  },
   likes: {
     where: { userId },
     select: { id: true },
@@ -21,6 +32,7 @@ export function toPostResponse(post: any) {
   return {
     ...safePost,
     likeCount: _count?.likes ?? 0,
+    commentCount: _count?.comments ?? 0,
     likedByMe: Array.isArray(likes) && likes.length > 0,
   };
 }

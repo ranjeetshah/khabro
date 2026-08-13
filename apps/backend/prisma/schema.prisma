@@ -31,6 +31,9 @@ model User {
   reportedUsers UserReport[]   @relation("ReportedUser")
   complaints    Complaint[]
   civicStatusHistories CivicComplaintStatusHistory[] @relation("StatusHistoryActor")
+  notifications Notification[]
+  comments      Comment[]
+  commentReports CommentReport[] @relation("CommentReporterUser")
 
   @@index([status])
 }
@@ -84,6 +87,7 @@ model Post {
   authorId           String
   localityId         String?
   content            String
+  category           PostCategory       @default(GENERAL)
   verificationStatus VerificationStatus @default(REPORTED)
   deletedAt          DateTime?
   createdAt          DateTime           @default(now())
@@ -98,9 +102,12 @@ model Post {
   reports    PostReport[]
   complaints Complaint[]
   civicComplaint CivicComplaint?
+  comments   Comment[]
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
+  @@index([deletedAt, verificationStatus, createdAt])
+  @@index([category, deletedAt, createdAt])
 }
 
 model Like {
@@ -177,6 +184,15 @@ enum UserStatus {
 enum UserRole {
   CITIZEN
   MODERATOR
+}
+
+enum PostCategory {
+  GENERAL
+  INFRASTRUCTURE
+  SAFETY
+  UTILITIES
+  ENVIRONMENT
+  OTHER
 }
 
 enum VerificationStatus {
@@ -364,3 +380,86 @@ model CivicComplaintStatusHistory {
   @@index([complaintId, createdAt, id])
   @@index([actorId])
 }
+
+enum NotificationType {
+  CIVIC_COMPLAINT_SENT
+  CIVIC_COMPLAINT_ACKNOWLEDGED
+  CIVIC_COMPLAINT_IN_PROGRESS
+  CIVIC_COMPLAINT_RESOLVED
+  CIVIC_COMPLAINT_CONFIRMED
+  CIVIC_COMPLAINT_REOPENED
+}
+
+model Notification {
+  id            String           @id @default(uuid())
+  userId        String
+  type          NotificationType
+  title         String
+  body          String
+  referenceType String           @default("CIVIC_COMPLAINT")
+  referenceId   String
+  isRead        Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+  @@index([userId, createdAt])
+  @@index([userId, referenceType, referenceId, type])
+}
+
+enum CommentStatus {
+  ACTIVE
+  HIDDEN
+  DELETED
+}
+
+enum CommentReportReason {
+  SPAM
+  HARASSMENT
+  ABUSE
+  MISLEADING
+  INAPPROPRIATE
+  OTHER
+}
+
+model Comment {
+  id        String        @id @default(uuid())
+  postId    String
+  userId    String
+  parentId  String?
+  content   String
+  status    CommentStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+
+  post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentParentChild", fields: [parentId], references: [id], onDelete: Restrict)
+  children Comment[] @relation("CommentParentChild")
+  reports  CommentReport[]
+
+  @@index([postId, createdAt, id])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model CommentReport {
+  id          String              @id @default(uuid())
+  commentId   String
+  reporterId  String
+  reason      CommentReportReason
+  description String?
+  status      ReportStatus        @default(OPEN)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  comment  Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reporter User    @relation("CommentReporterUser", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, reporterId])
+  @@index([commentId, createdAt])
+  @@index([reporterId, createdAt])
+  @@index([status])
+}

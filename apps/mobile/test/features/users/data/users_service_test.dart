@@ -15,6 +15,11 @@ class FakeTokenStorage extends TokenStorage {
 
   @override
   Future<String?> getAccessToken() async => token;
+
+  @override
+  Future<void> deleteAccessToken() async {
+    token = null;
+  }
 }
 
 const userJson = {

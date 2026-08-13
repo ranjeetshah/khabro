@@ -37,6 +37,18 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const PostCategory = {
+  GENERAL: 'GENERAL',
+  INFRASTRUCTURE: 'INFRASTRUCTURE',
+  SAFETY: 'SAFETY',
+  UTILITIES: 'UTILITIES',
+  ENVIRONMENT: 'ENVIRONMENT',
+  OTHER: 'OTHER'
+} as const
+
+export type PostCategory = (typeof PostCategory)[keyof typeof PostCategory]
+
+
 export const VerificationStatus = {
   REPORTED: 'REPORTED',
   UNDER_VERIFICATION: 'UNDER_VERIFICATION',
@@ -135,3 +147,36 @@ export const CivicComplaintStatus = {
 } as const
 
 export type CivicComplaintStatus = (typeof CivicComplaintStatus)[keyof typeof CivicComplaintStatus]
+
+
+export const NotificationType = {
+  CIVIC_COMPLAINT_SENT: 'CIVIC_COMPLAINT_SENT',
+  CIVIC_COMPLAINT_ACKNOWLEDGED: 'CIVIC_COMPLAINT_ACKNOWLEDGED',
+  CIVIC_COMPLAINT_IN_PROGRESS: 'CIVIC_COMPLAINT_IN_PROGRESS',
+  CIVIC_COMPLAINT_RESOLVED: 'CIVIC_COMPLAINT_RESOLVED',
+  CIVIC_COMPLAINT_CONFIRMED: 'CIVIC_COMPLAINT_CONFIRMED',
+  CIVIC_COMPLAINT_REOPENED: 'CIVIC_COMPLAINT_REOPENED'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const CommentStatus = {
+  ACTIVE: 'ACTIVE',
+  HIDDEN: 'HIDDEN',
+  DELETED: 'DELETED'
+} as const
+
+export type CommentStatus = (typeof CommentStatus)[keyof typeof CommentStatus]
+
+
+export const CommentReportReason = {
+  SPAM: 'SPAM',
+  HARASSMENT: 'HARASSMENT',
+  ABUSE: 'ABUSE',
+  MISLEADING: 'MISLEADING',
+  INAPPROPRIATE: 'INAPPROPRIATE',
+  OTHER: 'OTHER'
+} as const
+
+export type CommentReportReason = (typeof CommentReportReason)[keyof typeof CommentReportReason]

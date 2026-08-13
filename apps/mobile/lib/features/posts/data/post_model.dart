@@ -14,7 +14,9 @@ class PostModel {
     this.likedByMe,
     this.witnessCount,
     this.witnessedByMe,
+    this.commentCount,
     this.verificationStatus = VerificationStatus.reported,
+    this.category,
   });
 
   final String id;
@@ -28,7 +30,9 @@ class PostModel {
   final bool? likedByMe;
   final int? witnessCount;
   final bool? witnessedByMe;
+  final int? commentCount;
   final VerificationStatus verificationStatus;
+  final String? category;
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
@@ -45,9 +49,11 @@ class PostModel {
       likedByMe: json['likedByMe'] as bool?,
       witnessCount: json['witnessCount'] as int?,
       witnessedByMe: json['witnessedByMe'] as bool?,
+      commentCount: json['commentCount'] as int?,
       verificationStatus: PostModel._safeVerificationStatus(
         json['verificationStatus'] as String?,
       ),
+      category: json['category'] as String?,
     );
   }
 
@@ -63,6 +69,7 @@ class PostModel {
     bool? likedByMe,
     int? witnessCount,
     bool? witnessedByMe,
+    int? commentCount,
     VerificationStatus? verificationStatus,
   }) {
     return PostModel(
@@ -77,6 +84,7 @@ class PostModel {
       likedByMe: likedByMe ?? this.likedByMe,
       witnessCount: witnessCount ?? this.witnessCount,
       witnessedByMe: witnessedByMe ?? this.witnessedByMe,
+      commentCount: commentCount ?? this.commentCount,
       verificationStatus: verificationStatus ?? this.verificationStatus,
     );
   }
@@ -95,6 +103,7 @@ class PostModel {
     if (likedByMe != null) json['likedByMe'] = likedByMe;
     if (witnessCount != null) json['witnessCount'] = witnessCount;
     if (witnessedByMe != null) json['witnessedByMe'] = witnessedByMe;
+    if (commentCount != null) json['commentCount'] = commentCount;
     if (verificationStatus != VerificationStatus.reported) {
       json['verificationStatus'] = verificationStatus.wire;
     }

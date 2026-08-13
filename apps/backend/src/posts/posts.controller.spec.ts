@@ -19,6 +19,7 @@ describe('PostsController', () => {
     findMine: jest.fn(),
     findOne: jest.fn(),
     delete: jest.fn(),
+    search: jest.fn(),
   };
 
   const likesService = {
@@ -124,12 +125,36 @@ describe('PostsController', () => {
       content: 'Hello locally',
     });
 
-    expect(service.create).toHaveBeenCalledWith('user-1', 'Hello locally');
+    expect(service.create).toHaveBeenCalledWith(
+      'user-1',
+      'Hello locally',
+      undefined,
+    );
 
     expect(result).toEqual({
       id: 'post-1',
       authorId: 'user-1',
       content: 'Hello locally',
+    });
+  });
+
+  it('delegates search to service with JWT sub and query dto', async () => {
+    service.search.mockResolvedValue({
+      items: [],
+      page: 1,
+      limit: 20,
+      hasNextPage: false,
+    });
+
+    const searchDto = { q: 'road', page: 1, limit: 20 };
+    const result = await controller.search(authenticatedRequest, searchDto as any);
+
+    expect(service.search).toHaveBeenCalledWith('user-1', searchDto);
+    expect(result).toEqual({
+      items: [],
+      page: 1,
+      limit: 20,
+      hasNextPage: false,
     });
   });
 

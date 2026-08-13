@@ -8,6 +8,7 @@ import 'package:mobile/features/feed/presentation/feed_screen.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
 import 'package:mobile/features/location/data/locality_model.dart';
 import 'package:mobile/features/location/data/locality_service.dart';
+import 'package:mobile/features/posts/data/comment_model.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
@@ -115,6 +116,13 @@ class FakeDeletePostsService extends PostsService {
   @override
   Future<VerificationHistoryModel> getVerificationHistory(String id) async =>
       const VerificationHistoryModel(events: []);
+
+  @override
+  Future<List<CommentModel>> getComments(
+    String postId, {
+    int page = 1,
+    int limit = 20,
+  }) async => [];
 }
 
 class FakeLikePostsService extends PostsService {

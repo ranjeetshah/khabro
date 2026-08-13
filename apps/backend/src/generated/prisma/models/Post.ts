@@ -29,6 +29,7 @@ export type PostMinAggregateOutputType = {
   authorId: string | null
   localityId: string | null
   content: string | null
+  category: $Enums.PostCategory | null
   verificationStatus: $Enums.VerificationStatus | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -40,6 +41,7 @@ export type PostMaxAggregateOutputType = {
   authorId: string | null
   localityId: string | null
   content: string | null
+  category: $Enums.PostCategory | null
   verificationStatus: $Enums.VerificationStatus | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -51,6 +53,7 @@ export type PostCountAggregateOutputType = {
   authorId: number
   localityId: number
   content: number
+  category: number
   verificationStatus: number
   deletedAt: number
   createdAt: number
@@ -64,6 +67,7 @@ export type PostMinAggregateInputType = {
   authorId?: true
   localityId?: true
   content?: true
+  category?: true
   verificationStatus?: true
   deletedAt?: true
   createdAt?: true
@@ -75,6 +79,7 @@ export type PostMaxAggregateInputType = {
   authorId?: true
   localityId?: true
   content?: true
+  category?: true
   verificationStatus?: true
   deletedAt?: true
   createdAt?: true
@@ -86,6 +91,7 @@ export type PostCountAggregateInputType = {
   authorId?: true
   localityId?: true
   content?: true
+  category?: true
   verificationStatus?: true
   deletedAt?: true
   createdAt?: true
@@ -170,6 +176,7 @@ export type PostGroupByOutputType = {
   authorId: string
   localityId: string | null
   content: string
+  category: $Enums.PostCategory
   verificationStatus: $Enums.VerificationStatus
   deletedAt: Date | null
   createdAt: Date
@@ -202,6 +209,7 @@ export type PostWhereInput = {
   authorId?: Prisma.StringFilter<"Post"> | string
   localityId?: Prisma.StringNullableFilter<"Post"> | string | null
   content?: Prisma.StringFilter<"Post"> | string
+  category?: Prisma.EnumPostCategoryFilter<"Post"> | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFilter<"Post"> | $Enums.VerificationStatus
   deletedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -215,6 +223,7 @@ export type PostWhereInput = {
   reports?: Prisma.PostReportListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
   civicComplaint?: Prisma.XOR<Prisma.CivicComplaintNullableScalarRelationFilter, Prisma.CivicComplaintWhereInput> | null
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type PostOrderByWithRelationInput = {
@@ -222,6 +231,7 @@ export type PostOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   localityId?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -235,6 +245,7 @@ export type PostOrderByWithRelationInput = {
   reports?: Prisma.PostReportOrderByRelationAggregateInput
   complaints?: Prisma.ComplaintOrderByRelationAggregateInput
   civicComplaint?: Prisma.CivicComplaintOrderByWithRelationInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -245,6 +256,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.StringFilter<"Post"> | string
   localityId?: Prisma.StringNullableFilter<"Post"> | string | null
   content?: Prisma.StringFilter<"Post"> | string
+  category?: Prisma.EnumPostCategoryFilter<"Post"> | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFilter<"Post"> | $Enums.VerificationStatus
   deletedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -258,6 +270,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   reports?: Prisma.PostReportListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
   civicComplaint?: Prisma.XOR<Prisma.CivicComplaintNullableScalarRelationFilter, Prisma.CivicComplaintWhereInput> | null
+  comments?: Prisma.CommentListRelationFilter
 }, "id">
 
 export type PostOrderByWithAggregationInput = {
@@ -265,6 +278,7 @@ export type PostOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   localityId?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -282,6 +296,7 @@ export type PostScalarWhereWithAggregatesInput = {
   authorId?: Prisma.StringWithAggregatesFilter<"Post"> | string
   localityId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   content?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  category?: Prisma.EnumPostCategoryWithAggregatesFilter<"Post"> | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusWithAggregatesFilter<"Post"> | $Enums.VerificationStatus
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
@@ -291,6 +306,7 @@ export type PostScalarWhereWithAggregatesInput = {
 export type PostCreateInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -304,6 +320,7 @@ export type PostCreateInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateInput = {
@@ -311,6 +328,7 @@ export type PostUncheckedCreateInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -322,11 +340,13 @@ export type PostUncheckedCreateInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,6 +360,7 @@ export type PostUpdateInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateInput = {
@@ -347,6 +368,7 @@ export type PostUncheckedUpdateInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +380,7 @@ export type PostUncheckedUpdateInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateManyInput = {
@@ -365,6 +388,7 @@ export type PostCreateManyInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -374,6 +398,7 @@ export type PostCreateManyInput = {
 export type PostUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,6 +410,7 @@ export type PostUncheckedUpdateManyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,6 +432,7 @@ export type PostCountOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   localityId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -417,6 +444,7 @@ export type PostMaxOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   localityId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -428,6 +456,7 @@ export type PostMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   localityId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -521,6 +550,10 @@ export type PostUncheckedUpdateManyWithoutLocalityNestedInput = {
   update?: Prisma.PostUpdateWithWhereUniqueWithoutLocalityInput | Prisma.PostUpdateWithWhereUniqueWithoutLocalityInput[]
   updateMany?: Prisma.PostUpdateManyWithWhereWithoutLocalityInput | Prisma.PostUpdateManyWithWhereWithoutLocalityInput[]
   deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+}
+
+export type EnumPostCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.PostCategory
 }
 
 export type EnumVerificationStatusFieldUpdateOperationsInput = {
@@ -629,9 +662,24 @@ export type PostUpdateOneRequiredWithoutCivicComplaintNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutCivicComplaintInput, Prisma.PostUpdateWithoutCivicComplaintInput>, Prisma.PostUncheckedUpdateWithoutCivicComplaintInput>
 }
 
+export type PostCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommentsInput, Prisma.PostUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommentsInput, Prisma.PostUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.PostUpsertWithoutCommentsInput
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutCommentsInput, Prisma.PostUpdateWithoutCommentsInput>, Prisma.PostUncheckedUpdateWithoutCommentsInput>
+}
+
 export type PostCreateWithoutAuthorInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -644,12 +692,14 @@ export type PostCreateWithoutAuthorInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutAuthorInput = {
   id?: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -661,6 +711,7 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutAuthorInput = {
@@ -697,6 +748,7 @@ export type PostScalarWhereInput = {
   authorId?: Prisma.StringFilter<"Post"> | string
   localityId?: Prisma.StringNullableFilter<"Post"> | string | null
   content?: Prisma.StringFilter<"Post"> | string
+  category?: Prisma.EnumPostCategoryFilter<"Post"> | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFilter<"Post"> | $Enums.VerificationStatus
   deletedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -706,6 +758,7 @@ export type PostScalarWhereInput = {
 export type PostCreateWithoutLocalityInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -718,12 +771,14 @@ export type PostCreateWithoutLocalityInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutLocalityInput = {
   id?: string
   authorId: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -735,6 +790,7 @@ export type PostUncheckedCreateWithoutLocalityInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutLocalityInput = {
@@ -766,6 +822,7 @@ export type PostUpdateManyWithWhereWithoutLocalityInput = {
 export type PostCreateWithoutLikesInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -778,6 +835,7 @@ export type PostCreateWithoutLikesInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutLikesInput = {
@@ -785,6 +843,7 @@ export type PostUncheckedCreateWithoutLikesInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -795,6 +854,7 @@ export type PostUncheckedCreateWithoutLikesInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutLikesInput = {
@@ -816,6 +876,7 @@ export type PostUpdateToOneWithWhereWithoutLikesInput = {
 export type PostUpdateWithoutLikesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -828,6 +889,7 @@ export type PostUpdateWithoutLikesInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutLikesInput = {
@@ -835,6 +897,7 @@ export type PostUncheckedUpdateWithoutLikesInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,11 +908,13 @@ export type PostUncheckedUpdateWithoutLikesInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutWitnessesInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -862,6 +927,7 @@ export type PostCreateWithoutWitnessesInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutWitnessesInput = {
@@ -869,6 +935,7 @@ export type PostUncheckedCreateWithoutWitnessesInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -879,6 +946,7 @@ export type PostUncheckedCreateWithoutWitnessesInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutWitnessesInput = {
@@ -900,6 +968,7 @@ export type PostUpdateToOneWithWhereWithoutWitnessesInput = {
 export type PostUpdateWithoutWitnessesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -912,6 +981,7 @@ export type PostUpdateWithoutWitnessesInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutWitnessesInput = {
@@ -919,6 +989,7 @@ export type PostUncheckedUpdateWithoutWitnessesInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -929,11 +1000,13 @@ export type PostUncheckedUpdateWithoutWitnessesInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutVerificationEventsInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -946,6 +1019,7 @@ export type PostCreateWithoutVerificationEventsInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutVerificationEventsInput = {
@@ -953,6 +1027,7 @@ export type PostUncheckedCreateWithoutVerificationEventsInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -963,6 +1038,7 @@ export type PostUncheckedCreateWithoutVerificationEventsInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutVerificationEventsInput = {
@@ -984,6 +1060,7 @@ export type PostUpdateToOneWithWhereWithoutVerificationEventsInput = {
 export type PostUpdateWithoutVerificationEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -996,6 +1073,7 @@ export type PostUpdateWithoutVerificationEventsInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutVerificationEventsInput = {
@@ -1003,6 +1081,7 @@ export type PostUncheckedUpdateWithoutVerificationEventsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1013,11 +1092,13 @@ export type PostUncheckedUpdateWithoutVerificationEventsInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutVerificationContributionsInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1030,6 +1111,7 @@ export type PostCreateWithoutVerificationContributionsInput = {
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutVerificationContributionsInput = {
@@ -1037,6 +1119,7 @@ export type PostUncheckedCreateWithoutVerificationContributionsInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1047,6 +1130,7 @@ export type PostUncheckedCreateWithoutVerificationContributionsInput = {
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutVerificationContributionsInput = {
@@ -1068,6 +1152,7 @@ export type PostUpdateToOneWithWhereWithoutVerificationContributionsInput = {
 export type PostUpdateWithoutVerificationContributionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1080,6 +1165,7 @@ export type PostUpdateWithoutVerificationContributionsInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutVerificationContributionsInput = {
@@ -1087,6 +1173,7 @@ export type PostUncheckedUpdateWithoutVerificationContributionsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1097,11 +1184,13 @@ export type PostUncheckedUpdateWithoutVerificationContributionsInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutReportsInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1114,6 +1203,7 @@ export type PostCreateWithoutReportsInput = {
   verificationContributions?: Prisma.VerificationContributionCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutReportsInput = {
@@ -1121,6 +1211,7 @@ export type PostUncheckedCreateWithoutReportsInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1131,6 +1222,7 @@ export type PostUncheckedCreateWithoutReportsInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutReportsInput = {
@@ -1152,6 +1244,7 @@ export type PostUpdateToOneWithWhereWithoutReportsInput = {
 export type PostUpdateWithoutReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1164,6 +1257,7 @@ export type PostUpdateWithoutReportsInput = {
   verificationContributions?: Prisma.VerificationContributionUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutReportsInput = {
@@ -1171,6 +1265,7 @@ export type PostUncheckedUpdateWithoutReportsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1181,11 +1276,13 @@ export type PostUncheckedUpdateWithoutReportsInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutComplaintsInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1198,6 +1295,7 @@ export type PostCreateWithoutComplaintsInput = {
   verificationContributions?: Prisma.VerificationContributionCreateNestedManyWithoutPostInput
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutComplaintsInput = {
@@ -1205,6 +1303,7 @@ export type PostUncheckedCreateWithoutComplaintsInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1215,6 +1314,7 @@ export type PostUncheckedCreateWithoutComplaintsInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedCreateNestedManyWithoutPostInput
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutComplaintsInput = {
@@ -1236,6 +1336,7 @@ export type PostUpdateToOneWithWhereWithoutComplaintsInput = {
 export type PostUpdateWithoutComplaintsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1248,6 +1349,7 @@ export type PostUpdateWithoutComplaintsInput = {
   verificationContributions?: Prisma.VerificationContributionUpdateManyWithoutPostNestedInput
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutComplaintsInput = {
@@ -1255,6 +1357,7 @@ export type PostUncheckedUpdateWithoutComplaintsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1265,11 +1368,13 @@ export type PostUncheckedUpdateWithoutComplaintsInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedUpdateManyWithoutPostNestedInput
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutCivicComplaintInput = {
   id?: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1282,6 +1387,7 @@ export type PostCreateWithoutCivicComplaintInput = {
   verificationContributions?: Prisma.VerificationContributionCreateNestedManyWithoutPostInput
   reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutCivicComplaintInput = {
@@ -1289,6 +1395,7 @@ export type PostUncheckedCreateWithoutCivicComplaintInput = {
   authorId: string
   localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1299,6 +1406,7 @@ export type PostUncheckedCreateWithoutCivicComplaintInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedCreateNestedManyWithoutPostInput
   reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutCivicComplaintInput = {
@@ -1320,6 +1428,7 @@ export type PostUpdateToOneWithWhereWithoutCivicComplaintInput = {
 export type PostUpdateWithoutCivicComplaintInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1332,6 +1441,7 @@ export type PostUpdateWithoutCivicComplaintInput = {
   verificationContributions?: Prisma.VerificationContributionUpdateManyWithoutPostNestedInput
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutCivicComplaintInput = {
@@ -1339,6 +1449,7 @@ export type PostUncheckedUpdateWithoutCivicComplaintInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1349,25 +1460,72 @@ export type PostUncheckedUpdateWithoutCivicComplaintInput = {
   verificationContributions?: Prisma.VerificationContributionUncheckedUpdateManyWithoutPostNestedInput
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
-export type PostCreateManyAuthorInput = {
+export type PostCreateWithoutCommentsInput = {
   id?: string
-  localityId?: string | null
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutPostsInput
+  locality?: Prisma.LocalityCreateNestedOneWithoutPostsInput
+  likes?: Prisma.LikeCreateNestedManyWithoutPostInput
+  witnesses?: Prisma.WitnessCreateNestedManyWithoutPostInput
+  verificationEvents?: Prisma.VerificationEventCreateNestedManyWithoutPostInput
+  verificationContributions?: Prisma.VerificationContributionCreateNestedManyWithoutPostInput
+  reports?: Prisma.PostReportCreateNestedManyWithoutPostInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutPostInput
+  civicComplaint?: Prisma.CivicComplaintCreateNestedOneWithoutPostInput
 }
 
-export type PostUpdateWithoutAuthorInput = {
+export type PostUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  authorId: string
+  localityId?: string | null
+  content: string
+  category?: $Enums.PostCategory
+  verificationStatus?: $Enums.VerificationStatus
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
+  witnesses?: Prisma.WitnessUncheckedCreateNestedManyWithoutPostInput
+  verificationEvents?: Prisma.VerificationEventUncheckedCreateNestedManyWithoutPostInput
+  verificationContributions?: Prisma.VerificationContributionUncheckedCreateNestedManyWithoutPostInput
+  reports?: Prisma.PostReportUncheckedCreateNestedManyWithoutPostInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutPostInput
+  civicComplaint?: Prisma.CivicComplaintUncheckedCreateNestedOneWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutCommentsInput, Prisma.PostUncheckedCreateWithoutCommentsInput>
+}
+
+export type PostUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutCommentsInput, Prisma.PostUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutCommentsInput, Prisma.PostUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutCommentsInput, Prisma.PostUncheckedUpdateWithoutCommentsInput>
+}
+
+export type PostUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   locality?: Prisma.LocalityUpdateOneWithoutPostsNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
   witnesses?: Prisma.WitnessUpdateManyWithoutPostNestedInput
@@ -1378,10 +1536,12 @@ export type PostUpdateWithoutAuthorInput = {
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
 }
 
-export type PostUncheckedUpdateWithoutAuthorInput = {
+export type PostUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1395,10 +1555,60 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
 }
 
+export type PostCreateManyAuthorInput = {
+  id?: string
+  localityId?: string | null
+  content: string
+  category?: $Enums.PostCategory
+  verificationStatus?: $Enums.VerificationStatus
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PostUpdateWithoutAuthorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
+  verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  locality?: Prisma.LocalityUpdateOneWithoutPostsNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
+  witnesses?: Prisma.WitnessUpdateManyWithoutPostNestedInput
+  verificationEvents?: Prisma.VerificationEventUpdateManyWithoutPostNestedInput
+  verificationContributions?: Prisma.VerificationContributionUpdateManyWithoutPostNestedInput
+  reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
+  civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutAuthorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
+  verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
+  witnesses?: Prisma.WitnessUncheckedUpdateManyWithoutPostNestedInput
+  verificationEvents?: Prisma.VerificationEventUncheckedUpdateManyWithoutPostNestedInput
+  verificationContributions?: Prisma.VerificationContributionUncheckedUpdateManyWithoutPostNestedInput
+  reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
+  civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
+}
+
 export type PostUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1409,6 +1619,7 @@ export type PostCreateManyLocalityInput = {
   id?: string
   authorId: string
   content: string
+  category?: $Enums.PostCategory
   verificationStatus?: $Enums.VerificationStatus
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1418,6 +1629,7 @@ export type PostCreateManyLocalityInput = {
 export type PostUpdateWithoutLocalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1430,12 +1642,14 @@ export type PostUpdateWithoutLocalityInput = {
   reports?: Prisma.PostReportUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutLocalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1447,12 +1661,14 @@ export type PostUncheckedUpdateWithoutLocalityInput = {
   reports?: Prisma.PostReportUncheckedUpdateManyWithoutPostNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutPostNestedInput
   civicComplaint?: Prisma.CivicComplaintUncheckedUpdateOneWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateManyWithoutLocalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumPostCategoryFieldUpdateOperationsInput | $Enums.PostCategory
   verificationStatus?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1471,6 +1687,7 @@ export type PostCountOutputType = {
   verificationContributions: number
   reports: number
   complaints: number
+  comments: number
 }
 
 export type PostCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1480,6 +1697,7 @@ export type PostCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   verificationContributions?: boolean | PostCountOutputTypeCountVerificationContributionsArgs
   reports?: boolean | PostCountOutputTypeCountReportsArgs
   complaints?: boolean | PostCountOutputTypeCountComplaintsArgs
+  comments?: boolean | PostCountOutputTypeCountCommentsArgs
 }
 
 /**
@@ -1534,12 +1752,20 @@ export type PostCountOutputTypeCountComplaintsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ComplaintWhereInput
 }
 
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
 
 export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   authorId?: boolean
   localityId?: boolean
   content?: boolean
+  category?: boolean
   verificationStatus?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -1553,6 +1779,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reports?: boolean | Prisma.Post$reportsArgs<ExtArgs>
   complaints?: boolean | Prisma.Post$complaintsArgs<ExtArgs>
   civicComplaint?: boolean | Prisma.Post$civicComplaintArgs<ExtArgs>
+  comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
@@ -1561,6 +1788,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authorId?: boolean
   localityId?: boolean
   content?: boolean
+  category?: boolean
   verificationStatus?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -1574,6 +1802,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authorId?: boolean
   localityId?: boolean
   content?: boolean
+  category?: boolean
   verificationStatus?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -1587,13 +1816,14 @@ export type PostSelectScalar = {
   authorId?: boolean
   localityId?: boolean
   content?: boolean
+  category?: boolean
   verificationStatus?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "localityId" | "content" | "verificationStatus" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "localityId" | "content" | "category" | "verificationStatus" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   locality?: boolean | Prisma.Post$localityArgs<ExtArgs>
@@ -1604,6 +1834,7 @@ export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reports?: boolean | Prisma.Post$reportsArgs<ExtArgs>
   complaints?: boolean | Prisma.Post$complaintsArgs<ExtArgs>
   civicComplaint?: boolean | Prisma.Post$civicComplaintArgs<ExtArgs>
+  comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1627,12 +1858,14 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reports: Prisma.$PostReportPayload<ExtArgs>[]
     complaints: Prisma.$ComplaintPayload<ExtArgs>[]
     civicComplaint: Prisma.$CivicComplaintPayload<ExtArgs> | null
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     authorId: string
     localityId: string | null
     content: string
+    category: $Enums.PostCategory
     verificationStatus: $Enums.VerificationStatus
     deletedAt: Date | null
     createdAt: Date
@@ -2040,6 +2273,7 @@ export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Typ
   reports<T extends Prisma.Post$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   complaints<T extends Prisma.Post$complaintsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$complaintsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   civicComplaint<T extends Prisma.Post$civicComplaintArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$civicComplaintArgs<ExtArgs>>): Prisma.Prisma__CivicComplaintClient<runtime.Types.Result.GetResult<Prisma.$CivicComplaintPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  comments<T extends Prisma.Post$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2073,6 +2307,7 @@ export interface PostFieldRefs {
   readonly authorId: Prisma.FieldRef<"Post", 'String'>
   readonly localityId: Prisma.FieldRef<"Post", 'String'>
   readonly content: Prisma.FieldRef<"Post", 'String'>
+  readonly category: Prisma.FieldRef<"Post", 'PostCategory'>
   readonly verificationStatus: Prisma.FieldRef<"Post", 'VerificationStatus'>
   readonly deletedAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
@@ -2657,6 +2892,30 @@ export type Post$civicComplaintArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.CivicComplaintInclude<ExtArgs> | null
   where?: Prisma.CivicComplaintWhereInput
+}
+
+/**
+ * Post.comments
+ */
+export type Post$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**

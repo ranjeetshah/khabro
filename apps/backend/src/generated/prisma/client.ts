@@ -114,3 +114,18 @@ export type CivicComplaint = Prisma.CivicComplaintModel
  * 
  */
 export type CivicComplaintStatusHistory = Prisma.CivicComplaintStatusHistoryModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model CommentReport
+ * 
+ */
+export type CommentReport = Prisma.CommentReportModel

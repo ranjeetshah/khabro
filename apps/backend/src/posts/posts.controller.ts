@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { CreateComplaintDto } from '../complaints/dto/complaint.dto';
 import { CreateReportDto } from '../moderation/dto/create-report.dto';
 import { ModerationService } from '../moderation/moderation.service';
 import { CreatePostDto } from './dto/create-post.dto';
+import { SearchPostsDto } from './dto/search-posts.dto';
 import { LikesService } from './likes.service';
 import { PostsService } from './posts.service';
 import { VerificationHistoryService } from './verification.history.service';
@@ -48,7 +50,12 @@ export class PostsController {
 
   @Post()
   async create(@Req() request: Request, @Body() dto: CreatePostDto) {
-    return this.postsService.create(this.userId(request), dto.content);
+    return this.postsService.create(this.userId(request), dto.content, dto.category);
+  }
+
+  @Get('search')
+  async search(@Req() request: Request, @Query() dto: SearchPostsDto) {
+    return this.postsService.search(this.userId(request), dto);
   }
 
   @Get('me')

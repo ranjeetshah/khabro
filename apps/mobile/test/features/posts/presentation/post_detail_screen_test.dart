@@ -7,6 +7,7 @@ import 'package:mobile/features/complaints/data/complaint_model.dart';
 import 'package:mobile/features/complaints/data/complaint_service.dart';
 import 'package:mobile/features/complaints/data/complaint_status.dart';
 import 'package:mobile/features/complaints/presentation/create_complaint_screen.dart';
+import 'package:mobile/features/posts/data/comment_model.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
@@ -174,6 +175,13 @@ class FakeDeletePostsService extends PostsService {
     if (historyError != null) throw historyError!;
     return history ?? const VerificationHistoryModel(events: []);
   }
+
+  @override
+  Future<List<CommentModel>> getComments(
+    String postId, {
+    int page = 1,
+    int limit = 20,
+  }) async => [];
 }
 
 class FakeComplaintService extends ComplaintService {
@@ -739,7 +747,7 @@ void main() {
       await tester.tap(find.text('Spam'));
       await tester.pump();
       await tester.enterText(
-        find.byType(TextField),
+        find.byType(TextField).last,
         'Repeated low-quality posts',
       );
       await tester.tap(submit);

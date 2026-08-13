@@ -7,6 +7,8 @@ import '../../reports/presentation/report_dialog.dart';
 import '../../users/data/public_user_service.dart';
 import '../../users/presentation/public_author_profile_screen.dart';
 import '../data/civic_complaint_model.dart';
+import '../data/comment_model.dart';
+import '../data/comment_report_reason.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
 import '../data/verification_event.dart';
@@ -55,6 +57,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   String? _likeError;
   String? _witnessError;
 
+  List<CommentModel> _comments = [];
+  bool _isCommentsLoading = true;
+  String? _commentsError;
+  bool _isSubmittingComment = false;
+  final TextEditingController _commentController = TextEditingController();
+
   PostsService get _postsService => widget.postsService ?? PostsService();
 
   @override
@@ -68,6 +76,163 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _loadVerification();
     _loadHistory();
     _loadCivicComplaint();
+    _loadComments();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadComments() async {
+    setState(() {
+      _isCommentsLoading = true;
+      _commentsError = null;
+    });
+    try {
+      final comments = await _postsService.getComments(widget.post.id);
+      if (!mounted) return;
+      setState(() {
+        _comments = comments;
+        _isCommentsLoading = false;
+      });
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _isCommentsLoading = false;
+        _commentsError = e.message;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isCommentsLoading = false;
+        _commentsError = "Couldn't load comments.";
+      });
+    }
+  }
+
+  Future<void> _submitComment() async {
+    final text = _commentController.text.trim();
+    if (text.isEmpty || _isSubmittingComment) return;
+
+    setState(() => _isSubmittingComment = true);
+    try {
+      final newComment = await _postsService.addComment(widget.post.id, text);
+      if (!mounted) return;
+      setState(() {
+        _comments.add(newComment);
+        _commentController.clear();
+        _isSubmittingComment = false;
+      });
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) widget.onSessionExpired?.call();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message)),
+      );
+      setState(() => _isSubmittingComment = false);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Couldn't post comment.")),
+      );
+      setState(() => _isSubmittingComment = false);
+    }
+  }
+
+  Future<void> _deleteComment(CommentModel comment) async {
+    try {
+      await _postsService.deleteComment(widget.post.id, comment.id);
+      if (!mounted) return;
+      setState(() {
+        _comments.removeWhere((c) => c.id == comment.id);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Comment deleted.')),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Couldn't delete comment.")),
+      );
+    }
+  }
+
+  Future<void> _showReportCommentDialog(CommentModel comment) async {
+    CommentReportReason selectedReason = CommentReportReason.spam;
+    final descriptionController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Report Comment'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButton<CommentReportReason>(
+                  value: selectedReason,
+                  isExpanded: true,
+                  items: CommentReportReason.values.map((reason) {
+                    return DropdownMenuItem(
+                      value: reason,
+                      child: Text(reason.label),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      setDialogState(() => selectedReason = val);
+                    }
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description (optional)',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLength: 500,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogCtx).pop(false),
+              child: const Text('CANCEL'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogCtx).pop(true),
+              child: const Text('SUBMIT'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == true) {
+      try {
+        await _postsService.reportComment(
+          widget.post.id,
+          comment.id,
+          selectedReason,
+          description: descriptionController.text.trim(),
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Comment reported.')),
+        );
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Couldn't report comment.")),
+        );
+      }
+    }
   }
 
   Future<void> _confirmResolution() async {
@@ -599,8 +764,140 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             const SizedBox(height: 20),
             const Center(child: CircularProgressIndicator()),
           ],
+          const Divider(height: 32),
+          _buildCommentsSection(),
         ],
       ),
+    );
+  }
+
+  Widget _buildCommentsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Comments (${_comments.length})',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        if (_isCommentsLoading)
+          const Center(child: CircularProgressIndicator())
+        else if (_commentsError != null) ...[
+          Text(_commentsError!, style: const TextStyle(color: Colors.red)),
+          OutlinedButton(
+            onPressed: _loadComments,
+            child: const Text('RETRY COMMENTS'),
+          ),
+        ] else if (_comments.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'No comments yet',
+              style: TextStyle(color: Colors.grey),
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _comments.length,
+            itemBuilder: (context, index) {
+              final comment = _comments[index];
+              final isOwnComment = widget.currentUserId != null &&
+                  widget.currentUserId == comment.authorId;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 14,
+                      backgroundColor: Colors.grey.shade200,
+                      child: Text(
+                        comment.authorName.isNotEmpty
+                            ? comment.authorName[0].toUpperCase()
+                            : '?',
+                        style: const TextStyle(fontSize: 12, color: Colors.blue),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            comment.authorName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            comment.content,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert, size: 16),
+                      onSelected: (val) {
+                        if (val == 'delete') {
+                          _deleteComment(comment);
+                        } else if (val == 'report') {
+                          _showReportCommentDialog(comment);
+                        }
+                      },
+                      itemBuilder: (ctx) => [
+                        if (isOwnComment)
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Delete comment'),
+                          ),
+                        const PopupMenuItem(
+                          value: 'report',
+                          child: Text('Report comment'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _commentController,
+                decoration: const InputDecoration(
+                  hintText: 'Write a comment...',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: _isSubmittingComment ? null : _submitComment,
+              icon: _isSubmittingComment
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.send, color: Colors.blue),
+              tooltip: 'Send comment',
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

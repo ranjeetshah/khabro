@@ -7,8 +7,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../database/database.service';
-import { CivicComplaintStatus, UserRole, VerificationStatus } from '../generated/prisma/enums';
+import {
+  CivicComplaintStatus,
+  NotificationType,
+  UserRole,
+  VerificationStatus,
+} from '../generated/prisma/enums';
 import { MailService } from '../mail/mail.service';
+import { NotificationService } from '../notifications/notification.service';
 
 export interface SafeCivicComplaintResponse {
   referenceCode: string;
@@ -40,6 +46,7 @@ export class CivicComplaintService {
     private readonly database: DatabaseService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   get witnessThreshold(): number {
@@ -201,13 +208,29 @@ export class CivicComplaintService {
     });
 
     if (emailSent) {
-      return this.database.civicComplaint.update({
+      const updated = await this.database.civicComplaint.update({
         where: { id: complaintId },
         data: {
           status: CivicComplaintStatus.SENT,
           sentAt: new Date(),
         },
       });
+
+      const post = await this.database.post.findUnique({
+        where: { id: updated.postId },
+        select: { authorId: true },
+      });
+
+      if (post) {
+        await this.notificationService.createCivicComplaintNotification(
+          this.database,
+          post.authorId,
+          NotificationType.CIVIC_COMPLAINT_SENT,
+          updated.referenceCode,
+        );
+      }
+
+      return updated;
     } else {
       return this.database.civicComplaint.update({
         where: { id: complaintId },
@@ -352,6 +375,29 @@ export class CivicComplaintService {
         },
       });
 
+      const post = await tx.post.findUnique({
+        where: { id: complaint.postId },
+        select: { authorId: true },
+      });
+
+      if (post) {
+        const notifTypeMap: Partial<Record<CivicComplaintStatus, NotificationType>> = {
+          [CivicComplaintStatus.ACKNOWLEDGED]: NotificationType.CIVIC_COMPLAINT_ACKNOWLEDGED,
+          [CivicComplaintStatus.IN_PROGRESS]: NotificationType.CIVIC_COMPLAINT_IN_PROGRESS,
+          [CivicComplaintStatus.RESOLVED]: NotificationType.CIVIC_COMPLAINT_RESOLVED,
+        };
+
+        const notifType = notifTypeMap[targetStatus];
+        if (notifType) {
+          await this.notificationService.createCivicComplaintNotification(
+            tx,
+            post.authorId,
+            notifType,
+            complaint.referenceCode,
+          );
+        }
+      }
+
       return updated;
     });
   }
@@ -390,6 +436,13 @@ export class CivicComplaintService {
           note: 'Citizen confirmed resolution',
         },
       });
+
+      await this.notificationService.createCivicComplaintNotification(
+        tx,
+        citizenId,
+        NotificationType.CIVIC_COMPLAINT_CONFIRMED,
+        complaint.referenceCode,
+      );
 
       return updated;
     });
@@ -435,6 +488,13 @@ export class CivicComplaintService {
           note: trimmedReason,
         },
       });
+
+      await this.notificationService.createCivicComplaintNotification(
+        tx,
+        citizenId,
+        NotificationType.CIVIC_COMPLAINT_REOPENED,
+        complaint.referenceCode,
+      );
 
       return updated;
     });
@@ -492,7 +552,7 @@ export class CivicComplaintService {
         OR: [{ id }, { postId: id }, { referenceCode: id }],
         post: { deletedAt: null },
       },
-      select: { id: true, status: true, referenceCode: true },
+      select: { id: true, postId: true, status: true, referenceCode: true },
     });
 
     if (!complaint) {
