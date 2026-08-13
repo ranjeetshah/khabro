@@ -318,6 +318,43 @@ class PostsService {
     _checkStatus(response, 'Failed to report comment');
   }
 
+  Future<CommentModel> createReply({
+    required String postId,
+    required String commentId,
+    required String content,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/posts/$postId/comments/$commentId/replies',
+        headers: headers,
+        body: {'content': content},
+      ),
+    );
+    _checkStatus(response, 'Failed to post reply');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return CommentModel.fromJson(data);
+  }
+
+  Future<List<CommentModel>> getCommentReplies({
+    required String postId,
+    required String commentId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.get(
+        '/posts/$postId/comments/$commentId/replies?page=$page&limit=$limit',
+        headers: headers,
+      ),
+    );
+    _checkStatus(response, 'Failed to fetch replies');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = data['items'] as List<dynamic>? ?? [];
+    return list
+        .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
   WitnessStatusModel _parseWitnessStatus(String body) {
     final data = jsonDecode(body) as Map<String, dynamic>;
     return WitnessStatusModel.fromJson(

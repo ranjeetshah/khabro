@@ -62,6 +62,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   String? _commentsError;
   bool _isSubmittingComment = false;
   final TextEditingController _commentController = TextEditingController();
+  CommentModel? _replyingToComment;
+  final FocusNode _commentFocusNode = FocusNode();
+
+  final Set<String> _expandedCommentIds = {};
+  final Map<String, List<CommentModel>> _commentReplies = {};
+  final Map<String, int> _replyPages = {};
+  final Map<String, bool> _replyHasMore = {};
+  final Map<String, bool> _replyLoading = {};
+  final Map<String, String?> _replyErrors = {};
 
   PostsService get _postsService => widget.postsService ?? PostsService();
 
@@ -82,6 +91,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   void dispose() {
     _commentController.dispose();
+    _commentFocusNode.dispose();
     super.dispose();
   }
 
@@ -119,13 +129,28 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     setState(() => _isSubmittingComment = true);
     try {
-      final newComment = await _postsService.addComment(widget.post.id, text);
-      if (!mounted) return;
-      setState(() {
-        _comments.add(newComment);
-        _commentController.clear();
-        _isSubmittingComment = false;
-      });
+      if (_replyingToComment != null) {
+        final reply = await _postsService.createReply(
+          postId: widget.post.id,
+          commentId: _replyingToComment!.id,
+          content: text,
+        );
+        if (!mounted) return;
+        setState(() {
+          _addReplyToState(_replyingToComment!.id, reply);
+          _replyingToComment = null;
+          _commentController.clear();
+          _isSubmittingComment = false;
+        });
+      } else {
+        final newComment = await _postsService.addComment(widget.post.id, text);
+        if (!mounted) return;
+        setState(() {
+          _comments.add(newComment);
+          _commentController.clear();
+          _isSubmittingComment = false;
+        });
+      }
     } on AuthException catch (e) {
       if (!mounted) return;
       if (e.statusCode == 401) widget.onSessionExpired?.call();
@@ -136,7 +161,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Couldn't post comment.")),
+        SnackBar(content: Text(_replyingToComment != null ? "Couldn't post reply." : "Couldn't post comment.")),
       );
       setState(() => _isSubmittingComment = false);
     }
@@ -147,7 +172,46 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       await _postsService.deleteComment(widget.post.id, comment.id);
       if (!mounted) return;
       setState(() {
-        _comments.removeWhere((c) => c.id == comment.id);
+        final hasActiveChildren = (comment.replyCount > 0) || (_commentReplies[comment.id]?.isNotEmpty ?? false);
+
+        if (hasActiveChildren) {
+          final rootIndex = _comments.indexWhere((c) => c.id == comment.id);
+          if (rootIndex != -1) {
+            final parent = _comments[rootIndex];
+            _comments[rootIndex] = CommentModel(
+              id: parent.id,
+              content: '',
+              createdAt: parent.createdAt,
+              authorId: '',
+              authorName: '[deleted]',
+              parentId: parent.parentId,
+              replyCount: parent.replyCount,
+              deleted: true,
+            );
+          }
+
+          _commentReplies.forEach((pId, list) {
+            final idx = list.indexWhere((c) => c.id == comment.id);
+            if (idx != -1) {
+              final child = list[idx];
+              list[idx] = CommentModel(
+                id: child.id,
+                content: '',
+                createdAt: child.createdAt,
+                authorId: '',
+                authorName: '[deleted]',
+                parentId: child.parentId,
+                replyCount: child.replyCount,
+                deleted: true,
+              );
+            }
+          });
+        } else {
+          _comments.removeWhere((c) => c.id == comment.id);
+          _commentReplies.forEach((pId, list) {
+            list.removeWhere((c) => c.id == comment.id);
+          });
+        }
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Comment deleted.')),
@@ -158,6 +222,86 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         const SnackBar(content: Text("Couldn't delete comment.")),
       );
     }
+  }
+
+  Future<void> _loadReplies(String commentId) async {
+    if (_replyLoading[commentId] == true) return;
+
+    setState(() {
+      _replyLoading[commentId] = true;
+      _replyErrors[commentId] = null;
+    });
+
+    try {
+      final page = (_replyPages[commentId] ?? 0) + 1;
+      final list = await _postsService.getCommentReplies(
+        postId: widget.post.id,
+        commentId: commentId,
+        page: page,
+        limit: 20,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        final existing = _commentReplies[commentId] ?? [];
+        final newItems = list.where((item) => !existing.any((e) => e.id == item.id)).toList();
+        _commentReplies[commentId] = [...existing, ...newItems];
+        _replyPages[commentId] = page;
+        _replyHasMore[commentId] = list.length >= 20;
+        _replyLoading[commentId] = false;
+      });
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) widget.onSessionExpired?.call();
+      setState(() {
+        _replyLoading[commentId] = false;
+        _replyErrors[commentId] = e.message;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _replyLoading[commentId] = false;
+        _replyErrors[commentId] = "Couldn't load replies.";
+      });
+    }
+  }
+
+  void _addReplyToState(String parentId, CommentModel reply) {
+    final rootIndex = _comments.indexWhere((c) => c.id == parentId);
+    if (rootIndex != -1) {
+      final parent = _comments[rootIndex];
+      _comments[rootIndex] = CommentModel(
+        id: parent.id,
+        content: parent.content,
+        createdAt: parent.createdAt,
+        authorId: parent.authorId,
+        authorName: parent.authorName,
+        parentId: parent.parentId,
+        replyCount: parent.replyCount + 1,
+        deleted: parent.deleted,
+      );
+    }
+
+    _commentReplies.forEach((pId, list) {
+      final idx = list.indexWhere((c) => c.id == parentId);
+      if (idx != -1) {
+        final parent = list[idx];
+        list[idx] = CommentModel(
+          id: parent.id,
+          content: parent.content,
+          createdAt: parent.createdAt,
+          authorId: parent.authorId,
+          authorName: parent.authorName,
+          parentId: parent.parentId,
+          replyCount: parent.replyCount + 1,
+          deleted: parent.deleted,
+        );
+      }
+    });
+
+    final list = _commentReplies[parentId] ?? [];
+    _commentReplies[parentId] = [...list, reply];
+    _expandedCommentIds.add(parentId);
   }
 
   Future<void> _showReportCommentDialog(CommentModel comment) async {
@@ -797,82 +941,47 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             ),
           )
         else
-          ListView.builder(
+ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _comments.length,
             itemBuilder: (context, index) {
-              final comment = _comments[index];
-              final isOwnComment = widget.currentUserId != null &&
-                  widget.currentUserId == comment.authorId;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 14,
-                      backgroundColor: Colors.grey.shade200,
-                      child: Text(
-                        comment.authorName.isNotEmpty
-                            ? comment.authorName[0].toUpperCase()
-                            : '?',
-                        style: const TextStyle(fontSize: 12, color: Colors.blue),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            comment.authorName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            comment.content,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, size: 16),
-                      onSelected: (val) {
-                        if (val == 'delete') {
-                          _deleteComment(comment);
-                        } else if (val == 'report') {
-                          _showReportCommentDialog(comment);
-                        }
-                      },
-                      itemBuilder: (ctx) => [
-                        if (isOwnComment)
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('Delete comment'),
-                          ),
-                        const PopupMenuItem(
-                          value: 'report',
-                          child: Text('Report comment'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
+              return _buildCommentItem(_comments[index]);
             },
           ),
         const SizedBox(height: 12),
+        if (_replyingToComment != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Replying to ${_replyingToComment!.authorName}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 16),
+                  onPressed: () {
+                    setState(() {
+                      _replyingToComment = null;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _commentController,
+                focusNode: _commentFocusNode,
                 decoration: const InputDecoration(
                   hintText: 'Write a comment...',
                   border: OutlineInputBorder(),
@@ -888,21 +997,219 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               onPressed: _isSubmittingComment ? null : _submitComment,
               icon: _isSubmittingComment
                   ? const SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: 16,
+                      height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.send, color: Colors.blue),
-              tooltip: 'Send comment',
+                  : const Icon(Icons.send),
             ),
           ],
         ),
       ],
     );
   }
+
+  Widget _buildCommentItem(CommentModel comment, {int depth = 0}) {
+    final isOwnComment = widget.currentUserId != null &&
+        widget.currentUserId == comment.authorId;
+    final isDeleted = comment.deleted;
+
+    final isExpanded = _expandedCommentIds.contains(comment.id);
+    final repliesList = _commentReplies[comment.id] ?? [];
+    final isLoadingReplies = _replyLoading[comment.id] == true;
+    final repliesError = _replyErrors[comment.id];
+    final hasMoreReplies = _replyHasMore[comment.id] ?? (comment.replyCount > 0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            left: (depth > 3 ? 3 : depth) * 16.0,
+            top: 6,
+            bottom: 6,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 14,
+                backgroundColor: isDeleted ? Colors.grey.shade100 : Colors.grey.shade200,
+                child: Text(
+                  isDeleted
+                      ? '?'
+                      : (comment.authorName.isNotEmpty
+                          ? comment.authorName[0].toUpperCase()
+                          : '?'),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDeleted ? Colors.grey : Colors.blue,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isDeleted ? '[deleted]' : comment.authorName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: isDeleted ? Colors.grey : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isDeleted ? '[deleted]' : comment.content,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDeleted ? Colors.grey.shade600 : Colors.black,
+                        fontStyle: isDeleted ? FontStyle.italic : FontStyle.normal,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (!isDeleted) ...[
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _replyingToComment = comment;
+                              });
+                              _commentFocusNode.requestFocus();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                              child: Text(
+                                'Reply',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                        ],
+                        if (comment.replyCount > 0) ...[
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                if (isExpanded) {
+                                  _expandedCommentIds.remove(comment.id);
+                                } else {
+                                  _expandedCommentIds.add(comment.id);
+                                  if (repliesList.isEmpty) {
+                                    _loadReplies(comment.id);
+                                  }
+                                }
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                              child: Text(
+                                isExpanded
+                                    ? 'Collapse replies'
+                                    : '${comment.replyCount} ${comment.replyCount == 1 ? 'reply' : 'replies'}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, size: 16),
+                onSelected: (val) {
+                  if (val == 'delete') {
+                    _deleteComment(comment);
+                  } else if (val == 'report') {
+                    _showReportCommentDialog(comment);
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  if (isOwnComment && !isDeleted)
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete comment'),
+                    ),
+                  if (!isDeleted)
+                    const PopupMenuItem(
+                      value: 'report',
+                      child: Text('Report comment'),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (isExpanded) ...[
+          ...repliesList.map((reply) => _buildCommentItem(reply, depth: depth + 1)),
+          if (isLoadingReplies)
+            Padding(
+              padding: EdgeInsets.only(
+                left: ((depth + 1 > 3 ? 3 : depth + 1) * 16.0) + 24.0,
+                top: 8,
+                bottom: 8,
+              ),
+              child: const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          if (repliesError != null)
+            Padding(
+              padding: EdgeInsets.only(
+                left: ((depth + 1 > 3 ? 3 : depth + 1) * 16.0) + 24.0,
+                top: 8,
+                bottom: 8,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    repliesError,
+                    style: const TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed: () => _loadReplies(comment.id),
+                    child: const Text('RETRY', style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ),
+            ),
+          if (hasMoreReplies && !isLoadingReplies && repliesError == null)
+            Padding(
+              padding: EdgeInsets.only(
+                left: ((depth + 1 > 3 ? 3 : depth + 1) * 16.0) + 24.0,
+                top: 4,
+                bottom: 4,
+              ),
+              child: TextButton(
+                onPressed: () => _loadReplies(comment.id),
+                child: const Text(
+                  'Load more replies',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+        ],
+      ],
+    );
+  }
 }
 
-/// Human-readable label for a verification event. Never exposes identities.
 String verificationEventLabel(VerificationEventModel event) {
   switch (event.type) {
     case VerificationEventType.postCreated:

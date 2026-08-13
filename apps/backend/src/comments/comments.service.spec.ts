@@ -47,11 +47,14 @@ describe('CommentsService', () => {
         {
           id: 'comment-1',
           content: 'Hello world',
+          status: CommentStatus.ACTIVE,
           createdAt: new Date('2026-08-13T10:00:00Z'),
+          deletedAt: null,
           user: { id: 'user-1', name: 'Amit' },
         },
       ]);
       databaseService.comment.count.mockResolvedValue(1);
+      databaseService.comment.groupBy = jest.fn().mockResolvedValue([]);
 
       const result = await service.listComments('post-1', 1, 20);
 
@@ -192,6 +195,80 @@ describe('CommentsService', () => {
           reason: CommentReportReason.SPAM,
         }),
       ).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('createReply', () => {
+    it('creates a reply to an active comment successfully', async () => {
+      databaseService.post.findFirst.mockResolvedValue({ id: 'post-1' });
+      databaseService.comment.findFirst.mockResolvedValue({
+        id: 'comment-1',
+        postId: 'post-1',
+        status: CommentStatus.ACTIVE,
+        deletedAt: null,
+      });
+
+      databaseService.comment.create.mockResolvedValue({
+        id: 'reply-1',
+        postId: 'post-1',
+        parentId: 'comment-1',
+        content: 'This is a reply',
+        status: CommentStatus.ACTIVE,
+        createdAt: new Date('2026-08-13T12:00:00Z'),
+        user: { id: 'user-456', name: 'Amit' },
+      });
+
+      const result = await service.createReply('user-456', 'post-1', 'comment-1', {
+        content: 'This is a reply',
+      });
+
+      expect(result.id).toBe('reply-1');
+      expect(result.parentId).toBe('comment-1');
+      expect(result.author.name).toBe('Amit');
+    });
+
+    it('throws 404 if parent comment does not exist or is soft-deleted', async () => {
+      databaseService.post.findFirst.mockResolvedValue({ id: 'post-1' });
+      databaseService.comment.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.createReply('user-456', 'post-1', 'comment-deleted-or-missing', {
+          content: 'This is a reply',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('listReplies', () => {
+    it('returns direct replies sorted chronologically', async () => {
+      databaseService.post.findFirst.mockResolvedValue({ id: 'post-1' });
+      databaseService.comment.findFirst.mockResolvedValue({
+        id: 'comment-1',
+        postId: 'post-1',
+        status: CommentStatus.ACTIVE,
+        deletedAt: null,
+      });
+
+      databaseService.comment.findMany.mockResolvedValue([
+        {
+          id: 'reply-1',
+          parentId: 'comment-1',
+          content: 'Direct reply',
+          status: CommentStatus.ACTIVE,
+          createdAt: new Date('2026-08-13T12:05:00Z'),
+          deletedAt: null,
+          user: { id: 'user-3', name: 'Zoya' },
+        },
+      ]);
+      databaseService.comment.count.mockResolvedValue(1);
+      databaseService.comment.groupBy = jest.fn().mockResolvedValue([]);
+
+      const result = await service.listReplies('post-1', 'comment-1', 1, 20);
+
+      expect(result.items.length).toBe(1);
+      expect(result.items[0].id).toBe('reply-1');
+      expect(result.items[0].parentId).toBe('comment-1');
+      expect(result.items[0].content).toBe('Direct reply');
     });
   });
 });

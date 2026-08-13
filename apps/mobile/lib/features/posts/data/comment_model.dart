@@ -5,6 +5,9 @@ class CommentModel {
     required this.createdAt,
     required this.authorId,
     required this.authorName,
+    this.parentId,
+    this.replyCount = 0,
+    this.deleted = false,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +20,9 @@ class CommentModel {
           : DateTime.now(),
       authorId: author['id'] as String? ?? '',
       authorName: author['name'] as String? ?? 'Anonymous',
+      parentId: json['parentId'] as String?,
+      replyCount: (json['replyCount'] as num?)?.toInt() ?? 0,
+      deleted: json['deleted'] as bool? ?? false,
     );
   }
 
@@ -25,4 +31,7 @@ class CommentModel {
   final DateTime createdAt;
   final String authorId;
   final String authorName;
+  final String? parentId;
+  final int replyCount;
+  final bool deleted;
 }

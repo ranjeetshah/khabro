@@ -65,4 +65,33 @@ export class CommentsController {
     const userId = req.user.sub;
     return this.commentsService.reportComment(userId, postId, commentId, dto);
   }
+
+  @Post(':postId/comments/:commentId/replies')
+  async createReply(
+    @Req() req: any,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Body() dto: CreateCommentDto,
+  ) {
+    const userId = req.user.sub;
+    return this.commentsService.createReply(userId, postId, commentId, dto);
+  }
+
+  @Get(':postId/comments/:commentId/replies')
+  async listReplies(
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+
+    return this.commentsService.listReplies(
+      postId,
+      commentId,
+      isNaN(pageNum) ? 1 : pageNum,
+      isNaN(limitNum) ? 20 : limitNum,
+    );
+  }
 }

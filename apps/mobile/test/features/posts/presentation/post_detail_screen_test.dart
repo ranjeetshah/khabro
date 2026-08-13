@@ -182,6 +182,30 @@ class FakeDeletePostsService extends PostsService {
     int page = 1,
     int limit = 20,
   }) async => [];
+
+  @override
+  Future<CommentModel> createReply({
+    required String postId,
+    required String commentId,
+    required String content,
+  }) async {
+    return CommentModel(
+      id: 'reply-1',
+      content: content,
+      createdAt: DateTime.now(),
+      authorId: 'user-1',
+      authorName: 'Test Reply Author',
+      parentId: commentId,
+    );
+  }
+
+  @override
+  Future<List<CommentModel>> getCommentReplies({
+    required String postId,
+    required String commentId,
+    int page = 1,
+    int limit = 20,
+  }) async => [];
 }
 
 class FakeComplaintService extends ComplaintService {

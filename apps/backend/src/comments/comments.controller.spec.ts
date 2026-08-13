@@ -14,6 +14,8 @@ describe('CommentsController', () => {
       createComment: jest.fn(),
       deleteComment: jest.fn(),
       reportComment: jest.fn(),
+      createReply: jest.fn(),
+      listReplies: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -68,5 +70,24 @@ describe('CommentsController', () => {
       reason: CommentReportReason.SPAM,
     });
     expect(result.id).toBe('report-1');
+  });
+
+  it('delegates createReply using JWT sub', async () => {
+    const mockReq = { user: { sub: 'user-123' } };
+    service.createReply.mockResolvedValue({ id: 'reply-1', content: 'Reply content' });
+
+    const result = await controller.createReply(mockReq, 'post-1', 'comment-1', { content: 'Reply content' });
+
+    expect(service.createReply).toHaveBeenCalledWith('user-123', 'post-1', 'comment-1', { content: 'Reply content' });
+    expect(result.id).toBe('reply-1');
+  });
+
+  it('delegates listReplies with default pagination', async () => {
+    service.listReplies.mockResolvedValue({ items: [], page: 1, limit: 20, total: 0, hasMore: false });
+
+    const result = await controller.listReplies('post-1', 'comment-1', '1', '20');
+
+    expect(service.listReplies).toHaveBeenCalledWith('post-1', 'comment-1', 1, 20);
+    expect(result.items).toEqual([]);
   });
 });
