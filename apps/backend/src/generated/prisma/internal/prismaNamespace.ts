@@ -405,6 +405,7 @@ export const ModelName = {
   Witness: 'Witness',
   VerificationEvent: 'VerificationEvent',
   VerificationContribution: 'VerificationContribution',
+  Feedback: 'Feedback',
   PostReport: 'PostReport',
   UserReport: 'UserReport',
   ModerationAuditEvent: 'ModerationAuditEvent',
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport"
+    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "feedback" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1023,6 +1024,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VerificationContributionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VerificationContributionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Feedback: {
+      payload: Prisma.$FeedbackPayload<ExtArgs>
+      fields: Prisma.FeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.FeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.FeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.FeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.FeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.FeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        update: {
+          args: Prisma.FeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.FeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.FeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.FeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFeedback>
+        }
+        groupBy: {
+          args: Prisma.FeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedbackCountAggregateOutputType> | number
         }
       }
     }
@@ -1909,6 +1984,22 @@ export const VerificationContributionScalarFieldEnum = {
 export type VerificationContributionScalarFieldEnum = (typeof VerificationContributionScalarFieldEnum)[keyof typeof VerificationContributionScalarFieldEnum]
 
 
+export const FeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  message: 'message',
+  appVersion: 'appVersion',
+  platform: 'platform',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
+
+
 export const PostReportScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
@@ -1940,6 +2031,7 @@ export type UserReportScalarFieldEnum = (typeof UserReportScalarFieldEnum)[keyof
 export const ModerationAuditEventScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
+  feedbackId: 'feedbackId',
   action: 'action',
   actorId: 'actorId',
   createdAt: 'createdAt'
@@ -2238,6 +2330,34 @@ export type ListEnumVerificationContributionTypeFieldRefInput<$PrismaModel> = Fi
 
 
 /**
+ * Reference to a field of type 'FeedbackType'
+ */
+export type EnumFeedbackTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackType'>
+    
+
+
+/**
+ * Reference to a field of type 'FeedbackType[]'
+ */
+export type ListEnumFeedbackTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FeedbackStatus'
+ */
+export type EnumFeedbackStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FeedbackStatus[]'
+ */
+export type ListEnumFeedbackStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'PostReportReason'
  */
 export type EnumPostReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostReportReason'>
@@ -2521,6 +2641,7 @@ export type GlobalOmitConfig = {
   witness?: Prisma.WitnessOmit
   verificationEvent?: Prisma.VerificationEventOmit
   verificationContribution?: Prisma.VerificationContributionOmit
+  feedback?: Prisma.FeedbackOmit
   postReport?: Prisma.PostReportOmit
   userReport?: Prisma.UserReportOmit
   moderationAuditEvent?: Prisma.ModerationAuditEventOmit

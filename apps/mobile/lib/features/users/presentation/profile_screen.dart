@@ -10,6 +10,8 @@ import '../data/users_service.dart';
 import 'my_posts_screen.dart';
 import 'my_reports_screen.dart';
 import 'witness_history_screen.dart';
+import '../../feedback/presentation/feedback_screen.dart';
+import '../../feedback/data/feedback_service.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
@@ -222,6 +224,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => WitnessHistoryScreen(usersService: _usersService),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 20),
+            _buildHighlightItem(
+              icon: Icons.feedback_outlined,
+              label: 'Feedback',
+              color: const Color(0xFF8B5CF6),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => FeedbackScreen(
+                      feedbackService: FeedbackService(),
+                    ),
                   ),
                 );
               },

@@ -13,6 +13,7 @@ import { CivicComplaintModule } from './civic-complaint/civic-complaint.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { CommentsModule } from './comments/comments.module';
 import { ModeratorModule } from './moderator/moderator.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ModeratorModule } from './moderator/moderator.module';
     NotificationsModule,
     CommentsModule,
     ModeratorModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

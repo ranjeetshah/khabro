@@ -25,6 +25,7 @@ class FakeModeratorService extends ModeratorService {
     openUserReports: 2,
     openCommentReports: 3,
     activeCivicComplaints: 4,
+    openFeedback: 1,
   );
 
   List<ModeratorReportModel> reports = [

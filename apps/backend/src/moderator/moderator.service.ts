@@ -7,6 +7,8 @@ import { DatabaseService } from '../database/database.service';
 import {
   ReportStatus,
   CivicComplaintStatus,
+  FeedbackStatus,
+  FeedbackType,
   ModerationAuditAction,
 } from '../generated/prisma/enums';
 
@@ -20,6 +22,7 @@ export class ModeratorService {
       openUserReports,
       openCommentReports,
       activeCivicComplaints,
+      openFeedback,
     ] = await Promise.all([
       this.database.postReport.count({ where: { status: ReportStatus.OPEN } }),
       this.database.userReport.count({ where: { status: ReportStatus.OPEN } }),
@@ -36,6 +39,7 @@ export class ModeratorService {
           },
         },
       }),
+      this.database.feedback.count({ where: { status: FeedbackStatus.OPEN } }),
     ]);
 
     return {
@@ -43,6 +47,7 @@ export class ModeratorService {
       openUserReports,
       openCommentReports,
       activeCivicComplaints,
+      openFeedback,
     };
   }
 
@@ -402,6 +407,153 @@ export class ModeratorService {
       ...complaint,
       statusHistory: history,
     };
+  }
+
+  async getFeedbacks(query: {
+    page: number;
+    limit: number;
+    type?: FeedbackType;
+    status?: FeedbackStatus;
+  }) {
+    const page = Math.max(1, query.page || 1);
+    const limit = Math.min(50, Math.max(1, query.limit || 20));
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+    if (query.type) where.type = query.type;
+    if (query.status) where.status = query.status;
+
+    const [items, total] = await Promise.all([
+      this.database.feedback.findMany({
+        where,
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          type: true,
+          message: true,
+          status: true,
+          createdAt: true,
+          appVersion: true,
+          platform: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      }),
+      this.database.feedback.count({ where }),
+    ]);
+
+    const formatted = items.map((item) => ({
+      id: item.id,
+      type: item.type,
+      message: item.message,
+      status: item.status,
+      createdAt: item.createdAt,
+      appVersion: item.appVersion,
+      platform: item.platform,
+      user: {
+        id: item.user.id,
+        name: item.user.name ?? 'Anonymous',
+      },
+    }));
+
+    return {
+      items: formatted,
+      page,
+      limit,
+      total,
+      hasMore: skip + formatted.length < total,
+    };
+  }
+
+  async getFeedbackDetail(id: string) {
+    const feedback = await this.database.feedback.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        type: true,
+        message: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        appVersion: true,
+        platform: true,
+        resolvedAt: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!feedback) {
+      throw new NotFoundException('Feedback not found');
+    }
+
+    return {
+      id: feedback.id,
+      type: feedback.type,
+      message: feedback.message,
+      status: feedback.status,
+      createdAt: feedback.createdAt,
+      updatedAt: feedback.updatedAt,
+      appVersion: feedback.appVersion,
+      platform: feedback.platform,
+      resolvedAt: feedback.resolvedAt,
+      user: {
+        id: feedback.user.id,
+        name: feedback.user.name ?? 'Anonymous',
+      },
+    };
+  }
+
+  async updateFeedbackStatus(actorId: string, id: string, status: FeedbackStatus) {
+    const feedback = await this.database.feedback.findFirst({
+      where: { id },
+      select: { id: true, status: true },
+    });
+
+    if (!feedback) {
+      throw new NotFoundException('Feedback not found');
+    }
+
+    if (feedback.status === status) {
+      throw new BadRequestException('Feedback is already in this status');
+    }
+
+    const validTransition =
+      (feedback.status === FeedbackStatus.OPEN && status === FeedbackStatus.REVIEWED) ||
+      (feedback.status === FeedbackStatus.REVIEWED && status === FeedbackStatus.RESOLVED);
+
+    if (!validTransition) {
+      throw new BadRequestException('Invalid status transition');
+    }
+
+    const resolvedAt = status === FeedbackStatus.RESOLVED ? new Date() : null;
+
+    await this.database.$transaction(async (tx) => {
+      await tx.feedback.update({
+        where: { id },
+        data: { status, resolvedAt },
+      });
+
+      await tx.moderationAuditEvent.create({
+        data: {
+          feedbackId: id,
+          action: ModerationAuditAction.FEEDBACK_STATUS_UPDATED,
+          actorId,
+        },
+      });
+    });
+
+    return { id, status };
   }
 
   private mapPostReport(report: any) {

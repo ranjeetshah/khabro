@@ -15,6 +15,8 @@ import { ModeratorService } from './moderator.service';
 import { ReportsQueryDto } from './dto/reports-query.dto';
 import { UpdateReportStatusDto } from './dto/update-report-status.dto';
 import { CivicComplaintsQueryDto } from './dto/civic-complaints-query.dto';
+import { FeedbackQueryDto } from '../feedback/dto/feedback-query.dto';
+import { UpdateFeedbackStatusDto } from '../feedback/dto/update-feedback-status.dto';
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -68,5 +70,28 @@ export class ModeratorController {
   @Get('civic-complaints/:id')
   async getCivicComplaintDetail(@Param('id') id: string) {
     return this.moderatorService.getCivicComplaintDetail(id);
+  }
+
+  @Get('feedback')
+  async getFeedbacks(@Query() query: FeedbackQueryDto) {
+    return this.moderatorService.getFeedbacks(query);
+  }
+
+  @Get('feedback/:id')
+  async getFeedbackDetail(@Param('id') id: string) {
+    return this.moderatorService.getFeedbackDetail(id);
+  }
+
+  @Patch('feedback/:id/status')
+  async updateFeedbackStatus(
+    @Req() request: Request,
+    @Param('id') id: string,
+    @Body() dto: UpdateFeedbackStatusDto,
+  ) {
+    return this.moderatorService.updateFeedbackStatus(
+      this.userSub(request),
+      id,
+      dto.status,
+    );
   }
 }

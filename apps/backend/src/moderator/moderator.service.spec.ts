@@ -2,7 +2,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
 import { ModeratorService } from './moderator.service';
-import { ReportStatus, CivicComplaintStatus, ModerationAuditAction } from '../generated/prisma/enums';
+import { ReportStatus, CivicComplaintStatus, FeedbackStatus, FeedbackType, ModerationAuditAction } from '../generated/prisma/enums';
 
 describe('ModeratorService', () => {
   let service: ModeratorService;
@@ -37,6 +37,12 @@ describe('ModeratorService', () => {
     moderationAuditEvent: {
       create: jest.fn(),
     },
+    feedback: {
+      findMany: jest.fn(),
+      count: jest.fn(),
+      findFirst: jest.fn(),
+      update: jest.fn(),
+    },
     $transaction: jest.fn((callback: (tx: any) => Promise<unknown>) =>
       callback(database),
     ),
@@ -61,6 +67,7 @@ describe('ModeratorService', () => {
       database.userReport.count.mockResolvedValue(2);
       database.commentReport.count.mockResolvedValue(3);
       database.civicComplaint.count.mockResolvedValue(4);
+      database.feedback.count.mockResolvedValue(1);
 
       const result = await service.getDashboardCounts();
 
@@ -69,6 +76,7 @@ describe('ModeratorService', () => {
         openUserReports: 2,
         openCommentReports: 3,
         activeCivicComplaints: 4,
+        openFeedback: 1,
       });
 
       expect(database.postReport.count).toHaveBeenCalledWith({ where: { status: 'OPEN' } });
@@ -79,6 +87,7 @@ describe('ModeratorService', () => {
           },
         },
       });
+      expect(database.feedback.count).toHaveBeenCalledWith({ where: { status: 'OPEN' } });
     });
   });
 
@@ -287,6 +296,124 @@ describe('ModeratorService', () => {
       expect(result.statusHistory).toHaveLength(1);
       expect(result.statusHistory[0].toStatus).toBe('ACKNOWLEDGED');
       expect((result.statusHistory[0] as any).actorId).toBeUndefined();
+    });
+  });
+
+  describe('getFeedbacks', () => {
+    it('returns paginated feedback list', async () => {
+      const mockFeedback = {
+        id: 'f-1',
+        type: 'BUG',
+        message: 'Bug here',
+        status: 'OPEN',
+        createdAt: new Date('2026-08-13T00:00:00Z'),
+        appVersion: '1.0.0',
+        platform: 'android',
+        user: { id: 'user-1', name: 'User A' },
+      };
+
+      database.feedback.findMany.mockResolvedValue([mockFeedback]);
+      database.feedback.count.mockResolvedValue(1);
+
+      const result = await service.getFeedbacks({
+        page: 1,
+        limit: 10,
+        type: FeedbackType.BUG,
+        status: FeedbackStatus.OPEN,
+      });
+
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].user.id).toBe('user-1');
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(10);
+    });
+  });
+
+  describe('getFeedbackDetail', () => {
+    it('returns feedback detail safely', async () => {
+      const mockFeedback = {
+        id: 'f-1',
+        type: 'BUG',
+        message: 'Bug',
+        status: 'OPEN',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        appVersion: '1.0.0',
+        platform: 'android',
+        resolvedAt: null,
+        user: { id: 'user-1', name: 'User A' },
+      };
+
+      database.feedback.findFirst.mockResolvedValue(mockFeedback);
+
+      const result = await service.getFeedbackDetail('f-1');
+
+      expect(result.id).toBe('f-1');
+      expect(result.user.name).toBe('User A');
+      expect((result as any).userId).toBeUndefined();
+    });
+
+    it('throws NotFoundException when no feedback matches', async () => {
+      database.feedback.findFirst.mockResolvedValue(null);
+
+      await expect(service.getFeedbackDetail('missing')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('updateFeedbackStatus', () => {
+    it('updates OPEN to REVIEWED and logs audit event', async () => {
+      database.feedback.findFirst.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.OPEN });
+      database.feedback.update.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.REVIEWED });
+
+      const result = await service.updateFeedbackStatus('actor-123', 'f-1', FeedbackStatus.REVIEWED);
+
+      expect(result).toEqual({ id: 'f-1', status: FeedbackStatus.REVIEWED });
+      expect(database.feedback.update).toHaveBeenCalledWith({
+        where: { id: 'f-1' },
+        data: { status: FeedbackStatus.REVIEWED, resolvedAt: null },
+      });
+      expect(database.moderationAuditEvent.create).toHaveBeenCalledWith({
+        data: {
+          feedbackId: 'f-1',
+          action: ModerationAuditAction.FEEDBACK_STATUS_UPDATED,
+          actorId: 'actor-123',
+        },
+      });
+    });
+
+    it('updates REVIEWED to RESOLVED and sets resolvedAt', async () => {
+      database.feedback.findFirst.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.REVIEWED });
+      database.feedback.update.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.RESOLVED });
+
+      const result = await service.updateFeedbackStatus('actor-123', 'f-1', FeedbackStatus.RESOLVED);
+
+      expect(result.status).toBe(FeedbackStatus.RESOLVED);
+      expect(database.feedback.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            status: FeedbackStatus.RESOLVED,
+            resolvedAt: expect.any(Date),
+          }),
+        }),
+      );
+    });
+
+    it('throws BadRequestException for same-status update', async () => {
+      database.feedback.findFirst.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.OPEN });
+
+      await expect(
+        service.updateFeedbackStatus('actor-123', 'f-1', FeedbackStatus.OPEN),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('throws BadRequestException for invalid transition', async () => {
+      database.feedback.findFirst.mockResolvedValue({ id: 'f-1', status: FeedbackStatus.OPEN });
+
+      await expect(
+        service.updateFeedbackStatus('actor-123', 'f-1', FeedbackStatus.RESOLVED),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });

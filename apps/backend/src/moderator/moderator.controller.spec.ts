@@ -4,7 +4,7 @@ import { ModeratorController } from './moderator.controller';
 import { ModeratorService } from './moderator.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ModeratorGuard } from '../auth/guards/moderator.guard';
-import { ReportStatus, CivicComplaintStatus } from '../generated/prisma/enums';
+import { ReportStatus, CivicComplaintStatus, FeedbackStatus } from '../generated/prisma/enums';
 
 describe('ModeratorController', () => {
   let controller: ModeratorController;
@@ -16,6 +16,9 @@ describe('ModeratorController', () => {
     updateReportStatus: jest.fn(),
     getCivicComplaints: jest.fn(),
     getCivicComplaintDetail: jest.fn(),
+    getFeedbacks: jest.fn(),
+    getFeedbackDetail: jest.fn(),
+    updateFeedbackStatus: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -71,6 +74,39 @@ describe('ModeratorController', () => {
         'moderator-1',
         'r-1',
         ReportStatus.REVIEWED,
+      );
+    });
+  });
+
+  describe('getFeedbacks', () => {
+    it('calls getFeedbacks with query', async () => {
+      mockModeratorService.getFeedbacks.mockResolvedValue({ items: [] });
+      const query = { page: 1, limit: 10, type: 'BUG', status: FeedbackStatus.OPEN };
+      const res = await controller.getFeedbacks(query);
+      expect(res).toEqual({ items: [] });
+      expect(mockModeratorService.getFeedbacks).toHaveBeenCalledWith(query);
+    });
+  });
+
+  describe('getFeedbackDetail', () => {
+    it('calls getFeedbackDetail with id', async () => {
+      mockModeratorService.getFeedbackDetail.mockResolvedValue({ id: 'f-1' });
+      const res = await controller.getFeedbackDetail('f-1');
+      expect(res).toEqual({ id: 'f-1' });
+      expect(mockModeratorService.getFeedbackDetail).toHaveBeenCalledWith('f-1');
+    });
+  });
+
+  describe('updateFeedbackStatus', () => {
+    it('calls updateFeedbackStatus with sub and payload', async () => {
+      mockModeratorService.updateFeedbackStatus.mockResolvedValue({ success: true });
+      const req = { user: { sub: 'moderator-1' } } as any;
+      const res = await controller.updateFeedbackStatus(req, 'f-1', { status: FeedbackStatus.REVIEWED });
+      expect(res).toEqual({ success: true });
+      expect(mockModeratorService.updateFeedbackStatus).toHaveBeenCalledWith(
+        'moderator-1',
+        'f-1',
+        FeedbackStatus.REVIEWED,
       );
     });
   });

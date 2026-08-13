@@ -59,6 +59,7 @@ export const ModelName = {
   Witness: 'Witness',
   VerificationEvent: 'VerificationEvent',
   VerificationContribution: 'VerificationContribution',
+  Feedback: 'Feedback',
   PostReport: 'PostReport',
   UserReport: 'UserReport',
   ModerationAuditEvent: 'ModerationAuditEvent',
@@ -191,6 +192,22 @@ export const VerificationContributionScalarFieldEnum = {
 export type VerificationContributionScalarFieldEnum = (typeof VerificationContributionScalarFieldEnum)[keyof typeof VerificationContributionScalarFieldEnum]
 
 
+export const FeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  message: 'message',
+  appVersion: 'appVersion',
+  platform: 'platform',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
+
+
 export const PostReportScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
@@ -222,6 +239,7 @@ export type UserReportScalarFieldEnum = (typeof UserReportScalarFieldEnum)[keyof
 export const ModerationAuditEventScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
+  feedbackId: 'feedbackId',
   action: 'action',
   actorId: 'actorId',
   createdAt: 'createdAt'

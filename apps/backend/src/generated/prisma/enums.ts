@@ -109,6 +109,24 @@ export const ReportStatus = {
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
 
 
+export const FeedbackType = {
+  BUG: 'BUG',
+  FEEDBACK: 'FEEDBACK',
+  SUGGESTION: 'SUGGESTION'
+} as const
+
+export type FeedbackType = (typeof FeedbackType)[keyof typeof FeedbackType]
+
+
+export const FeedbackStatus = {
+  OPEN: 'OPEN',
+  REVIEWED: 'REVIEWED',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type FeedbackStatus = (typeof FeedbackStatus)[keyof typeof FeedbackStatus]
+
+
 export const ModerationAuditAction = {
   REPORT_CREATED: 'REPORT_CREATED',
   REPORT_REVIEWED: 'REPORT_REVIEWED',
@@ -117,7 +135,8 @@ export const ModerationAuditAction = {
   POST_HIDDEN: 'POST_HIDDEN',
   POST_RESTORED: 'POST_RESTORED',
   USER_SUSPENDED: 'USER_SUSPENDED',
-  USER_UNSUSPENDED: 'USER_UNSUSPENDED'
+  USER_UNSUSPENDED: 'USER_UNSUSPENDED',
+  FEEDBACK_STATUS_UPDATED: 'FEEDBACK_STATUS_UPDATED'
 } as const
 
 export type ModerationAuditAction = (typeof ModerationAuditAction)[keyof typeof ModerationAuditAction]

@@ -58,6 +58,11 @@ export type VerificationEvent = Prisma.VerificationEventModel
  */
 export type VerificationContribution = Prisma.VerificationContributionModel
 /**
+ * Model Feedback
+ * 
+ */
+export type Feedback = Prisma.FeedbackModel
+/**
  * Model PostReport
  * 
  */

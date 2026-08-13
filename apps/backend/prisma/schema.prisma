@@ -34,6 +34,7 @@ model User {
   notifications Notification[]
   comments      Comment[]
   commentReports CommentReport[] @relation("CommentReporterUser")
+  feedbacks      Feedback[]
 
   @@index([status])
 }
@@ -237,6 +238,36 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum FeedbackType {
+  BUG
+  FEEDBACK
+  SUGGESTION
+}
+
+enum FeedbackStatus {
+  OPEN
+  REVIEWED
+  RESOLVED
+}
+
+model Feedback {
+  id          String         @id @default(uuid())
+  userId      String
+  type        FeedbackType
+  message     String
+  appVersion  String?
+  platform    String?
+  status      FeedbackStatus @default(OPEN)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  resolvedAt  DateTime?
+
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
 enum ModerationAuditAction {
   REPORT_CREATED
   REPORT_REVIEWED
@@ -246,6 +277,7 @@ enum ModerationAuditAction {
   POST_RESTORED
   USER_SUSPENDED
   USER_UNSUSPENDED
+  FEEDBACK_STATUS_UPDATED
 }
 
 enum ComplaintStatus {
@@ -294,11 +326,12 @@ model UserReport {
 }
 
 model ModerationAuditEvent {
-  id        String               @id @default(uuid())
-  reportId  String?
-  action    ModerationAuditAction
-  actorId   String?
-  createdAt DateTime             @default(now())
+  id          String               @id @default(uuid())
+  reportId    String?
+  feedbackId  String?
+  action      ModerationAuditAction
+  actorId     String?
+  createdAt   DateTime             @default(now())
 
   @@index([reportId, createdAt])
   @@index([action, createdAt])
@@ -464,4 +497,4 @@ model CommentReport {
   @@index([commentId, createdAt])
   @@index([reporterId, createdAt])
   @@index([status])
-}
+}

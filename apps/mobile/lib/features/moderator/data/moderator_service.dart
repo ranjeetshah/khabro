@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
+import '../../feedback/data/feedback_model.dart';
 import 'moderator_dashboard_model.dart';
 import 'moderator_report_model.dart';
 import 'moderator_civic_complaint_model.dart';
@@ -158,6 +159,56 @@ class ModeratorService {
     _checkStatus(response, 'Failed to fetch civic complaint detail');
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     return ModeratorCivicComplaintModel.fromJson(data);
+  }
+
+  Future<FeedbackPageModel> getFeedbacks({
+    int page = 1,
+    int limit = 20,
+    String? type,
+    String? status,
+  }) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+    };
+    if (type != null && type.isNotEmpty && type != 'ALL') {
+      queryParams['type'] = type;
+    }
+    if (status != null && status.isNotEmpty) {
+      queryParams['status'] = status;
+    }
+
+    final uri = Uri(
+      path: '/moderator/feedback',
+      queryParameters: queryParams,
+    );
+
+    final response = await _request(
+      (headers) => _apiClient.get(uri.toString(), headers: headers),
+    );
+    _checkStatus(response, 'Failed to load feedback');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return FeedbackPageModel.fromJson(data);
+  }
+
+  Future<FeedbackModel> getFeedbackDetail(String id) async {
+    final response = await _request(
+      (headers) => _apiClient.get('/moderator/feedback/$id', headers: headers),
+    );
+    _checkStatus(response, 'Failed to load feedback detail');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return FeedbackModel.fromJson(data);
+  }
+
+  Future<void> updateFeedbackStatus(String id, String status) async {
+    final response = await _request(
+      (headers) => _apiClient.patch(
+        '/moderator/feedback/$id/status',
+        headers: headers,
+        body: {'status': status},
+      ),
+    );
+    _checkStatus(response, 'Failed to update feedback status');
   }
 
   Future<void> updateCivicComplaintStatus(

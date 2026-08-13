@@ -4,6 +4,7 @@ class ModeratorDashboardModel {
     required this.openUserReports,
     required this.openCommentReports,
     required this.activeCivicComplaints,
+    required this.openFeedback,
   });
 
   factory ModeratorDashboardModel.fromJson(Map<String, dynamic> json) {
@@ -12,6 +13,7 @@ class ModeratorDashboardModel {
       openUserReports: (json['openUserReports'] as num?)?.toInt() ?? 0,
       openCommentReports: (json['openCommentReports'] as num?)?.toInt() ?? 0,
       activeCivicComplaints: (json['activeCivicComplaints'] as num?)?.toInt() ?? 0,
+      openFeedback: (json['openFeedback'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -19,4 +21,5 @@ class ModeratorDashboardModel {
   final int openUserReports;
   final int openCommentReports;
   final int activeCivicComplaints;
+  final int openFeedback;
 }

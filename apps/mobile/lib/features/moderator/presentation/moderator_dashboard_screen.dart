@@ -5,6 +5,7 @@ import '../data/moderator_dashboard_model.dart';
 import '../data/moderator_service.dart';
 import 'moderator_report_list_screen.dart';
 import 'moderator_complaint_list_screen.dart';
+import 'moderator_feedback_list_screen.dart';
 
 class ModeratorDashboardScreen extends StatefulWidget {
   const ModeratorDashboardScreen({super.key, required this.moderatorService});
@@ -55,6 +56,16 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  void _navigateToFeedback() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ModeratorFeedbackListScreen(
+          moderatorService: widget.moderatorService,
+        ),
+      ),
+    ).then((_) => _loadDashboard());
   }
 
   void _navigateToReports(String type) {
@@ -254,6 +265,11 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
                             'Civic Complaints',
                             _navigateToComplaints,
                           ),
+                          _buildStatTile(
+                            '${_dashboard!.openFeedback}',
+                            'Open Feedback',
+                            _navigateToFeedback,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -275,6 +291,8 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
                           _buildActionButton('User Reports', () => _navigateToReports('USER')),
                           const SizedBox(height: 8),
                           _buildActionButton('Comment Reports', () => _navigateToReports('COMMENT')),
+                          const SizedBox(height: 8),
+                          _buildActionButton('Feedback', _navigateToFeedback),
                         ],
                       ),
                       const SizedBox(height: 24),
