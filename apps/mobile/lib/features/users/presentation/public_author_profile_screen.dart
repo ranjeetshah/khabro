@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
+import '../../reports/presentation/report_dialog.dart';
 import '../data/public_user_model.dart';
 import '../data/public_user_service.dart';
 
@@ -70,10 +71,35 @@ class _PublicAuthorProfileScreenState extends State<PublicAuthorProfileScreen> {
     return trimmed == null || trimmed.isEmpty ? 'Khabro User' : trimmed;
   }
 
+  Future<void> _openReport(BuildContext context) async {
+    await showReportDialog(
+      context,
+      title: 'Report user',
+      onSubmit: (reason, description) => _service.reportUser(
+        widget.userId,
+        reason: reason.wire,
+        description: description,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Public Profile')),
+      appBar: AppBar(
+        title: const Text('Public Profile'),
+        actions: [
+          PopupMenuButton<String>(
+            tooltip: 'More options',
+            onSelected: (value) {
+              if (value == 'report') _openReport(context);
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'report', child: Text('Report user')),
+            ],
+          ),
+        ],
+      ),
       body: _isLoading
           ? const Center(child: Text('Loading profile...'))
           : _errorMessage != null

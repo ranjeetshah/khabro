@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 import { LocationModule } from './location/location.module';
 import { PostsModule } from './posts/posts.module';
 import { FeedModule } from './feed/feed.module';
+import { ComplaintsModule } from './complaints/complaints.module';
+import { MailModule } from './mail/mail.module';
+import { CivicComplaintModule } from './civic-complaint/civic-complaint.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { FeedModule } from './feed/feed.module';
     LocationModule,
     PostsModule,
     FeedModule,
+    ComplaintsModule,
+    MailModule,
+    CivicComplaintModule,
   ],
 })
 export class AppModule {}

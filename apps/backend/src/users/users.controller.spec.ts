@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { ModerationService } from '../moderation/moderation.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 describe('UsersController', () => {
@@ -23,6 +24,11 @@ describe('UsersController', () => {
     updateMe: jest.fn(),
   };
 
+  const mockModerationService = {
+    createPostReport: jest.fn(),
+    createUserReport: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -32,6 +38,10 @@ describe('UsersController', () => {
         {
           provide: UsersService,
           useValue: mockUsersService,
+        },
+        {
+          provide: ModerationService,
+          useValue: mockModerationService,
         },
       ],
     })
@@ -164,6 +174,50 @@ describe('UsersController', () => {
       mockUsersService.findPublic.mockResolvedValue(null);
       await expect(controller.getPublic('missing')).rejects.toThrow(
         'Public user not found',
+      );
+    });
+  });
+
+  describe('POST /users/:id/report', () => {
+    it('reports a user using the JWT identity and a safe payload', async () => {
+      const mockRequest = { user: { sub: 'user-123' } } as any;
+      mockModerationService.createUserReport.mockResolvedValue({
+        id: 'report-1',
+        status: 'OPEN',
+      });
+
+      await expect(
+        controller.reportUser(mockRequest, 'user-456', {
+          reason: 'HARASSMENT',
+          description: 'Repeated abuse.',
+        } as any),
+      ).resolves.toEqual({ id: 'report-1', status: 'OPEN' });
+
+      expect(mockModerationService.createUserReport).toHaveBeenCalledWith(
+        'user-123',
+        'user-456',
+        'HARASSMENT',
+        'Repeated abuse.',
+      );
+    });
+
+    it('never passes a client-provided reporter identity', async () => {
+      const mockRequest = {
+        user: { sub: 'user-123' },
+        body: { reporterId: 'attacker-id', reason: 'SPAM' },
+      } as any;
+      mockModerationService.createUserReport.mockResolvedValue({
+        id: 'report-1',
+        status: 'OPEN',
+      });
+
+      await controller.reportUser(mockRequest, 'user-456', { reason: 'SPAM' } as any);
+
+      expect(mockModerationService.createUserReport).toHaveBeenCalledWith(
+        'user-123',
+        'user-456',
+        'SPAM',
+        undefined,
       );
     });
   });

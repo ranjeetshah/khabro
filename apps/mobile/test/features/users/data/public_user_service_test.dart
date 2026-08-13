@@ -47,4 +47,34 @@ void main() {
       );
     }
   });
+
+  test('reportUser sends the reason and parses errors', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      expect(request.method, 'POST');
+      expect(request.url.path, '/users/user-1/report');
+      expect(request.headers['Authorization'], 'Bearer jwt');
+      expect(jsonDecode(request.body), {
+        'reason': 'HARASSMENT',
+        'description': 'Abusive messages',
+      });
+      return http.Response(jsonEncode({'id': 'report-1', 'status': 'OPEN'}), 201);
+    });
+    await service.reportUser('user-1', reason: 'HARASSMENT', description: 'Abusive messages');
+  });
+
+  test('reportUser requires a token and rejects on server error', () async {
+    final missing = serviceFor(FakeTokenStorage(), (request) async => fail('no request'));
+    expect(
+      () => missing.reportUser('user-1', reason: 'SPAM'),
+      throwsA(isA<AuthException>()),
+    );
+
+    final failing = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      return http.Response('{"message":"Duplicate report"}', 409);
+    });
+    expect(
+      () => failing.reportUser('user-1', reason: 'SPAM'),
+      throwsA(isA<AuthException>().having((e) => e.statusCode, 'status', 409)),
+    );
+  });
 }

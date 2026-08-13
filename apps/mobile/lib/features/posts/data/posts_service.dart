@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
 import '../../auth/data/auth_exception.dart';
+import 'civic_complaint_model.dart';
 import 'like_status_model.dart';
 import 'post_model.dart';
 import 'verification_history_model.dart';
@@ -108,6 +109,39 @@ class PostsService {
     return VerificationHistoryModel.fromJson(
       jsonDecode(response.body) as Map<String, dynamic>,
     );
+  }
+
+  Future<CivicComplaintModel?> getCivicComplaint(String id) async {
+    final response = await _request(
+      (headers) =>
+          _apiClient.get('/posts/$id/civic-complaint', headers: headers),
+    );
+    if (response.statusCode == 404) return null;
+    _checkStatus(response, 'Failed to fetch civic complaint');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return CivicComplaintModel.fromJson(data);
+  }
+
+  /// Submits a content report for a post. The backend derives the reporter
+  /// from the JWT; the response is intentionally discarded here so the UI can
+  /// never display an internal report id or moderation status.
+  Future<void> reportPost(
+    String id, {
+    required String reason,
+    String? description,
+  }) async {
+    final response = await _request(
+      (headers) => _apiClient.post(
+        '/posts/$id/report',
+        headers: headers,
+        body: {
+          'reason': reason,
+          if (description != null && description.trim().isNotEmpty)
+            'description': description,
+        },
+      ),
+    );
+    _checkStatus(response, 'Failed to report post');
   }
 
   Future<LikeStatusModel> _updateLike(String path, String fallback) async {

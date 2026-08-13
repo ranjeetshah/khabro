@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional } from '@nestjs/common';
+import { CivicComplaintService } from '../civic-complaint/civic-complaint.service';
 import { DatabaseService } from '../database/database.service';
 import { Prisma } from '../generated/prisma/client';
 import { VerificationHistoryService } from './verification.history.service';
@@ -10,12 +11,13 @@ export class WitnessService {
     private readonly database: DatabaseService,
     private readonly verificationService: VerificationService,
     private readonly verificationHistory: VerificationHistoryService,
+    @Optional() private readonly civicComplaintService?: CivicComplaintService,
   ) {}
 
   async witness(userId: string, postId: string) {
     await this.assertPostExists(postId);
 
-    return this.database.$transaction(async (tx) => {
+    const result = await this.database.$transaction(async (tx) => {
       const existing = await tx.witness.findUnique({
         where: {
           userId_postId: {
@@ -51,6 +53,16 @@ export class WitnessService {
         verification,
       };
     });
+
+    if (this.civicComplaintService) {
+      try {
+        await this.civicComplaintService.evaluateAndGenerateComplaint(postId);
+      } catch {
+        // Safe trigger failure isolation
+      }
+    }
+
+    return result;
   }
 
   async unwitness(userId: string, postId: string) {

@@ -299,4 +299,31 @@ void main() {
       ),
     );
   });
+
+  test('reportPost sends the reason and optional description', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      expect(request.method, 'POST');
+      expect(request.url.path, '/posts/post-1/report');
+      expect(request.headers['Authorization'], 'Bearer jwt');
+      expect(jsonDecode(request.body), {
+        'reason': 'SPAM',
+        'description': 'Too many ads',
+      });
+      return http.Response(jsonEncode({'id': 'report-1', 'status': 'OPEN'}), 201);
+    });
+    await service.reportPost('post-1', reason: 'SPAM', description: 'Too many ads');
+  });
+
+  test('reportPost omits a blank description and rejects on error', () async {
+    final service = serviceFor(FakeTokenStorage('jwt'), (request) async {
+      expect(jsonDecode(request.body), {'reason': 'OTHER'});
+      return http.Response('{"message":"Duplicate report"}', 409);
+    });
+    await expectLater(
+      () => service.reportPost('post-1', reason: 'OTHER', description: '  '),
+      throwsA(
+        isA<AuthException>().having((e) => e.statusCode, 'status', 409),
+      ),
+    );
+  });
 }

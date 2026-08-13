@@ -16,6 +16,7 @@ model User {
   profileImage  String?
   trustScore    Int        @default(0)
   status        UserStatus @default(ACTIVE)
+  allowCivicComplaintContactSharing Boolean @default(false)
 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -24,6 +25,10 @@ model User {
   posts         Post[]
   likes         Like[]
   witnesses     Witness[]
+  postReports   PostReport[]   @relation("ReporterUser")
+  userReports   UserReport[]   @relation("ReporterUser")
+  reportedUsers UserReport[]   @relation("ReportedUser")
+  complaints    Complaint[]
 
   @@index([status])
 }
@@ -88,6 +93,9 @@ model Post {
   witnesses  Witness[]
   verificationEvents        VerificationEvent[]
   verificationContributions VerificationContribution[]
+  reports    PostReport[]
+  complaints Complaint[]
+  civicComplaint CivicComplaint?
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
@@ -180,4 +188,150 @@ enum VerificationEventType {
 enum VerificationContributionType {
   WITNESS
   STATUS_TRANSITION
+}
+
+enum PostReportReason {
+  SPAM
+  HARASSMENT
+  FALSE_INFORMATION
+  INAPPROPRIATE_CONTENT
+  DANGEROUS_CONTENT
+  OTHER
+}
+
+enum UserReportReason {
+  SPAM
+  HARASSMENT
+  IMPERSONATION
+  ABUSIVE_BEHAVIOR
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+enum ModerationAuditAction {
+  REPORT_CREATED
+  REPORT_REVIEWED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+  POST_HIDDEN
+  POST_RESTORED
+  USER_SUSPENDED
+  USER_UNSUSPENDED
+}
+
+enum ComplaintStatus {
+  SUBMITTED
+  ACKNOWLEDGED
+  IN_PROGRESS
+  RESOLVED
+  CITIZEN_CONFIRMED
+  REOPENED
+}
+
+model PostReport {
+  id          String          @id @default(uuid())
+  postId      String
+  reporterId  String
+  reason      PostReportReason
+  description String?
+  status      ReportStatus    @default(OPEN)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  post        Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reporter    User            @relation("ReporterUser", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@index([reporterId, createdAt])
+  @@index([status])
+}
+
+model UserReport {
+  id              String           @id @default(uuid())
+  reportedUserId  String
+  reporterId      String
+  reason          UserReportReason
+  description     String?
+  status          ReportStatus     @default(OPEN)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  reportedUser    User             @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  reporter        User             @relation("ReporterUser", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([reportedUserId, createdAt])
+  @@index([reporterId, createdAt])
+  @@index([status])
+}
+
+model ModerationAuditEvent {
+  id        String               @id @default(uuid())
+  reportId  String?
+  action    ModerationAuditAction
+  createdAt DateTime             @default(now())
+
+  @@index([reportId, createdAt])
+  @@index([action, createdAt])
+}
+
+model Complaint {
+  id          String           @id @default(uuid())
+  postId      String
+  createdById String
+  status      ComplaintStatus  @default(SUBMITTED)
+  description String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  post        Post             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdBy   User             @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  statusHistory ComplaintStatusHistory[]
+
+  @@unique([postId, createdById])
+  @@index([createdById, createdAt])
+  @@index([status])
+}
+
+model ComplaintStatusHistory {
+  id         String            @id @default(uuid())
+  complaintId String
+  fromStatus ComplaintStatus?
+  toStatus   ComplaintStatus
+  createdAt  DateTime          @default(now())
+
+  complaint  Complaint         @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId, createdAt, id])
+}
+
+enum CivicComplaintStatus {
+  DRAFT
+  SENT
+  FAILED
+}
+
+model CivicComplaint {
+  id             String               @id @default(uuid())
+  postId         String               @unique
+  referenceCode  String               @unique
+  authorityEmail String
+  subject        String
+  body           String
+  witnessCount   Int
+  status         CivicComplaintStatus @default(DRAFT)
+  sentAt         DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  post           Post                 @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([status])
+  @@index([referenceCode])
 }

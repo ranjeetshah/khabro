@@ -12,12 +12,26 @@ class FakePublicUserService extends PublicUserService {
   final PublicUserModel? user;
   final AuthException? error;
   var calls = 0;
+  var reportCalls = 0;
+  String? reportUserId;
+  String? reportReason;
 
   @override
   Future<PublicUserModel> getPublicUser(String id) async {
     calls++;
     if (error != null) throw error!;
     return user!;
+  }
+
+  @override
+  Future<void> reportUser(
+    String id, {
+    required String reason,
+    String? description,
+  }) async {
+    reportCalls++;
+    reportUserId = id;
+    reportReason = reason;
   }
 }
 
@@ -93,5 +107,39 @@ void main() {
     await tester.tap(find.text('RETRY'));
     await tester.pumpAndSettle();
     expect(failed.calls, 2);
+  });
+
+  testWidgets('report user submits the selected reason safely', (tester) async {
+    final service = FakePublicUserService(
+      user: const PublicUserModel(id: 'author-1', name: 'Test User'),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PublicAuthorProfileScreen(
+          userId: 'author-1',
+          publicUserService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Report user'));
+    await tester.pumpAndSettle();
+    expect(find.text('Why are you reporting this?'), findsOneWidget);
+
+    await tester.tap(find.text('Harassment'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Submit report'));
+    await tester.pumpAndSettle();
+
+    expect(service.reportCalls, 1);
+    expect(service.reportUserId, 'author-1');
+    expect(service.reportReason, 'HARASSMENT');
+    expect(find.text('Report submitted'), findsOneWidget);
+    expect(find.text('author-1'), findsNothing);
+    expect(find.text('report-1'), findsNothing);
+    expect(find.text('JWT'), findsNothing);
   });
 }

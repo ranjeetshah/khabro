@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
+import '../../complaints/data/complaint_service.dart';
+import '../../complaints/presentation/create_complaint_screen.dart';
+import '../../reports/presentation/report_dialog.dart';
 import '../../users/data/public_user_service.dart';
 import '../../users/presentation/public_author_profile_screen.dart';
+import '../data/civic_complaint_model.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
 import '../data/verification_event.dart';
@@ -17,6 +21,7 @@ class PostDetailScreen extends StatefulWidget {
     required this.post,
     this.postsService,
     this.publicUserService,
+    this.complaintService,
     this.currentUserId,
     this.onSessionExpired,
   });
@@ -24,6 +29,7 @@ class PostDetailScreen extends StatefulWidget {
   final PostModel post;
   final PostsService? postsService;
   final PublicUserService? publicUserService;
+  final ComplaintService? complaintService;
   final String? currentUserId;
   final VoidCallback? onSessionExpired;
 
@@ -41,6 +47,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   bool _witnessedByMe = false;
   VerificationStatus _verificationStatus = VerificationStatus.reported;
   VerificationHistoryModel? _history;
+  CivicComplaintModel? _civicComplaint;
   bool _isHistoryLoading = false;
   String? _historyError;
   String? _errorMessage;
@@ -59,6 +66,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _verificationStatus = widget.post.verificationStatus;
     _loadVerification();
     _loadHistory();
+    _loadCivicComplaint();
   }
 
   Future<void> _loadVerification() async {
@@ -70,8 +78,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       setState(() {
         _verificationStatus = verification.status;
       });
+      if (verification.status == VerificationStatus.locallyVerified) {
+        await _loadCivicComplaint();
+      }
     } catch (_) {
       // Verification is display-only; keep the value from the post model.
+    }
+  }
+
+  Future<void> _loadCivicComplaint() async {
+    try {
+      final complaint = await _postsService.getCivicComplaint(widget.post.id);
+      if (!mounted) return;
+      setState(() {
+        _civicComplaint = complaint;
+      });
+    } catch (_) {
+      // Safe fallback if no complaint exists
     }
   }
 
@@ -149,6 +172,29 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
     );
     if (confirmed == true) await _deletePost();
+  }
+
+  Future<void> _openReport(BuildContext context) async {
+    await showReportDialog(
+      context,
+      title: 'Report post',
+      onSubmit: (reason, description) => _postsService.reportPost(
+        widget.post.id,
+        reason: reason.wire,
+        description: description,
+      ),
+    );
+  }
+
+  Future<void> _openCreateComplaint(BuildContext context) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => CreateComplaintScreen(
+          post: widget.post,
+          complaintService: widget.complaintService,
+        ),
+      ),
+    );
   }
 
   Future<void> _deletePost() async {
@@ -236,6 +282,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       });
       if (status.verification == null) {
         await _loadVerification();
+      } else if (status.verification!.status ==
+          VerificationStatus.locallyVerified) {
+        await _loadCivicComplaint();
       }
     } on AuthException catch (error) {
       if (!mounted) return;
@@ -261,6 +310,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       appBar: AppBar(
         title: const Text('Post'),
         actions: [
+          PopupMenuButton<String>(
+            tooltip: 'More options',
+            onSelected: (value) {
+              if (value == 'report') _openReport(context);
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'report', child: Text('Report post')),
+            ],
+          ),
           if (_isOwnPost)
             IconButton(
               onPressed: _isDeleting ? null : _confirmDelete,
@@ -350,6 +408,59 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             OutlinedButton(
               onPressed: _isWitnessUpdating ? null : _toggleWitness,
               child: const Text('RETRY WITNESS'),
+            ),
+          ],
+          if (_verificationStatus == VerificationStatus.locallyVerified) ...[
+            const SizedBox(height: 16),
+            Card(
+              margin: EdgeInsets.zero,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Community Action',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    if (_civicComplaint != null &&
+                        _civicComplaint!.status == 'SENT') ...[
+                      Text(
+                        '${_civicComplaint!.witnessCount} local eyewitnesses have confirmed they personally witnessed this issue.',
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Complaint sent to the concerned authority.',
+                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Reference: ${_civicComplaint!.referenceCode}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ] else if (_civicComplaint != null &&
+                        _civicComplaint!.status == 'FAILED') ...[
+                      const Text(
+                        'Complaint could not be sent.',
+                        style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                      ),
+                    ] else ...[
+                      const Text(
+                        'Community verification complete.',
+                        style: TextStyle(color: Colors.blueGrey),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => _openCreateComplaint(context),
+              icon: const Icon(Icons.report_problem_outlined),
+              label: const Text('Submit Civic Complaint'),
             ),
           ],
           const Divider(height: 32),

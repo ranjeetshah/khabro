@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class UpdateMeDto {
   @IsOptional()
@@ -6,4 +6,8 @@ export class UpdateMeDto {
   @MinLength(1, { message: 'name must not be empty' })
   @MaxLength(100)
   name?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  allowCivicComplaintContactSharing?: boolean;
 }

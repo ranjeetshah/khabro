@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
+import 'package:mobile/features/complaints/data/complaint_model.dart';
+import 'package:mobile/features/complaints/data/complaint_service.dart';
+import 'package:mobile/features/complaints/data/complaint_status.dart';
+import 'package:mobile/features/complaints/presentation/create_complaint_screen.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
@@ -11,6 +15,7 @@ import 'package:mobile/features/posts/data/verification_status_model.dart';
 import 'package:mobile/features/posts/data/witness_status_model.dart';
 import 'package:mobile/features/posts/data/verification_event.dart';
 import 'package:mobile/features/posts/data/verification_history_model.dart';
+import 'package:mobile/features/posts/data/civic_complaint_model.dart';
 import 'package:mobile/features/posts/presentation/post_detail_screen.dart';
 import 'package:mobile/features/users/data/public_user_model.dart';
 import 'package:mobile/features/users/data/public_user_service.dart';
@@ -53,6 +58,8 @@ class FakeDeletePostsService extends PostsService {
     this.history,
     this.historyError,
     this.historyCompleter,
+    this.reportError,
+    this.reportCompleter,
   }) : super(apiClient: null, tokenStorage: null);
 
   final List<Object> errors;
@@ -68,12 +75,32 @@ class FakeDeletePostsService extends PostsService {
   VerificationHistoryModel? history;
   Object? historyError;
   Completer<VerificationHistoryModel>? historyCompleter;
+  var reportCalls = 0;
+  String? reportId;
+  String? reportReason;
+  String? reportDescription;
+  Object? reportError;
+  Completer<void>? reportCompleter;
 
   @override
   Future<void> deletePost(String id) async {
     calls++;
     deletedId = id;
     if (calls <= errors.length) throw errors[calls - 1];
+  }
+
+  @override
+  Future<void> reportPost(
+    String id, {
+    required String reason,
+    String? description,
+  }) async {
+    reportCalls++;
+    reportId = id;
+    reportReason = reason;
+    reportDescription = description;
+    if (reportCompleter != null) return reportCompleter!.future;
+    if (reportError != null) throw reportError!;
   }
 
   @override
@@ -109,12 +136,40 @@ class FakeDeletePostsService extends PostsService {
     );
   }
 
+  CivicComplaintModel? civicComplaint;
+
+  @override
+  Future<CivicComplaintModel?> getCivicComplaint(String id) async {
+    return civicComplaint;
+  }
+
   @override
   Future<VerificationHistoryModel> getVerificationHistory(String id) async {
     historyCalls++;
     if (historyCompleter != null) return historyCompleter!.future;
     if (historyError != null) throw historyError!;
     return history ?? const VerificationHistoryModel(events: []);
+  }
+}
+
+class FakeComplaintService extends ComplaintService {
+  FakeComplaintService() : super(apiClient: null, tokenStorage: null);
+  var createCalls = 0;
+  String? createPostId;
+  String? createDescription;
+
+  @override
+  Future<ComplaintSubmissionModel> createComplaint(
+    String postId,
+    String description,
+  ) async {
+    createCalls++;
+    createPostId = postId;
+    createDescription = description;
+    return ComplaintSubmissionModel(
+      id: 'complaint-1',
+      status: ComplaintStatus.submitted,
+    );
   }
 }
 
@@ -632,5 +687,235 @@ void main() {
     expect(find.text('Witnessed'), findsOneWidget);
     expect(find.text('Post reported locally'), findsOneWidget);
     expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets(
+    'report flow requires a reason and submits the wire reason safely',
+    (tester) async {
+      final service = FakeDeletePostsService();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PostDetailScreen(post: detailPost(), postsService: service),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('More options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Report post'));
+      await tester.pumpAndSettle();
+      expect(find.text('Why are you reporting this?'), findsOneWidget);
+
+      final submit = find.widgetWithText(FilledButton, 'Submit report');
+      expect(submit, findsOneWidget);
+      await tester.tap(submit);
+      await tester.pump();
+      expect(service.reportCalls, 0);
+
+      await tester.tap(find.text('Spam'));
+      await tester.pump();
+      await tester.enterText(
+        find.byType(TextField),
+        'Repeated low-quality posts',
+      );
+      await tester.tap(submit);
+      await tester.pumpAndSettle();
+
+      expect(service.reportCalls, 1);
+      expect(service.reportId, 'post-1');
+      expect(service.reportReason, 'SPAM');
+      expect(service.reportDescription, 'Repeated low-quality posts');
+      expect(find.text('Report submitted'), findsOneWidget);
+      expect(find.text('complaint-1'), findsNothing);
+      expect(find.text('JWT'), findsNothing);
+      expect(find.text('private-locality-id'), findsNothing);
+
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+      expect(find.text('Hello Khabro!'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'report errors show a retry path that recovers',
+    (tester) async {
+      final service = FakeDeletePostsService(reportError: Exception('boom'));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PostDetailScreen(post: detailPost(), postsService: service),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('More options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Report post'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Spam'));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(FilledButton, 'Submit report'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Something went wrong. Please try again.'),
+        findsOneWidget,
+      );
+      expect(service.reportCalls, 1);
+
+      service.reportError = null;
+      await tester.tap(find.widgetWithText(FilledButton, 'Submit report'));
+      await tester.pumpAndSettle();
+      expect(service.reportCalls, 2);
+      expect(find.text('Report submitted'), findsOneWidget);
+    },
+  );
+
+  testWidgets('report dialog ignores duplicate taps while in flight', (
+    tester,
+  ) async {
+    final completer = Completer<void>();
+    final service = FakeDeletePostsService(reportCompleter: completer);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(post: detailPost(), postsService: service),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Report post'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Harassment'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Submit report'));
+    await tester.pump();
+    await tester.tap(find.byType(FilledButton));
+    await tester.pump();
+    expect(service.reportCalls, 1);
+
+    completer.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Report submitted'), findsOneWidget);
+  });
+
+  testWidgets('complaint button shows only for locally verified posts', (
+    tester,
+  ) async {
+    for (final status in [
+      VerificationStatus.reported,
+      VerificationStatus.underVerification,
+    ]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PostDetailScreen(
+            key: ValueKey('status-${status.name}'),
+            post: detailPost(verificationStatus: status),
+            postsService: FakeDeletePostsService(verificationStatus: status),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Submit Civic Complaint'), findsNothing);
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          key: const ValueKey('status-locallyVerified'),
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: FakeDeletePostsService(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Submit Civic Complaint'), findsOneWidget);
+  });
+
+  testWidgets('submit complaint opens the create complaint screen', (
+    tester,
+  ) async {
+    final complaintService = FakeComplaintService();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: FakeDeletePostsService(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          complaintService: complaintService,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Submit Civic Complaint'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CreateComplaintScreen), findsOneWidget);
+    expect(find.text('Hello Khabro!'), findsOneWidget);
+  });
+
+  testWidgets('displays SENT civic complaint status and reference code', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    service.civicComplaint = const CivicComplaintModel(
+      referenceCode: 'KH-2026-000123',
+      status: 'SENT',
+      witnessCount: 20,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Community Action'), findsOneWidget);
+    expect(
+      find.text('Complaint sent to the concerned authority.'),
+      findsOneWidget,
+    );
+    expect(find.text('Reference: KH-2026-000123'), findsOneWidget);
+  });
+
+  testWidgets('displays FAILED civic complaint status safely', (
+    tester,
+  ) async {
+    final service = FakeDeletePostsService(
+      verificationStatus: VerificationStatus.locallyVerified,
+    );
+    service.civicComplaint = const CivicComplaintModel(
+      referenceCode: 'KH-2026-000123',
+      status: 'FAILED',
+      witnessCount: 20,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PostDetailScreen(
+          post: detailPost(
+            verificationStatus: VerificationStatus.locallyVerified,
+          ),
+          postsService: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Community Action'), findsOneWidget);
+    expect(find.text('Complaint could not be sent.'), findsOneWidget);
   });
 }

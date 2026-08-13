@@ -6,6 +6,9 @@ import { LikesService } from './likes.service';
 import { VerificationHistoryService } from './verification.history.service';
 import { VerificationService } from './verification.service';
 import { WitnessService } from './witness.service';
+import { ModerationService } from '../moderation/moderation.service';
+import { CivicComplaintService } from '../civic-complaint/civic-complaint.service';
+import { ComplaintService } from '../complaints/complaints.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 describe('PostsController', () => {
@@ -36,6 +39,19 @@ describe('PostsController', () => {
 
   const verificationHistoryService = {
     getHistory: jest.fn(),
+  };
+
+  const moderationService = {
+    createPostReport: jest.fn(),
+    createUserReport: jest.fn(),
+  };
+
+  const complaintService = {
+    create: jest.fn(),
+  };
+
+  const civicComplaintService = {
+    getComplaintForPost: jest.fn(),
   };
 
   const authenticatedRequest = {
@@ -69,6 +85,18 @@ describe('PostsController', () => {
         {
           provide: VerificationHistoryService,
           useValue: verificationHistoryService,
+        },
+        {
+          provide: ModerationService,
+          useValue: moderationService,
+        },
+        {
+          provide: ComplaintService,
+          useValue: complaintService,
+        },
+        {
+          provide: CivicComplaintService,
+          useValue: civicComplaintService,
         },
       ],
     })
@@ -341,5 +369,78 @@ describe('PostsController', () => {
     expect(
       Reflect.getMetadata('__guards__', PostsController).includes(JwtAuthGuard),
     ).toBe(true);
+  });
+
+  it('reports a post using the JWT identity and returns a safe payload', async () => {
+    moderationService.createPostReport.mockResolvedValue({
+      id: 'report-1',
+      status: 'OPEN',
+    });
+
+    await expect(
+      controller.reportPost(
+        authenticatedRequest,
+        'post-1',
+        { reason: 'SPAM', description: 'Looks like an ad.' } as any,
+      ),
+    ).resolves.toEqual({ id: 'report-1', status: 'OPEN' });
+
+    expect(moderationService.createPostReport).toHaveBeenCalledWith(
+      'user-1',
+      'post-1',
+      'SPAM',
+      'Looks like an ad.',
+    );
+  });
+
+  it('submits a civic complaint for a post using the JWT identity', async () => {
+    complaintService.create.mockResolvedValue({
+      id: 'complaint-1',
+      status: 'SUBMITTED',
+    });
+
+    await expect(
+      controller.submitComplaint(
+        authenticatedRequest,
+        'post-1',
+        { description: 'Road is blocked by construction debris.' } as any,
+      ),
+    ).resolves.toEqual({ id: 'complaint-1', status: 'SUBMITTED' });
+
+    expect(complaintService.create).toHaveBeenCalledWith(
+      'user-1',
+      'post-1',
+      'Road is blocked by construction debris.',
+    );
+  });
+
+  it('does not pass a client-provided reporter or owner identity', async () => {
+    moderationService.createPostReport.mockResolvedValue({
+      id: 'report-1',
+      status: 'OPEN',
+    });
+    complaintService.create.mockResolvedValue({
+      id: 'complaint-1',
+      status: 'SUBMITTED',
+    });
+
+    await controller.reportPost(
+      authenticatedRequest,
+      'post-1',
+      { reason: 'SPAM' } as any,
+    );
+    await controller.submitComplaint(
+      authenticatedRequest,
+      'post-1',
+      { description: 'Road is blocked.' } as any,
+    );
+
+    expect(moderationService.createPostReport.mock.calls[0].slice(0, 2)).toEqual(
+      ['user-1', 'post-1'],
+    );
+    expect(complaintService.create.mock.calls[0].slice(0, 2)).toEqual([
+      'user-1',
+      'post-1',
+    ]);
   });
 });

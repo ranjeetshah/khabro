@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Post,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -13,13 +14,23 @@ import {
 import type { Request } from 'express';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateReportDto } from '../moderation/dto/create-report.dto';
+import { CreateUserReportDto } from '../moderation/dto/create-user-report.dto';
+import { ModerationService } from '../moderation/moderation.service';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly moderationService: ModerationService,
+  ) {}
+
+  private userId(request: Request): string {
+    return (request as Request & { user: { sub: string } }).user.sub;
+  }
 
   @Get('me')
   async getMe(@Req() request: Request) {
@@ -51,6 +62,10 @@ export class UsersController {
 
     const user = await this.usersService.updateMe(userId, {
       ...(dto.name !== undefined && { name: dto.name.trim() }),
+      ...(dto.allowCivicComplaintContactSharing !== undefined && {
+        allowCivicComplaintContactSharing:
+          dto.allowCivicComplaintContactSharing,
+      }),
     });
 
     if (!user) {
@@ -65,5 +80,19 @@ export class UsersController {
     const user = await this.usersService.findPublic(userId);
     if (!user) throw new NotFoundException('Public user not found');
     return { user };
+  }
+
+  @Post(':id/report')
+  async reportUser(
+    @Req() request: Request,
+    @Param('id') id: string,
+    @Body() dto: CreateUserReportDto,
+  ) {
+    return this.moderationService.createUserReport(
+      this.userId(request),
+      id,
+      dto.reason,
+      dto.description,
+    );
   }
 }

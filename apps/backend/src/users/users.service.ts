@@ -9,6 +9,7 @@ const USER_PROFILE_SELECT = {
   name: true,
   trustScore: true,
   status: true,
+  allowCivicComplaintContactSharing: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -39,7 +40,10 @@ export class UsersService {
    * Update the authenticated user's profile.
    * Only accepts explicitly allowed fields.
    */
-  async updateMe(userId: string, data: { name?: string }) {
+  async updateMe(
+    userId: string,
+    data: { name?: string; allowCivicComplaintContactSharing?: boolean },
+  ) {
     // Verify user exists first
     const existing = await this.database.user.findUnique({
       where: { id: userId },
@@ -54,6 +58,10 @@ export class UsersService {
       where: { id: userId },
       data: {
         ...(data.name !== undefined && { name: data.name }),
+        ...(data.allowCivicComplaintContactSharing !== undefined && {
+          allowCivicComplaintContactSharing:
+            data.allowCivicComplaintContactSharing,
+        }),
       },
       select: USER_PROFILE_SELECT,
     });
