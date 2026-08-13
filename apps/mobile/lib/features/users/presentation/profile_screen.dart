@@ -11,6 +11,11 @@ import 'my_posts_screen.dart';
 import 'my_reports_screen.dart';
 import 'witness_history_screen.dart';
 
+import '../../../core/network/api_client.dart';
+import '../../../core/storage/token_storage.dart';
+import '../../moderator/data/moderator_service.dart';
+import '../../moderator/presentation/moderator_dashboard_screen.dart';
+
 /// Profile screen for viewing and editing the authenticated user's profile and contributions.
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -18,6 +23,8 @@ class ProfileScreen extends StatefulWidget {
     required this.user,
     this.usersService,
     this.postsService,
+    this.apiClient,
+    this.tokenStorage,
     this.onUserUpdated,
     this.onSessionExpired,
   });
@@ -25,6 +32,8 @@ class ProfileScreen extends StatefulWidget {
   final UserModel user;
   final UsersService? usersService;
   final PostsService? postsService;
+  final ApiClient? apiClient;
+  final TokenStorage? tokenStorage;
   final ValueChanged<UserModel>? onUserUpdated;
   final VoidCallback? onSessionExpired;
 
@@ -76,6 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           name: profile.name,
           trustScore: _user.trustScore,
           status: _user.status,
+          role: _user.role,
           createdAt: profile.createdAt,
           updatedAt: profile.createdAt,
         );
@@ -250,9 +260,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.08),
+              color: color.withAlpha(20),
               shape: BoxShape.circle,
-              border: Border.all(color: color.withOpacity(0.12), width: 1.5),
+              border: Border.all(color: color.withAlpha(30), width: 1.5),
             ),
             child: Icon(icon, color: color, size: 24),
           ),
@@ -452,6 +462,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 label: const Text('EDIT NAME', style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
+            if (_user.role?.toUpperCase() == 'MODERATOR') ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ModeratorDashboardScreen(
+                          moderatorService: ModeratorService(
+                            apiClient: widget.apiClient,
+                            tokenStorage: widget.tokenStorage,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1565C0),
+                    foregroundColor: Colors.white,
+                  ),
+                  icon: const Icon(Icons.admin_panel_settings, size: 18),
+                  label: const Text('MODERATOR CONSOLE', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
           ],
         ],
       );
@@ -483,7 +520,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       CircleAvatar(
                         radius: 36,
-                        backgroundColor: const Color(0xFF1565C0).withOpacity(0.08),
+                        backgroundColor: const Color(0xFF1565C0).withAlpha(20),
                         child: Text(
                           (_user.name != null && _user.name!.isNotEmpty)
                               ? _user.name![0].toUpperCase()

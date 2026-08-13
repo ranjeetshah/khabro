@@ -28,6 +28,7 @@ export type ModerationAuditEventMinAggregateOutputType = {
   id: string | null
   reportId: string | null
   action: $Enums.ModerationAuditAction | null
+  actorId: string | null
   createdAt: Date | null
 }
 
@@ -35,6 +36,7 @@ export type ModerationAuditEventMaxAggregateOutputType = {
   id: string | null
   reportId: string | null
   action: $Enums.ModerationAuditAction | null
+  actorId: string | null
   createdAt: Date | null
 }
 
@@ -42,6 +44,7 @@ export type ModerationAuditEventCountAggregateOutputType = {
   id: number
   reportId: number
   action: number
+  actorId: number
   createdAt: number
   _all: number
 }
@@ -51,6 +54,7 @@ export type ModerationAuditEventMinAggregateInputType = {
   id?: true
   reportId?: true
   action?: true
+  actorId?: true
   createdAt?: true
 }
 
@@ -58,6 +62,7 @@ export type ModerationAuditEventMaxAggregateInputType = {
   id?: true
   reportId?: true
   action?: true
+  actorId?: true
   createdAt?: true
 }
 
@@ -65,6 +70,7 @@ export type ModerationAuditEventCountAggregateInputType = {
   id?: true
   reportId?: true
   action?: true
+  actorId?: true
   createdAt?: true
   _all?: true
 }
@@ -145,6 +151,7 @@ export type ModerationAuditEventGroupByOutputType = {
   id: string
   reportId: string | null
   action: $Enums.ModerationAuditAction
+  actorId: string | null
   createdAt: Date
   _count: ModerationAuditEventCountAggregateOutputType | null
   _min: ModerationAuditEventMinAggregateOutputType | null
@@ -173,6 +180,7 @@ export type ModerationAuditEventWhereInput = {
   id?: Prisma.StringFilter<"ModerationAuditEvent"> | string
   reportId?: Prisma.StringNullableFilter<"ModerationAuditEvent"> | string | null
   action?: Prisma.EnumModerationAuditActionFilter<"ModerationAuditEvent"> | $Enums.ModerationAuditAction
+  actorId?: Prisma.StringNullableFilter<"ModerationAuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ModerationAuditEvent"> | Date | string
 }
 
@@ -180,6 +188,7 @@ export type ModerationAuditEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
+  actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -190,6 +199,7 @@ export type ModerationAuditEventWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ModerationAuditEventWhereInput | Prisma.ModerationAuditEventWhereInput[]
   reportId?: Prisma.StringNullableFilter<"ModerationAuditEvent"> | string | null
   action?: Prisma.EnumModerationAuditActionFilter<"ModerationAuditEvent"> | $Enums.ModerationAuditAction
+  actorId?: Prisma.StringNullableFilter<"ModerationAuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ModerationAuditEvent"> | Date | string
 }, "id">
 
@@ -197,6 +207,7 @@ export type ModerationAuditEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
+  actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ModerationAuditEventCountOrderByAggregateInput
   _max?: Prisma.ModerationAuditEventMaxOrderByAggregateInput
@@ -210,6 +221,7 @@ export type ModerationAuditEventScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ModerationAuditEvent"> | string
   reportId?: Prisma.StringNullableWithAggregatesFilter<"ModerationAuditEvent"> | string | null
   action?: Prisma.EnumModerationAuditActionWithAggregatesFilter<"ModerationAuditEvent"> | $Enums.ModerationAuditAction
+  actorId?: Prisma.StringNullableWithAggregatesFilter<"ModerationAuditEvent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ModerationAuditEvent"> | Date | string
 }
 
@@ -217,6 +229,7 @@ export type ModerationAuditEventCreateInput = {
   id?: string
   reportId?: string | null
   action: $Enums.ModerationAuditAction
+  actorId?: string | null
   createdAt?: Date | string
 }
 
@@ -224,6 +237,7 @@ export type ModerationAuditEventUncheckedCreateInput = {
   id?: string
   reportId?: string | null
   action: $Enums.ModerationAuditAction
+  actorId?: string | null
   createdAt?: Date | string
 }
 
@@ -231,6 +245,7 @@ export type ModerationAuditEventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumModerationAuditActionFieldUpdateOperationsInput | $Enums.ModerationAuditAction
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -238,6 +253,7 @@ export type ModerationAuditEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumModerationAuditActionFieldUpdateOperationsInput | $Enums.ModerationAuditAction
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -245,6 +261,7 @@ export type ModerationAuditEventCreateManyInput = {
   id?: string
   reportId?: string | null
   action: $Enums.ModerationAuditAction
+  actorId?: string | null
   createdAt?: Date | string
 }
 
@@ -252,6 +269,7 @@ export type ModerationAuditEventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumModerationAuditActionFieldUpdateOperationsInput | $Enums.ModerationAuditAction
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -259,6 +277,7 @@ export type ModerationAuditEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumModerationAuditActionFieldUpdateOperationsInput | $Enums.ModerationAuditAction
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -266,6 +285,7 @@ export type ModerationAuditEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  actorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -273,6 +293,7 @@ export type ModerationAuditEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  actorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -280,6 +301,7 @@ export type ModerationAuditEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  actorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -293,6 +315,7 @@ export type ModerationAuditEventSelect<ExtArgs extends runtime.Types.Extensions.
   id?: boolean
   reportId?: boolean
   action?: boolean
+  actorId?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["moderationAuditEvent"]>
 
@@ -300,6 +323,7 @@ export type ModerationAuditEventSelectCreateManyAndReturn<ExtArgs extends runtim
   id?: boolean
   reportId?: boolean
   action?: boolean
+  actorId?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["moderationAuditEvent"]>
 
@@ -307,6 +331,7 @@ export type ModerationAuditEventSelectUpdateManyAndReturn<ExtArgs extends runtim
   id?: boolean
   reportId?: boolean
   action?: boolean
+  actorId?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["moderationAuditEvent"]>
 
@@ -314,10 +339,11 @@ export type ModerationAuditEventSelectScalar = {
   id?: boolean
   reportId?: boolean
   action?: boolean
+  actorId?: boolean
   createdAt?: boolean
 }
 
-export type ModerationAuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reportId" | "action" | "createdAt", ExtArgs["result"]["moderationAuditEvent"]>
+export type ModerationAuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reportId" | "action" | "actorId" | "createdAt", ExtArgs["result"]["moderationAuditEvent"]>
 
 export type $ModerationAuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ModerationAuditEvent"
@@ -326,6 +352,7 @@ export type $ModerationAuditEventPayload<ExtArgs extends runtime.Types.Extension
     id: string
     reportId: string | null
     action: $Enums.ModerationAuditAction
+    actorId: string | null
     createdAt: Date
   }, ExtArgs["result"]["moderationAuditEvent"]>
   composites: {}
@@ -753,6 +780,7 @@ export interface ModerationAuditEventFieldRefs {
   readonly id: Prisma.FieldRef<"ModerationAuditEvent", 'String'>
   readonly reportId: Prisma.FieldRef<"ModerationAuditEvent", 'String'>
   readonly action: Prisma.FieldRef<"ModerationAuditEvent", 'ModerationAuditAction'>
+  readonly actorId: Prisma.FieldRef<"ModerationAuditEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"ModerationAuditEvent", 'DateTime'>
 }
     

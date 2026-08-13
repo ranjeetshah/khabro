@@ -544,7 +544,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 children: [
                   CircleAvatar(
                     radius: 18,
-                    backgroundColor: const Color(0xFF1565C0).withOpacity(0.08),
+                    backgroundColor: const Color(0xFF1565C0).withAlpha(20),
                     child: Text(
                       authorInitial,
                       style: const TextStyle(

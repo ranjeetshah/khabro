@@ -6,6 +6,7 @@ class UserModel {
     this.name,
     required this.trustScore,
     required this.status,
+    this.role,
     this.createdAt,
     this.updatedAt,
   });
@@ -15,6 +16,7 @@ class UserModel {
   final String? name;
   final int trustScore;
   final String status;
+  final String? role;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -25,6 +27,7 @@ class UserModel {
       name: json['name'] as String?,
       trustScore: json['trustScore'] as int,
       status: json['status'] as String,
+      role: json['role'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : null,
@@ -41,6 +44,7 @@ class UserModel {
       'name': name,
       'trustScore': trustScore,
       'status': status,
+      if (role != null) 'role': role,
       if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
       if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
     };
@@ -53,6 +57,7 @@ class UserModel {
     String? Function()? name,
     int? trustScore,
     String? status,
+    String? role,
     DateTime? Function()? createdAt,
     DateTime? Function()? updatedAt,
   }) {
@@ -62,6 +67,7 @@ class UserModel {
       name: name != null ? name() : this.name,
       trustScore: trustScore ?? this.trustScore,
       status: status ?? this.status,
+      role: role ?? this.role,
       createdAt: createdAt != null ? createdAt() : this.createdAt,
       updatedAt: updatedAt != null ? updatedAt() : this.updatedAt,
     );

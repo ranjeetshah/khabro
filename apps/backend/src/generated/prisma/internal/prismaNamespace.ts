@@ -1941,6 +1941,7 @@ export const ModerationAuditEventScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   action: 'action',
+  actorId: 'actorId',
   createdAt: 'createdAt'
 } as const
 

@@ -12,6 +12,7 @@ import { MailModule } from './mail/mail.module';
 import { CivicComplaintModule } from './civic-complaint/civic-complaint.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { CommentsModule } from './comments/comments.module';
+import { ModeratorModule } from './moderator/moderator.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CommentsModule } from './comments/comments.module';
     CivicComplaintModule,
     NotificationsModule,
     CommentsModule,
+    ModeratorModule,
   ],
 })
 export class AppModule {}

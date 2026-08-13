@@ -297,10 +297,12 @@ model ModerationAuditEvent {
   id        String               @id @default(uuid())
   reportId  String?
   action    ModerationAuditAction
+  actorId   String?
   createdAt DateTime             @default(now())
 
   @@index([reportId, createdAt])
   @@index([action, createdAt])
+  @@index([actorId])
 }
 
 model Complaint {
