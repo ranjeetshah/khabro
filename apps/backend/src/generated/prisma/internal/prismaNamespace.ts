@@ -419,7 +419,8 @@ export const ModelName = {
   Follow: 'Follow',
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
-  Message: 'Message'
+  Message: 'Message',
+  Advertisement: 'Advertisement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "feedback" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport" | "follow" | "conversation" | "conversationParticipant" | "message"
+    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "feedback" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport" | "follow" | "conversation" | "conversationParticipant" | "message" | "advertisement"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2141,6 +2142,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Advertisement: {
+      payload: Prisma.$AdvertisementPayload<ExtArgs>
+      fields: Prisma.AdvertisementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdvertisementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdvertisementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        findFirst: {
+          args: Prisma.AdvertisementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdvertisementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        findMany: {
+          args: Prisma.AdvertisementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+        }
+        create: {
+          args: Prisma.AdvertisementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        createMany: {
+          args: Prisma.AdvertisementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdvertisementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+        }
+        delete: {
+          args: Prisma.AdvertisementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        update: {
+          args: Prisma.AdvertisementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdvertisementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdvertisementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdvertisementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdvertisementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        aggregate: {
+          args: Prisma.AdvertisementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdvertisement>
+        }
+        groupBy: {
+          args: Prisma.AdvertisementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdvertisementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdvertisementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdvertisementCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2480,6 +2555,29 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const AdvertisementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  advertiserName: 'advertiserName',
+  creativeUrl: 'creativeUrl',
+  destinationUrl: 'destinationUrl',
+  ctaLabel: 'ctaLabel',
+  placement: 'placement',
+  status: 'status',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  impressionCount: 'impressionCount',
+  clickCount: 'clickCount',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2826,6 +2924,34 @@ export type EnumCommentReportReasonFieldRefInput<$PrismaModel> = FieldRefInputTy
 export type ListEnumCommentReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentReportReason[]'>
     
 
+
+/**
+ * Reference to a field of type 'AdvertisementPlacement'
+ */
+export type EnumAdvertisementPlacementFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdvertisementPlacement'>
+    
+
+
+/**
+ * Reference to a field of type 'AdvertisementPlacement[]'
+ */
+export type ListEnumAdvertisementPlacementFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdvertisementPlacement[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AdvertisementStatus'
+ */
+export type EnumAdvertisementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdvertisementStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AdvertisementStatus[]'
+ */
+export type ListEnumAdvertisementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdvertisementStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3000,6 +3126,7 @@ export type GlobalOmitConfig = {
   conversation?: Prisma.ConversationOmit
   conversationParticipant?: Prisma.ConversationParticipantOmit
   message?: Prisma.MessageOmit
+  advertisement?: Prisma.AdvertisementOmit
 }
 
 /* Types for Logging */

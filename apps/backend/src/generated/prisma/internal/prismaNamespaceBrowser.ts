@@ -73,7 +73,8 @@ export const ModelName = {
   Follow: 'Follow',
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
-  Message: 'Message'
+  Message: 'Message',
+  Advertisement: 'Advertisement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -392,6 +393,29 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const AdvertisementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  advertiserName: 'advertiserName',
+  creativeUrl: 'creativeUrl',
+  destinationUrl: 'destinationUrl',
+  ctaLabel: 'ctaLabel',
+  placement: 'placement',
+  status: 'status',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  impressionCount: 'impressionCount',
+  clickCount: 'clickCount',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
 export const SortOrder = {

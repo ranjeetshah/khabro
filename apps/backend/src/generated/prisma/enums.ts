@@ -201,3 +201,22 @@ export const CommentReportReason = {
 } as const
 
 export type CommentReportReason = (typeof CommentReportReason)[keyof typeof CommentReportReason]
+
+
+export const AdvertisementStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type AdvertisementStatus = (typeof AdvertisementStatus)[keyof typeof AdvertisementStatus]
+
+
+export const AdvertisementPlacement = {
+  FEED: 'FEED',
+  POST_DETAIL: 'POST_DETAIL',
+  PROFILE: 'PROFILE'
+} as const
+
+export type AdvertisementPlacement = (typeof AdvertisementPlacement)[keyof typeof AdvertisementPlacement]

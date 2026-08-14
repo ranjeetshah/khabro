@@ -39,6 +39,7 @@ model User {
   followers      Follow[]       @relation("UserFollowing")
   conversationParticipants ConversationParticipant[]
   sentMessages            Message[]
+  advertisements          Advertisement[]
 
   @@index([status])
 }
@@ -556,4 +557,42 @@ model Message {
 
   @@index([conversationId, createdAt, id])
   @@index([senderId, createdAt, id])
+}
+
+enum AdvertisementStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  EXPIRED
+}
+
+enum AdvertisementPlacement {
+  FEED
+  POST_DETAIL
+  PROFILE
+}
+
+model Advertisement {
+  id              String                 @id @default(uuid())
+  title           String
+  description     String?
+  advertiserName  String
+  creativeUrl     String
+  destinationUrl  String
+  ctaLabel        String?
+  placement       AdvertisementPlacement
+  status          AdvertisementStatus    @default(DRAFT)
+  startAt         DateTime?
+  endAt           DateTime?
+  impressionCount Int                    @default(0)
+  clickCount      Int                    @default(0)
+  createdById     String
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  deletedAt       DateTime?
+
+  createdBy       User                   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([status, placement, deletedAt, startAt, endAt])
+  @@index([createdById, createdAt])
 }

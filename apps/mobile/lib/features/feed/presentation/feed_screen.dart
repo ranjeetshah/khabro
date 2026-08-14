@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
+import '../../advertisements/data/advertisement_model.dart';
+import '../../advertisements/data/advertisement_service.dart';
+import '../../advertisements/presentation/advertisement_card.dart';
 import '../../location/data/locality_model.dart';
 import '../../location/data/locality_service.dart';
 import '../../location/data/location_update_service.dart';
@@ -25,6 +28,7 @@ class FeedScreen extends StatefulWidget {
     this.publicUserService,
     this.currentUserId,
     this.locationUpdateService,
+    this.advertisementService,
   });
 
   final FeedService? feedService;
@@ -35,6 +39,7 @@ class FeedScreen extends StatefulWidget {
   final PublicUserService? publicUserService;
   final String? currentUserId;
   final LocationUpdateService? locationUpdateService;
+  final AdvertisementService? advertisementService;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -52,6 +57,8 @@ class _FeedScreenState extends State<FeedScreen> {
   final Set<String> _witnessRequests = <String>{};
   String? _witnessError;
   String? _witnessRetryPostId;
+
+  AdvertisementModel? _feedAd;
 
   LocalityModel? _locality;
   bool _localityLoading = false;
@@ -105,6 +112,7 @@ class _FeedScreenState extends State<FeedScreen> {
         _errorMessage = null;
       });
     }
+    _loadFeedAd();
     try {
       if (widget.localityService != null) {
         final locality = await widget.localityService!.getMyLocality();
@@ -150,6 +158,26 @@ class _FeedScreenState extends State<FeedScreen> {
         'Could not load more posts. Please try again.',
         loadingMore: true,
       );
+    }
+  }
+
+  Future<void> _loadFeedAd() async {
+    try {
+      final adService = widget.advertisementService ?? AdvertisementService();
+      final page = await adService.getAdvertisements(
+        placement: AdvertisementPlacement.feed,
+        page: 1,
+        limit: 1,
+      );
+      if (!mounted) return;
+      setState(() {
+        _feedAd = page.items.isEmpty ? null : page.items.first;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _feedAd = null;
+      });
     }
   }
 
@@ -417,6 +445,16 @@ class _FeedScreenState extends State<FeedScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   if (_hasLocality) _buildLocalityCard(),
+                  if (_feedAd != null)
+                    AdvertisementCard(
+                      advertisement: _feedAd!,
+                      onImpression: (id) => (widget.advertisementService ??
+                              AdvertisementService())
+                          .recordImpression(id),
+                      onClick: (id) => (widget.advertisementService ??
+                              AdvertisementService())
+                          .recordClick(id),
+                    ),
                   if (_likeError != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),

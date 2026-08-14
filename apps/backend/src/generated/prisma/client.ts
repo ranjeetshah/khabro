@@ -154,3 +154,8 @@ export type ConversationParticipant = Prisma.ConversationParticipantModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model Advertisement
+ * 
+ */
+export type Advertisement = Prisma.AdvertisementModel

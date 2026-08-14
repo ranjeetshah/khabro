@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 
 import '../../auth/data/auth_exception.dart';
+import '../../advertisements/data/advertisement_service.dart';
 import '../data/moderator_dashboard_model.dart';
 import '../data/moderator_service.dart';
 import 'moderator_report_list_screen.dart';
 import 'moderator_complaint_list_screen.dart';
 import 'moderator_feedback_list_screen.dart';
+import 'moderator_advertisements_screen.dart';
 
 class ModeratorDashboardScreen extends StatefulWidget {
-  const ModeratorDashboardScreen({super.key, required this.moderatorService});
+  const ModeratorDashboardScreen({
+    super.key,
+    required this.moderatorService,
+    this.advertisementService,
+  });
 
   final ModeratorService moderatorService;
+  final AdvertisementService? advertisementService;
 
   @override
   State<ModeratorDashboardScreen> createState() => _ModeratorDashboardScreenState();
@@ -87,6 +94,17 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
         ),
       ),
     ).then((_) => _loadDashboard());
+  }
+
+  void _navigateToAdvertisements() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ModeratorAdvertisementsScreen(
+          advertisementService:
+              widget.advertisementService ?? AdvertisementService(),
+        ),
+      ),
+    );
   }
 
   Widget _buildStatTile(String count, String label, VoidCallback onTap) {
@@ -270,6 +288,11 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
                             'Open Feedback',
                             _navigateToFeedback,
                           ),
+                          _buildStatTile(
+                            'Ads',
+                            'Advertisements',
+                            _navigateToAdvertisements,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -293,6 +316,8 @@ class _ModeratorDashboardScreenState extends State<ModeratorDashboardScreen> {
                           _buildActionButton('Comment Reports', () => _navigateToReports('COMMENT')),
                           const SizedBox(height: 8),
                           _buildActionButton('Feedback', _navigateToFeedback),
+                          const SizedBox(height: 8),
+                          _buildActionButton('Advertisements', _navigateToAdvertisements),
                         ],
                       ),
                       const SizedBox(height: 24),
