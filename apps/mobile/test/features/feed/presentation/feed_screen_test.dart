@@ -9,6 +9,7 @@ import 'package:mobile/features/auth/data/auth_exception.dart';
 import 'package:mobile/features/location/data/locality_model.dart';
 import 'package:mobile/features/location/data/locality_service.dart';
 import 'package:mobile/features/posts/data/comment_model.dart';
+import 'package:mobile/features/posts/data/post_background.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/data/like_status_model.dart';
@@ -99,7 +100,13 @@ class FakeCreatePostsService extends PostsService {
   String? submittedContent;
 
   @override
-  Future<PostModel> createPost(String content) async {
+  Future<PostModel> createPost(
+    String content, {
+    String? category,
+    PostBackground? background,
+    List<String>? mediaIds,
+    String? linkUrl,
+  }) async {
     submittedContent = content;
     return authoredPost('post-2', content, name: 'Test User');
   }
@@ -289,7 +296,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('CREATE POST'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Created locally');
+    await tester.enterText(find.byType(TextField).first, 'Created locally');
     await tester.pump();
     await tester.tap(find.text('POST'));
     await tester.pumpAndSettle();

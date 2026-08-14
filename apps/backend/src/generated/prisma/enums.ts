@@ -220,3 +220,43 @@ export const AdvertisementPlacement = {
 } as const
 
 export type AdvertisementPlacement = (typeof AdvertisementPlacement)[keyof typeof AdvertisementPlacement]
+
+
+export const PostBackground = {
+  DEFAULT: 'DEFAULT',
+  RED: 'RED',
+  BLUE: 'BLUE',
+  GREEN: 'GREEN',
+  ORANGE: 'ORANGE',
+  PURPLE: 'PURPLE',
+  TEAL: 'TEAL',
+  DARK: 'DARK'
+} as const
+
+export type PostBackground = (typeof PostBackground)[keyof typeof PostBackground]
+
+
+export const PostMediaType = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO'
+} as const
+
+export type PostMediaType = (typeof PostMediaType)[keyof typeof PostMediaType]
+
+
+export const MediaProvider = {
+  YOUTUBE: 'YOUTUBE',
+  KHABRO_CDN: 'KHABRO_CDN'
+} as const
+
+export type MediaProvider = (typeof MediaProvider)[keyof typeof MediaProvider]
+
+
+export const MediaProcessingStatus = {
+  UPLOADING: 'UPLOADING',
+  PROCESSING: 'PROCESSING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+} as const
+
+export type MediaProcessingStatus = (typeof MediaProcessingStatus)[keyof typeof MediaProcessingStatus]

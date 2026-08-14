@@ -282,6 +282,7 @@ export type UserWhereInput = {
   conversationParticipants?: Prisma.ConversationParticipantListRelationFilter
   sentMessages?: Prisma.MessageListRelationFilter
   advertisements?: Prisma.AdvertisementListRelationFilter
+  postMedia?: Prisma.PostMediaListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -314,6 +315,7 @@ export type UserOrderByWithRelationInput = {
   conversationParticipants?: Prisma.ConversationParticipantOrderByRelationAggregateInput
   sentMessages?: Prisma.MessageOrderByRelationAggregateInput
   advertisements?: Prisma.AdvertisementOrderByRelationAggregateInput
+  postMedia?: Prisma.PostMediaOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -349,6 +351,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   conversationParticipants?: Prisma.ConversationParticipantListRelationFilter
   sentMessages?: Prisma.MessageListRelationFilter
   advertisements?: Prisma.AdvertisementListRelationFilter
+  postMedia?: Prisma.PostMediaListRelationFilter
 }, "id" | "phone" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -417,6 +420,7 @@ export type UserCreateInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -449,6 +453,7 @@ export type UserUncheckedCreateInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -481,6 +486,7 @@ export type UserUpdateInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -513,6 +519,7 @@ export type UserUncheckedUpdateInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -896,6 +903,20 @@ export type UserUpdateOneRequiredWithoutAdvertisementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAdvertisementsInput, Prisma.UserUpdateWithoutAdvertisementsInput>, Prisma.UserUncheckedUpdateWithoutAdvertisementsInput>
 }
 
+export type UserCreateNestedOneWithoutPostMediaInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostMediaInput, Prisma.UserUncheckedCreateWithoutPostMediaInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostMediaInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPostMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostMediaInput, Prisma.UserUncheckedCreateWithoutPostMediaInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostMediaInput
+  upsert?: Prisma.UserUpsertWithoutPostMediaInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostMediaInput, Prisma.UserUpdateWithoutPostMediaInput>, Prisma.UserUncheckedUpdateWithoutPostMediaInput>
+}
+
 export type UserCreateWithoutLocationInput = {
   id?: string
   phone: string
@@ -925,6 +946,7 @@ export type UserCreateWithoutLocationInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutLocationInput = {
@@ -956,6 +978,7 @@ export type UserUncheckedCreateWithoutLocationInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutLocationInput = {
@@ -1003,6 +1026,7 @@ export type UserUpdateWithoutLocationInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLocationInput = {
@@ -1034,6 +1058,7 @@ export type UserUncheckedUpdateWithoutLocationInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -1065,6 +1090,7 @@ export type UserCreateWithoutPostsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -1096,6 +1122,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -1143,6 +1170,7 @@ export type UserUpdateWithoutPostsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -1174,6 +1202,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutLikesInput = {
@@ -1205,6 +1234,7 @@ export type UserCreateWithoutLikesInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -1236,6 +1266,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -1283,6 +1314,7 @@ export type UserUpdateWithoutLikesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -1314,6 +1346,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutWitnessesInput = {
@@ -1345,6 +1378,7 @@ export type UserCreateWithoutWitnessesInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutWitnessesInput = {
@@ -1376,6 +1410,7 @@ export type UserUncheckedCreateWithoutWitnessesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutWitnessesInput = {
@@ -1423,6 +1458,7 @@ export type UserUpdateWithoutWitnessesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWitnessesInput = {
@@ -1454,6 +1490,7 @@ export type UserUncheckedUpdateWithoutWitnessesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFeedbacksInput = {
@@ -1485,6 +1522,7 @@ export type UserCreateWithoutFeedbacksInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFeedbacksInput = {
@@ -1516,6 +1554,7 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFeedbacksInput = {
@@ -1563,6 +1602,7 @@ export type UserUpdateWithoutFeedbacksInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbacksInput = {
@@ -1594,6 +1634,7 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutPostReportsInput = {
@@ -1625,6 +1666,7 @@ export type UserCreateWithoutPostReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutPostReportsInput = {
@@ -1656,6 +1698,7 @@ export type UserUncheckedCreateWithoutPostReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutPostReportsInput = {
@@ -1703,6 +1746,7 @@ export type UserUpdateWithoutPostReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostReportsInput = {
@@ -1734,6 +1778,7 @@ export type UserUncheckedUpdateWithoutPostReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReportedUsersInput = {
@@ -1765,6 +1810,7 @@ export type UserCreateWithoutReportedUsersInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedUsersInput = {
@@ -1796,6 +1842,7 @@ export type UserUncheckedCreateWithoutReportedUsersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedUsersInput = {
@@ -1832,6 +1879,7 @@ export type UserCreateWithoutUserReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutUserReportsInput = {
@@ -1863,6 +1911,7 @@ export type UserUncheckedCreateWithoutUserReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUserReportsInput = {
@@ -1910,6 +1959,7 @@ export type UserUpdateWithoutReportedUsersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedUsersInput = {
@@ -1941,6 +1991,7 @@ export type UserUncheckedUpdateWithoutReportedUsersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutUserReportsInput = {
@@ -1983,6 +2034,7 @@ export type UserUpdateWithoutUserReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserReportsInput = {
@@ -2014,6 +2066,7 @@ export type UserUncheckedUpdateWithoutUserReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutComplaintsInput = {
@@ -2045,6 +2098,7 @@ export type UserCreateWithoutComplaintsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutComplaintsInput = {
@@ -2076,6 +2130,7 @@ export type UserUncheckedCreateWithoutComplaintsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutComplaintsInput = {
@@ -2123,6 +2178,7 @@ export type UserUpdateWithoutComplaintsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutComplaintsInput = {
@@ -2154,6 +2210,7 @@ export type UserUncheckedUpdateWithoutComplaintsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCivicStatusHistoriesInput = {
@@ -2185,6 +2242,7 @@ export type UserCreateWithoutCivicStatusHistoriesInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCivicStatusHistoriesInput = {
@@ -2216,6 +2274,7 @@ export type UserUncheckedCreateWithoutCivicStatusHistoriesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCivicStatusHistoriesInput = {
@@ -2263,6 +2322,7 @@ export type UserUpdateWithoutCivicStatusHistoriesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCivicStatusHistoriesInput = {
@@ -2294,6 +2354,7 @@ export type UserUncheckedUpdateWithoutCivicStatusHistoriesInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2325,6 +2386,7 @@ export type UserCreateWithoutNotificationsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2356,6 +2418,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2403,6 +2466,7 @@ export type UserUpdateWithoutNotificationsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2434,6 +2498,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2465,6 +2530,7 @@ export type UserCreateWithoutCommentsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -2496,6 +2562,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2543,6 +2610,7 @@ export type UserUpdateWithoutCommentsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -2574,6 +2642,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentReportsInput = {
@@ -2605,6 +2674,7 @@ export type UserCreateWithoutCommentReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentReportsInput = {
@@ -2636,6 +2706,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentReportsInput = {
@@ -2683,6 +2754,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentReportsInput = {
@@ -2714,6 +2786,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFollowingInput = {
@@ -2745,6 +2818,7 @@ export type UserCreateWithoutFollowingInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFollowingInput = {
@@ -2776,6 +2850,7 @@ export type UserUncheckedCreateWithoutFollowingInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFollowingInput = {
@@ -2812,6 +2887,7 @@ export type UserCreateWithoutFollowersInput = {
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFollowersInput = {
@@ -2843,6 +2919,7 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFollowersInput = {
@@ -2890,6 +2967,7 @@ export type UserUpdateWithoutFollowingInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowingInput = {
@@ -2921,6 +2999,7 @@ export type UserUncheckedUpdateWithoutFollowingInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutFollowersInput = {
@@ -2963,6 +3042,7 @@ export type UserUpdateWithoutFollowersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -2994,6 +3074,7 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutConversationParticipantsInput = {
@@ -3025,6 +3106,7 @@ export type UserCreateWithoutConversationParticipantsInput = {
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutConversationParticipantsInput = {
@@ -3056,6 +3138,7 @@ export type UserUncheckedCreateWithoutConversationParticipantsInput = {
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutConversationParticipantsInput = {
@@ -3103,6 +3186,7 @@ export type UserUpdateWithoutConversationParticipantsInput = {
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutConversationParticipantsInput = {
@@ -3134,6 +3218,7 @@ export type UserUncheckedUpdateWithoutConversationParticipantsInput = {
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSentMessagesInput = {
@@ -3165,6 +3250,7 @@ export type UserCreateWithoutSentMessagesInput = {
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -3196,6 +3282,7 @@ export type UserUncheckedCreateWithoutSentMessagesInput = {
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -3243,6 +3330,7 @@ export type UserUpdateWithoutSentMessagesInput = {
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -3274,6 +3362,7 @@ export type UserUncheckedUpdateWithoutSentMessagesInput = {
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAdvertisementsInput = {
@@ -3305,6 +3394,7 @@ export type UserCreateWithoutAdvertisementsInput = {
   followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
   conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  postMedia?: Prisma.PostMediaCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAdvertisementsInput = {
@@ -3336,6 +3426,7 @@ export type UserUncheckedCreateWithoutAdvertisementsInput = {
   followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
   conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  postMedia?: Prisma.PostMediaUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAdvertisementsInput = {
@@ -3383,6 +3474,7 @@ export type UserUpdateWithoutAdvertisementsInput = {
   followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
   conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  postMedia?: Prisma.PostMediaUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdvertisementsInput = {
@@ -3414,6 +3506,151 @@ export type UserUncheckedUpdateWithoutAdvertisementsInput = {
   followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
   conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  postMedia?: Prisma.PostMediaUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutPostMediaInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  username?: string | null
+  profileImage?: string | null
+  trustScore?: number
+  status?: $Enums.UserStatus
+  role?: $Enums.UserRole
+  allowCivicComplaintContactSharing?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  location?: Prisma.UserLocationCreateNestedOneWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  witnesses?: Prisma.WitnessCreateNestedManyWithoutUserInput
+  postReports?: Prisma.PostReportCreateNestedManyWithoutReporterInput
+  userReports?: Prisma.UserReportCreateNestedManyWithoutReporterInput
+  reportedUsers?: Prisma.UserReportCreateNestedManyWithoutReportedUserInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  feedbacks?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  advertisements?: Prisma.AdvertisementCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutPostMediaInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  username?: string | null
+  profileImage?: string | null
+  trustScore?: number
+  status?: $Enums.UserStatus
+  role?: $Enums.UserRole
+  allowCivicComplaintContactSharing?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  location?: Prisma.UserLocationUncheckedCreateNestedOneWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  witnesses?: Prisma.WitnessUncheckedCreateNestedManyWithoutUserInput
+  postReports?: Prisma.PostReportUncheckedCreateNestedManyWithoutReporterInput
+  userReports?: Prisma.UserReportUncheckedCreateNestedManyWithoutReporterInput
+  reportedUsers?: Prisma.UserReportUncheckedCreateNestedManyWithoutReportedUserInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutCreatedByInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  feedbacks?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  advertisements?: Prisma.AdvertisementUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutPostMediaInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostMediaInput, Prisma.UserUncheckedCreateWithoutPostMediaInput>
+}
+
+export type UserUpsertWithoutPostMediaInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPostMediaInput, Prisma.UserUncheckedUpdateWithoutPostMediaInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostMediaInput, Prisma.UserUncheckedCreateWithoutPostMediaInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPostMediaInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPostMediaInput, Prisma.UserUncheckedUpdateWithoutPostMediaInput>
+}
+
+export type UserUpdateWithoutPostMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trustScore?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.UserLocationUpdateOneWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  witnesses?: Prisma.WitnessUpdateManyWithoutUserNestedInput
+  postReports?: Prisma.PostReportUpdateManyWithoutReporterNestedInput
+  userReports?: Prisma.UserReportUpdateManyWithoutReporterNestedInput
+  reportedUsers?: Prisma.UserReportUpdateManyWithoutReportedUserNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  feedbacks?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  advertisements?: Prisma.AdvertisementUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPostMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trustScore?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  allowCivicComplaintContactSharing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.UserLocationUncheckedUpdateOneWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  witnesses?: Prisma.WitnessUncheckedUpdateManyWithoutUserNestedInput
+  postReports?: Prisma.PostReportUncheckedUpdateManyWithoutReporterNestedInput
+  userReports?: Prisma.UserReportUncheckedUpdateManyWithoutReporterNestedInput
+  reportedUsers?: Prisma.UserReportUncheckedUpdateManyWithoutReportedUserNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutCreatedByNestedInput
+  civicStatusHistories?: Prisma.CivicComplaintStatusHistoryUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  feedbacks?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  advertisements?: Prisma.AdvertisementUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -3439,6 +3676,7 @@ export type UserCountOutputType = {
   conversationParticipants: number
   sentMessages: number
   advertisements: number
+  postMedia: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3459,6 +3697,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   conversationParticipants?: boolean | UserCountOutputTypeCountConversationParticipantsArgs
   sentMessages?: boolean | UserCountOutputTypeCountSentMessagesArgs
   advertisements?: boolean | UserCountOutputTypeCountAdvertisementsArgs
+  postMedia?: boolean | UserCountOutputTypeCountPostMediaArgs
 }
 
 /**
@@ -3590,6 +3829,13 @@ export type UserCountOutputTypeCountAdvertisementsArgs<ExtArgs extends runtime.T
   where?: Prisma.AdvertisementWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPostMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostMediaWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3621,6 +3867,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   conversationParticipants?: boolean | Prisma.User$conversationParticipantsArgs<ExtArgs>
   sentMessages?: boolean | Prisma.User$sentMessagesArgs<ExtArgs>
   advertisements?: boolean | Prisma.User$advertisementsArgs<ExtArgs>
+  postMedia?: boolean | Prisma.User$postMediaArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3686,6 +3933,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   conversationParticipants?: boolean | Prisma.User$conversationParticipantsArgs<ExtArgs>
   sentMessages?: boolean | Prisma.User$sentMessagesArgs<ExtArgs>
   advertisements?: boolean | Prisma.User$advertisementsArgs<ExtArgs>
+  postMedia?: boolean | Prisma.User$postMediaArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3712,6 +3960,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     conversationParticipants: Prisma.$ConversationParticipantPayload<ExtArgs>[]
     sentMessages: Prisma.$MessagePayload<ExtArgs>[]
     advertisements: Prisma.$AdvertisementPayload<ExtArgs>[]
+    postMedia: Prisma.$PostMediaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4137,6 +4386,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   conversationParticipants<T extends Prisma.User$conversationParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sentMessages<T extends Prisma.User$sentMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   advertisements<T extends Prisma.User$advertisementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$advertisementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postMedia<T extends Prisma.User$postMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postMediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4994,6 +5244,30 @@ export type User$advertisementsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.AdvertisementScalarFieldEnum | Prisma.AdvertisementScalarFieldEnum[]
+}
+
+/**
+ * User.postMedia
+ */
+export type User$postMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostMedia
+   */
+  select?: Prisma.PostMediaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostMedia
+   */
+  omit?: Prisma.PostMediaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostMediaInclude<ExtArgs> | null
+  where?: Prisma.PostMediaWhereInput
+  orderBy?: Prisma.PostMediaOrderByWithRelationInput | Prisma.PostMediaOrderByWithRelationInput[]
+  cursor?: Prisma.PostMediaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostMediaScalarFieldEnum | Prisma.PostMediaScalarFieldEnum[]
 }
 
 /**

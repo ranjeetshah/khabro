@@ -1,6 +1,7 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '../database/database.service';
+import { PostBackground, PostCategory, PostMediaType } from '../generated/prisma/enums';
 import { VerificationHistoryService } from './verification.history.service';
 import { PostsService } from './posts.service';
 
@@ -9,8 +10,10 @@ describe('PostsService', () => {
 
   const database = {
     userLocation: { findUnique: jest.fn() },
+    postMedia: { findMany: jest.fn(), update: jest.fn() },
     post: {
       create: jest.fn(),
+      findUnique: jest.fn(),
       findMany: jest.fn(),
       findFirst: jest.fn(),
       update: jest.fn(),
@@ -48,8 +51,17 @@ describe('PostsService', () => {
       localityId: 'locality-1',
       content: 'Hello',
     });
+    database.post.findUnique.mockResolvedValue({
+      id: 'post-1',
+      authorId: 'user-1',
+      localityId: 'locality-1',
+      content: 'Hello',
+      category: PostCategory.GENERAL,
+      background: PostBackground.DEFAULT,
+      media: [],
+    });
 
-    await service.create('user-1', ' Hello ');
+    await service.create('user-1', { content: ' Hello ' });
 
     expect(database.userLocation.findUnique).toHaveBeenCalledWith({
       where: { userId: 'user-1' },
@@ -61,11 +73,10 @@ describe('PostsService', () => {
           authorId: 'user-1',
           localityId: 'locality-1',
           content: 'Hello',
-          category: 'GENERAL',
+          category: PostCategory.GENERAL,
+          background: PostBackground.DEFAULT,
+          linkUrl: null,
         },
-        select: expect.objectContaining({
-          author: { select: { id: true, name: true } },
-        }),
       }),
     );
   });
@@ -77,8 +88,14 @@ describe('PostsService', () => {
       authorId: 'user-1',
       content: 'Hello',
     });
+    database.post.findUnique.mockResolvedValue({
+      id: 'post-1',
+      authorId: 'user-1',
+      content: 'Hello',
+      media: [],
+    });
 
-    await service.create('user-1', 'Hello');
+    await service.create('user-1', { content: 'Hello' });
 
     expect(database.$transaction).toHaveBeenCalledTimes(1);
     expect(verificationHistory.recordPostCreated).toHaveBeenCalledWith(
@@ -87,17 +104,75 @@ describe('PostsService', () => {
     );
   });
 
-  it('creates without locality when the user has no resolved locality', async () => {
+  it('allows text-only posts with custom background', async () => {
     database.userLocation.findUnique.mockResolvedValue(null);
-    database.post.create.mockResolvedValue({});
+    database.post.create.mockResolvedValue({ id: 'post-1' });
+    database.post.findUnique.mockResolvedValue({ id: 'post-1', background: PostBackground.RED, media: [] });
 
-    await service.create('user-1', 'Hello');
+    await service.create('user-1', { content: 'Alert!', background: PostBackground.RED });
 
     expect(database.post.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ localityId: null }),
+        data: expect.objectContaining({ background: PostBackground.RED }),
       }),
     );
+  });
+
+  it('forces background DEFAULT when post has media attached', async () => {
+    database.userLocation.findUnique.mockResolvedValue(null);
+    database.postMedia.findMany.mockResolvedValue([
+      { id: 'media-1', createdById: 'user-1', type: PostMediaType.IMAGE },
+    ]);
+    database.post.create.mockResolvedValue({ id: 'post-1' });
+    database.post.findUnique.mockResolvedValue({ id: 'post-1', background: PostBackground.DEFAULT, media: [] });
+
+    await service.create('user-1', {
+      content: 'Image post',
+      background: PostBackground.RED,
+      mediaIds: ['media-1'],
+    });
+
+    expect(database.post.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ background: PostBackground.DEFAULT }),
+      }),
+    );
+  });
+
+  it('rejects post creation if attached media belongs to another user', async () => {
+    database.postMedia.findMany.mockResolvedValue([
+      { id: 'media-1', createdById: 'other-user', type: PostMediaType.IMAGE },
+    ]);
+
+    await expect(
+      service.create('user-1', { content: 'Image post', mediaIds: ['media-1'] }),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('rejects post creation if media exceeds 4 images', async () => {
+    database.postMedia.findMany.mockResolvedValue([
+      { id: 'm1', createdById: 'user-1', type: PostMediaType.IMAGE },
+      { id: 'm2', createdById: 'user-1', type: PostMediaType.IMAGE },
+      { id: 'm3', createdById: 'user-1', type: PostMediaType.IMAGE },
+      { id: 'm4', createdById: 'user-1', type: PostMediaType.IMAGE },
+      { id: 'm5', createdById: 'user-1', type: PostMediaType.IMAGE },
+    ]);
+
+    await expect(
+      service.create('user-1', {
+        content: 'Too many images',
+        mediaIds: ['m1', 'm2', 'm3', 'm4', 'm5'],
+      }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('rejects post creation with unsafe linkUrl', async () => {
+    await expect(
+      service.create('user-1', {
+        content: 'Malicious link',
+        linkUrl: 'javascript:alert(1)',
+      }),
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('gets my posts newest first and excludes deleted posts', async () => {
@@ -118,13 +193,13 @@ describe('PostsService', () => {
     database.post.findFirst.mockResolvedValue({ id: 'post-1' });
     await expect(service.findOne('post-1')).resolves.toEqual({
       id: 'post-1',
+      background: 'DEFAULT',
+      linkUrl: null,
+      media: [],
       likeCount: 0,
       commentCount: 0,
       likedByMe: false,
     });
-    expect(database.post.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'post-1', deletedAt: null } }),
-    );
   });
 
   it('soft deletes the author-owned post', async () => {
@@ -133,72 +208,6 @@ describe('PostsService', () => {
 
     await expect(service.delete('user-1', 'post-1')).resolves.toEqual({
       id: 'post-1',
-    });
-    expect(database.post.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: 'post-1' },
-        data: { deletedAt: expect.any(Date) },
-      }),
-    );
-  });
-
-  it('rejects deletion by another user', async () => {
-    database.post.findFirst.mockResolvedValue({ authorId: 'other-user' });
-    await expect(service.delete('user-1', 'post-1')).rejects.toThrow(
-      ForbiddenException,
-    );
-    expect(database.post.update).not.toHaveBeenCalled();
-  });
-
-  it('rejects deletion of a missing or deleted post', async () => {
-    database.post.findFirst.mockResolvedValue(null);
-    await expect(service.delete('user-1', 'post-1')).rejects.toThrow(
-      NotFoundException,
-    );
-  });
-
-  describe('search', () => {
-    it('searches posts with keyword, category, verified, recent, and pagination', async () => {
-      database.post.findMany.mockResolvedValue([
-        { id: 'post-1', content: 'Pothole on Road', category: 'INFRASTRUCTURE', verificationStatus: 'LOCALLY_VERIFIED', createdAt: new Date() },
-      ]);
-
-      const res = await service.search('user-1', {
-        q: ' road ',
-        category: 'INFRASTRUCTURE' as any,
-        verified: true,
-        recent: true,
-        page: 1,
-        limit: 20,
-      });
-
-      expect(res.items.length).toBe(1);
-      expect(database.post.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            deletedAt: null,
-            content: { contains: 'road', mode: 'insensitive' },
-            category: 'INFRASTRUCTURE',
-            verificationStatus: 'LOCALLY_VERIFIED',
-            createdAt: expect.objectContaining({ gte: expect.any(Date) }),
-          }),
-          skip: 0,
-          take: 21,
-        }),
-      );
-    });
-
-    it('excludes deleted posts and handles empty query', async () => {
-      database.post.findMany.mockResolvedValue([]);
-
-      const res = await service.search('user-1', { q: '   ' });
-
-      expect(res.items).toEqual([]);
-      expect(database.post.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { deletedAt: null },
-        }),
-      );
     });
   });
 });

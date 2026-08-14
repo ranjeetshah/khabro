@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/auth/data/auth_exception.dart';
+import 'package:mobile/features/posts/data/post_background.dart';
 import 'package:mobile/features/posts/data/post_model.dart';
 import 'package:mobile/features/posts/data/posts_service.dart';
 import 'package:mobile/features/posts/presentation/create_post_screen.dart';
@@ -12,7 +13,13 @@ class FakePostsService extends PostsService {
   String? submittedContent;
 
   @override
-  Future<PostModel> createPost(String content) async {
+  Future<PostModel> createPost(
+    String content, {
+    String? category,
+    PostBackground? background,
+    List<String>? mediaIds,
+    String? linkUrl,
+  }) async {
     if (error != null) throw error!;
     submittedContent = content;
     return PostModel(
@@ -41,11 +48,11 @@ void main() {
     );
     expect(tester.widget<ElevatedButton>(postButton).onPressed, isNull);
 
-    await tester.enterText(find.byType(TextField), '   ');
+    await tester.enterText(find.byType(TextField).first, '   ');
     await tester.pump();
     expect(tester.widget<ElevatedButton>(postButton).onPressed, isNull);
 
-    await tester.enterText(find.byType(TextField), '  Hello locally  ');
+    await tester.enterText(find.byType(TextField).first, '  Hello locally  ');
     await tester.pump();
     expect(find.text('17 / 5000'), findsOneWidget);
     expect(find.text('17/5000'), findsNothing);
@@ -56,7 +63,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(home: CreatePostScreen(postsService: FakePostsService())),
     );
-    await tester.enterText(find.byType(TextField), 'a' * 5001);
+    await tester.enterText(find.byType(TextField).first, 'a' * 5001);
     await tester.pump();
     expect(find.text('5000 / 5000'), findsOneWidget);
   });
@@ -72,7 +79,7 @@ void main() {
         ),
       ),
     );
-    await tester.enterText(find.byType(TextField), '  Hello locally  ');
+    await tester.enterText(find.byType(TextField).first, '  Hello locally  ');
     await tester.pump();
     await tester.tap(find.text('POST'));
     await tester.pumpAndSettle();
@@ -92,7 +99,7 @@ void main() {
         ),
       ),
     );
-    await tester.enterText(find.byType(TextField), 'Hello');
+    await tester.enterText(find.byType(TextField).first, 'Hello');
     await tester.pump();
     await tester.tap(find.text('POST'));
     await tester.pumpAndSettle();

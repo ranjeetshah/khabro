@@ -159,3 +159,8 @@ export type Message = Prisma.MessageModel
  * 
  */
 export type Advertisement = Prisma.AdvertisementModel
+/**
+ * Model PostMedia
+ * 
+ */
+export type PostMedia = Prisma.PostMediaModel

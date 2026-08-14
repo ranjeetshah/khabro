@@ -26,8 +26,8 @@ class FeedbackService {
         body: {
           'type': type.wire.toUpperCase(),
           'message': message,
-          if (appVersion != null) 'appVersion': appVersion,
-          if (platform != null) 'platform': platform,
+          'appVersion': ?appVersion,
+          'platform': ?platform,
         },
       ),
     );

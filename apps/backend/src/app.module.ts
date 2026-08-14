@@ -16,6 +16,7 @@ import { ModeratorModule } from './moderator/moderator.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ChatModule } from './chat/chat.module';
 import { AdvertisementsModule } from './advertisements/advertisements.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AdvertisementsModule } from './advertisements/advertisements.module';
     FeedbackModule,
     ChatModule,
     AdvertisementsModule,
+    MediaModule,
   ],
 })
 export class AppModule {}

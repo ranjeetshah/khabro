@@ -1,4 +1,6 @@
 import '../../users/data/public_user_model.dart';
+import 'post_background.dart';
+import 'post_media_model.dart';
 import 'verification_status.dart';
 
 class PostModel {
@@ -17,6 +19,9 @@ class PostModel {
     this.commentCount,
     this.verificationStatus = VerificationStatus.reported,
     this.category,
+    this.background = PostBackground.defaultColor,
+    this.linkUrl,
+    this.media = const [],
   });
 
   final String id;
@@ -33,8 +38,18 @@ class PostModel {
   final int? commentCount;
   final VerificationStatus verificationStatus;
   final String? category;
+  final PostBackground background;
+  final String? linkUrl;
+  final List<PostMediaModel> media;
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
+    final rawMedia = json['media'];
+    final parsedMedia = (rawMedia is List)
+        ? rawMedia
+            .map((e) => PostMediaModel.fromJson(e as Map<String, dynamic>))
+            .toList()
+        : <PostMediaModel>[];
+
     return PostModel(
       id: json['id'] as String,
       authorId: json['authorId'] as String,
@@ -54,6 +69,9 @@ class PostModel {
         json['verificationStatus'] as String?,
       ),
       category: json['category'] as String?,
+      background: PostBackground.fromWire(json['background'] as String?),
+      linkUrl: json['linkUrl'] as String?,
+      media: parsedMedia,
     );
   }
 
@@ -71,6 +89,9 @@ class PostModel {
     bool? witnessedByMe,
     int? commentCount,
     VerificationStatus? verificationStatus,
+    PostBackground? background,
+    String? linkUrl,
+    List<PostMediaModel>? media,
   }) {
     return PostModel(
       id: id,
@@ -86,6 +107,10 @@ class PostModel {
       witnessedByMe: witnessedByMe ?? this.witnessedByMe,
       commentCount: commentCount ?? this.commentCount,
       verificationStatus: verificationStatus ?? this.verificationStatus,
+      category: category,
+      background: background ?? this.background,
+      linkUrl: linkUrl ?? this.linkUrl,
+      media: media ?? this.media,
     );
   }
 
@@ -106,6 +131,12 @@ class PostModel {
     if (commentCount != null) json['commentCount'] = commentCount;
     if (verificationStatus != VerificationStatus.reported) {
       json['verificationStatus'] = verificationStatus.wire;
+    }
+    if (category != null) json['category'] = category;
+    if (!background.isDefault) json['background'] = background.wire;
+    if (linkUrl != null) json['linkUrl'] = linkUrl;
+    if (media.isNotEmpty) {
+      json['media'] = media.map((m) => m.toJson()).toList();
     }
     return json;
   }

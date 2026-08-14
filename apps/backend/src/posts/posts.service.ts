@@ -1,10 +1,17 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { PostCategory, VerificationStatus } from '../generated/prisma/enums';
+import {
+  PostBackground,
+  PostCategory,
+  PostMediaType,
+  VerificationStatus,
+} from '../generated/prisma/enums';
+import { CreatePostDto, isValidLinkUrl } from './dto/create-post.dto';
 import { SearchPostsDto } from './dto/search-posts.dto';
 import { postSelect, toPostResponse } from './post.select';
 import { VerificationHistoryService } from './verification.history.service';
@@ -16,27 +23,91 @@ export class PostsService {
     private readonly verificationHistory: VerificationHistoryService,
   ) {}
 
-  async create(authorId: string, content: string, category?: PostCategory) {
+  async create(authorId: string, dto: CreatePostDto) {
+    if (dto.linkUrl && !isValidLinkUrl(dto.linkUrl)) {
+      throw new BadRequestException('Invalid link URL');
+    }
+
     const location = await this.database.userLocation.findUnique({
       where: { userId: authorId },
       select: { localityId: true },
     });
+
+    let verifiedMedia: any[] = [];
+    if (dto.mediaIds && dto.mediaIds.length > 0) {
+      verifiedMedia = await this.database.postMedia.findMany({
+        where: { id: { in: dto.mediaIds } },
+      });
+
+      if (verifiedMedia.length !== dto.mediaIds.length) {
+        throw new NotFoundException('One or more media assets not found');
+      }
+
+      for (const media of verifiedMedia) {
+        if (media.createdById !== authorId) {
+          throw new ForbiddenException(
+            'Cannot attach media assets created by another user',
+          );
+        }
+      }
+
+      const images = verifiedMedia.filter((m) => m.type === PostMediaType.IMAGE);
+      const videos = verifiedMedia.filter((m) => m.type === PostMediaType.VIDEO);
+
+      if (images.length > 0 && videos.length > 0) {
+        throw new BadRequestException(
+          'A post cannot contain both images and video',
+        );
+      }
+
+      if (images.length > 4) {
+        throw new BadRequestException('Maximum 4 images allowed per post');
+      }
+
+      if (videos.length > 1) {
+        throw new BadRequestException('Maximum 1 video allowed per post');
+      }
+    }
+
+    // Hard-color background is only allowed for text-only posts
+    const hasMedia = verifiedMedia.length > 0;
+    const finalBackground = hasMedia
+      ? PostBackground.DEFAULT
+      : (dto.background ?? PostBackground.DEFAULT);
 
     const post = await this.database.$transaction(async (tx) => {
       const created = await tx.post.create({
         data: {
           authorId,
           localityId: location?.localityId ?? null,
-          content: content.trim(),
-          category: category ?? PostCategory.GENERAL,
+          content: dto.content.trim(),
+          category: dto.category ?? PostCategory.GENERAL,
+          background: finalBackground,
+          linkUrl: dto.linkUrl ? dto.linkUrl.trim() : null,
         },
-        select: postSelect(authorId),
       });
+
+      if (dto.mediaIds && dto.mediaIds.length > 0) {
+        for (let i = 0; i < dto.mediaIds.length; i++) {
+          const mediaId = dto.mediaIds[i];
+          await tx.postMedia.update({
+            where: { id: mediaId },
+            data: {
+              postId: created.id,
+              sortOrder: i,
+            },
+          });
+        }
+      }
 
       await this.verificationHistory.recordPostCreated(created.id, tx);
 
-      return created;
+      return tx.post.findUnique({
+        where: { id: created.id },
+        select: postSelect(authorId),
+      });
     });
+
     return toPostResponse(post);
   }
 

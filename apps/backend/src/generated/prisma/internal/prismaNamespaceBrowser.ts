@@ -74,7 +74,8 @@ export const ModelName = {
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
-  Advertisement: 'Advertisement'
+  Advertisement: 'Advertisement',
+  PostMedia: 'PostMedia'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -146,6 +147,8 @@ export const PostScalarFieldEnum = {
   localityId: 'localityId',
   content: 'content',
   category: 'category',
+  background: 'background',
+  linkUrl: 'linkUrl',
   verificationStatus: 'verificationStatus',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
@@ -416,6 +419,27 @@ export const AdvertisementScalarFieldEnum = {
 } as const
 
 export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
+
+
+export const PostMediaScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  createdById: 'createdById',
+  type: 'type',
+  provider: 'provider',
+  mediaUrl: 'mediaUrl',
+  thumbnailUrl: 'thumbnailUrl',
+  providerMediaId: 'providerMediaId',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  durationSeconds: 'durationSeconds',
+  processingStatus: 'processingStatus',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type PostMediaScalarFieldEnum = (typeof PostMediaScalarFieldEnum)[keyof typeof PostMediaScalarFieldEnum]
 
 
 export const SortOrder = {

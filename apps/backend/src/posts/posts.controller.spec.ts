@@ -125,11 +125,9 @@ describe('PostsController', () => {
       content: 'Hello locally',
     });
 
-    expect(service.create).toHaveBeenCalledWith(
-      'user-1',
-      'Hello locally',
-      undefined,
-    );
+    expect(service.create).toHaveBeenCalledWith('user-1', {
+      content: 'Hello locally',
+    });
 
     expect(result).toEqual({
       id: 'post-1',

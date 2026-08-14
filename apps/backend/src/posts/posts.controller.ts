@@ -50,7 +50,7 @@ export class PostsController {
 
   @Post()
   async create(@Req() request: Request, @Body() dto: CreatePostDto) {
-    return this.postsService.create(this.userId(request), dto.content, dto.category);
+    return this.postsService.create(this.userId(request), dto);
   }
 
   @Get('search')

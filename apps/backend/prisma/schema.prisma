@@ -40,6 +40,7 @@ model User {
   conversationParticipants ConversationParticipant[]
   sentMessages            Message[]
   advertisements          Advertisement[]
+  postMedia               PostMedia[]
 
   @@index([status])
 }
@@ -94,6 +95,8 @@ model Post {
   localityId         String?
   content            String
   category           PostCategory       @default(GENERAL)
+  background         PostBackground     @default(DEFAULT)
+  linkUrl            String?
   verificationStatus VerificationStatus @default(REPORTED)
   deletedAt          DateTime?
   createdAt          DateTime           @default(now())
@@ -109,6 +112,7 @@ model Post {
   complaints Complaint[]
   civicComplaint CivicComplaint?
   comments   Comment[]
+  media      PostMedia[]
 
   @@index([authorId, createdAt])
   @@index([localityId, deletedAt, createdAt, id])
@@ -595,4 +599,56 @@ model Advertisement {
 
   @@index([status, placement, deletedAt, startAt, endAt])
   @@index([createdById, createdAt])
+}
+
+model PostMedia {
+  id               String               @id @default(uuid())
+  postId           String?
+  createdById      String
+  type             PostMediaType
+  provider         MediaProvider
+  mediaUrl         String
+  thumbnailUrl     String?
+  providerMediaId  String?
+  mimeType         String?
+  width            Int?
+  height           Int?
+  durationSeconds  Int?
+  processingStatus MediaProcessingStatus @default(READY)
+  sortOrder        Int                  @default(0)
+  createdAt        DateTime             @default(now())
+
+  post      Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdBy User  @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([postId, sortOrder])
+  @@index([createdById, createdAt])
+}
+
+enum PostBackground {
+  DEFAULT
+  RED
+  BLUE
+  GREEN
+  ORANGE
+  PURPLE
+  TEAL
+  DARK
+}
+
+enum PostMediaType {
+  IMAGE
+  VIDEO
+}
+
+enum MediaProvider {
+  YOUTUBE
+  KHABRO_CDN
+}
+
+enum MediaProcessingStatus {
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
 }

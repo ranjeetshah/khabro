@@ -1,8 +1,35 @@
-import { IsEnum, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
-import { PostCategory } from '../../generated/prisma/enums';
+import { PostBackground, PostCategory } from '../../generated/prisma/enums';
 
 export const POST_CONTENT_MAX_LENGTH = 5000;
+
+export function isValidLinkUrl(url?: string): boolean {
+  if (!url) return true;
+  const trimmed = url.trim();
+  if (trimmed.length === 0) return true;
+
+  const lower = trimmed.toLowerCase();
+  const forbiddenProtocols = ['javascript:', 'data:', 'file:', 'intent:', 'ftp:'];
+  if (forbiddenProtocols.some((proto) => lower.startsWith(proto))) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
 
 export class CreatePostDto {
   @IsString()
@@ -17,4 +44,17 @@ export class CreatePostDto {
   @IsOptional()
   @IsEnum(PostCategory)
   category?: PostCategory;
+
+  @IsOptional()
+  @IsEnum(PostBackground)
+  background?: PostBackground;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  mediaIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  linkUrl?: string;
 }

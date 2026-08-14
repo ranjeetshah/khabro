@@ -420,7 +420,8 @@ export const ModelName = {
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
-  Advertisement: 'Advertisement'
+  Advertisement: 'Advertisement',
+  PostMedia: 'PostMedia'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "feedback" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport" | "follow" | "conversation" | "conversationParticipant" | "message" | "advertisement"
+    modelProps: "user" | "userLocation" | "locality" | "post" | "like" | "witness" | "verificationEvent" | "verificationContribution" | "feedback" | "postReport" | "userReport" | "moderationAuditEvent" | "complaint" | "complaintStatusHistory" | "civicComplaint" | "civicComplaintStatusHistory" | "notification" | "comment" | "commentReport" | "follow" | "conversation" | "conversationParticipant" | "message" | "advertisement" | "postMedia"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2216,6 +2217,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PostMedia: {
+      payload: Prisma.$PostMediaPayload<ExtArgs>
+      fields: Prisma.PostMediaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostMediaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostMediaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        findFirst: {
+          args: Prisma.PostMediaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostMediaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        findMany: {
+          args: Prisma.PostMediaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+        }
+        create: {
+          args: Prisma.PostMediaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        createMany: {
+          args: Prisma.PostMediaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostMediaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+        }
+        delete: {
+          args: Prisma.PostMediaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        update: {
+          args: Prisma.PostMediaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostMediaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostMediaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostMediaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostMediaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostMediaPayload>
+        }
+        aggregate: {
+          args: Prisma.PostMediaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostMedia>
+        }
+        groupBy: {
+          args: Prisma.PostMediaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostMediaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostMediaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostMediaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2308,6 +2383,8 @@ export const PostScalarFieldEnum = {
   localityId: 'localityId',
   content: 'content',
   category: 'category',
+  background: 'background',
+  linkUrl: 'linkUrl',
   verificationStatus: 'verificationStatus',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
@@ -2580,6 +2657,27 @@ export const AdvertisementScalarFieldEnum = {
 export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
+export const PostMediaScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  createdById: 'createdById',
+  type: 'type',
+  provider: 'provider',
+  mediaUrl: 'mediaUrl',
+  thumbnailUrl: 'thumbnailUrl',
+  providerMediaId: 'providerMediaId',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  durationSeconds: 'durationSeconds',
+  processingStatus: 'processingStatus',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type PostMediaScalarFieldEnum = (typeof PostMediaScalarFieldEnum)[keyof typeof PostMediaScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2726,6 +2824,20 @@ export type EnumPostCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'PostCategory[]'
  */
 export type ListEnumPostCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PostBackground'
+ */
+export type EnumPostBackgroundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostBackground'>
+    
+
+
+/**
+ * Reference to a field of type 'PostBackground[]'
+ */
+export type ListEnumPostBackgroundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostBackground[]'>
     
 
 
@@ -2952,6 +3064,48 @@ export type EnumAdvertisementStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
 export type ListEnumAdvertisementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdvertisementStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'PostMediaType'
+ */
+export type EnumPostMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostMediaType'>
+    
+
+
+/**
+ * Reference to a field of type 'PostMediaType[]'
+ */
+export type ListEnumPostMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostMediaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaProvider'
+ */
+export type EnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaProvider[]'
+ */
+export type ListEnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaProcessingStatus'
+ */
+export type EnumMediaProcessingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProcessingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaProcessingStatus[]'
+ */
+export type ListEnumMediaProcessingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProcessingStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3127,6 +3281,7 @@ export type GlobalOmitConfig = {
   conversationParticipant?: Prisma.ConversationParticipantOmit
   message?: Prisma.MessageOmit
   advertisement?: Prisma.AdvertisementOmit
+  postMedia?: Prisma.PostMediaOmit
 }
 
 /* Types for Logging */

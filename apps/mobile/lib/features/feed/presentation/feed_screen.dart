@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../auth/data/auth_exception.dart';
 import '../../advertisements/data/advertisement_model.dart';
@@ -7,10 +8,14 @@ import '../../advertisements/presentation/advertisement_card.dart';
 import '../../location/data/locality_model.dart';
 import '../../location/data/locality_service.dart';
 import '../../location/data/location_update_service.dart';
+import '../../posts/data/post_media_model.dart';
+
 import '../../posts/data/post_model.dart';
 import '../../posts/data/posts_service.dart';
 import '../../posts/data/verification_status.dart';
 import '../../posts/presentation/create_post_screen.dart';
+import '../../posts/presentation/media_player_widget.dart';
+import '../../posts/presentation/post_background_card.dart';
 import '../../posts/presentation/post_detail_screen.dart';
 import '../../posts/presentation/verification_status_badge.dart';
 import '../../users/data/public_user_service.dart';
@@ -563,6 +568,10 @@ class _FeedScreenState extends State<FeedScreen> {
         ? post.author!.name!.trim()
         : 'Khabro User';
 
+    final hasBackground = !post.background.isDefault && post.media.isEmpty;
+    final videoMedia = post.media.where((m) => m.type == PostMediaType.video).firstOrNull;
+    final imageMediaList = post.media.where((m) => m.type == PostMediaType.image).toList();
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -623,17 +632,100 @@ class _FeedScreenState extends State<FeedScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              Text(
-                post.content,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF374151),
-                  height: 1.4,
+
+              // Rich Text / Background Rendering
+              if (hasBackground)
+                PostBackgroundCard(
+                  content: post.content,
+                  background: post.background,
+                )
+              else
+                Text(
+                  post.content,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF374151),
+                    height: 1.4,
+                  ),
                 ),
-              ),
+
+              // Video Attachment Rendering
+              if (videoMedia != null) ...[
+                const SizedBox(height: 12),
+                MediaPlayerWidget(media: videoMedia),
+              ],
+
+              // Image Attachments Grid / List
+              if (imageMediaList.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: imageMediaList.map((media) {
+                    return Container(
+                      width: imageMediaList.length == 1 ? double.infinity : 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Image.network(
+                        media.url,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Center(
+                          child: Icon(Icons.image, size: 36, color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+
+              // Link Preview Button / Chip
+              if (post.linkUrl != null && post.linkUrl!.trim().isNotEmpty) ...[
+                const SizedBox(height: 12),
+                InkWell(
+                  onTap: () async {
+                    final uri = Uri.tryParse(post.linkUrl!.trim());
+                    if (uri != null && await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF3F4F6),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.link, size: 16, color: Color(0xFF1565C0)),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            post.linkUrl!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1565C0),
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
               if (post.verificationStatus != VerificationStatus.reported &&
                   post.verificationStatus != VerificationStatus.unknown) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 VerificationStatusBadge(
                   status: post.verificationStatus,
                   compact: true,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
@@ -8,6 +9,8 @@ import 'civic_complaint_model.dart';
 import 'comment_model.dart';
 import 'comment_report_reason.dart';
 import 'like_status_model.dart';
+import 'post_background.dart';
+import 'post_media_model.dart';
 import 'post_model.dart';
 import 'verification_history_model.dart';
 import 'verification_status_model.dart';
@@ -21,17 +24,63 @@ class PostsService {
   final ApiClient _apiClient;
   final TokenStorage _tokenStorage;
 
-  Future<PostModel> createPost(String content) async {
+  Future<PostModel> createPost(
+    String content, {
+    String? category,
+    PostBackground? background,
+    List<String>? mediaIds,
+    String? linkUrl,
+  }) async {
     final response = await _request(
       (headers) => _apiClient.post(
         '/posts',
         headers: headers,
-        body: {'content': content},
+        body: {
+          'content': content,
+          if (category != null && category.isNotEmpty) 'category': category,
+          if (background != null && !background.isDefault)
+            'background': background.wire,
+          if (mediaIds != null && mediaIds.isNotEmpty) 'mediaIds': mediaIds,
+          if (linkUrl != null && linkUrl.trim().isNotEmpty)
+            'linkUrl': linkUrl.trim(),
+        },
       ),
     );
     _checkStatus(response, 'Failed to create post');
     final data = jsonDecode(response.body) as Map<String, dynamic>;
-    return PostModel.fromJson(data['post'] as Map<String, dynamic>);
+    final postJson = data.containsKey('post') ? data['post'] : data;
+    return PostModel.fromJson(postJson as Map<String, dynamic>);
+  }
+
+  Future<PostMediaModel> uploadMedia(
+    List<int> bytes,
+    String filename,
+    String mimeType,
+  ) async {
+    final token = await _tokenStorage.getAccessToken();
+    if (token == null || token.isEmpty) {
+      throw const AuthException(
+        'Not authenticated. Please log in.',
+        statusCode: 401,
+      );
+    }
+
+    final uri = Uri.parse('${ApiClient.baseUrl}/posts/media/upload');
+    final request = http.MultipartRequest('POST', uri);
+    request.headers['Authorization'] = 'Bearer $token';
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: filename,
+      ),
+    );
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    _checkStatus(response, 'Failed to upload media');
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return PostMediaModel.fromJson(data);
   }
 
   Future<List<PostModel>> getMyPosts() async {
@@ -172,9 +221,6 @@ class PostsService {
     return CivicComplaintModel.fromJson(data);
   }
 
-  /// Submits a content report for a post. The backend derives the reporter
-  /// from the JWT; the response is intentionally discarded here so the UI can
-  /// never display an internal report id or moderation status.
   Future<void> reportPost(
     String id, {
     required String reason,

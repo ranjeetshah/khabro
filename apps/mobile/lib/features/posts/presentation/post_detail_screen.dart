@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../auth/data/auth_exception.dart';
 import '../../complaints/data/complaint_service.dart';
@@ -9,12 +10,15 @@ import '../../users/presentation/public_author_profile_screen.dart';
 import '../data/civic_complaint_model.dart';
 import '../data/comment_model.dart';
 import '../data/comment_report_reason.dart';
+import '../data/post_media_model.dart';
 import '../data/post_model.dart';
 import '../data/posts_service.dart';
 import '../data/verification_event.dart';
 import '../data/verification_history_model.dart';
 import '../data/verification_status.dart';
 import '../data/witness_status_model.dart';
+import 'media_player_widget.dart';
+import 'post_background_card.dart';
 import 'verification_status_badge.dart';
 
 class PostDetailScreen extends StatefulWidget {
@@ -731,8 +735,69 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          Text(widget.post.content, style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 16),
+          if (!widget.post.background.isDefault && widget.post.media.isEmpty)
+            PostBackgroundCard(
+              content: widget.post.content,
+              background: widget.post.background,
+            )
+          else
+            Text(widget.post.content, style: const TextStyle(fontSize: 18)),
+
+          if (widget.post.media.any((m) => m.type == PostMediaType.video)) ...[
+            const SizedBox(height: 16),
+            MediaPlayerWidget(
+              media: widget.post.media.firstWhere((m) => m.type == PostMediaType.video),
+            ),
+          ],
+
+          if (widget.post.media.any((m) => m.type == PostMediaType.image)) ...[
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.post.media
+                  .where((m) => m.type == PostMediaType.image)
+                  .map((media) => Container(
+                        width: widget.post.media.where((m) => m.type == PostMediaType.image).length == 1
+                            ? double.infinity
+                            : 160,
+                        height: 160,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                          media.url,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Center(
+                            child: Icon(Icons.image, size: 36, color: Colors.grey),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ],
+
+          if (widget.post.linkUrl != null && widget.post.linkUrl!.trim().isNotEmpty) ...[
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () async {
+                final uri = Uri.tryParse(widget.post.linkUrl!.trim());
+                if (uri != null && await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              icon: const Icon(Icons.link),
+              label: Text(
+                widget.post.linkUrl!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+
           const SizedBox(height: 16),
           Text(
             widget.post.createdAt.toLocal().toString(),
